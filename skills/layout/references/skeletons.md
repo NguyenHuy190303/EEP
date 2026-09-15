@@ -15,9 +15,13 @@ tests/
 alembic/             migrations (only if there is a DB)
 helm/                chart for the k8s release
 docs/
+  spec/              living pages, one per subsystem, undated: architecture.html speech.html index.html
+    design-system/   product UI: tokens.md components.md patterns.md + tokens.css the frontend imports
   decisions/         D-00xx via ./ops decide      (or docs/adr/ when the repo has no ./ops)
   problems/          P-00xx via ./ops problem
-  runbooks/          how to operate it; every record file starts with its date
+  runbooks/          how to operate it
+  reports/           dated, write-once: <YYYY-MM-DD>_<slug>.html  (standup, findings, postmortem)
+  assets/<spec>/     images / diagrams a spec page references (the css kit is embedded, not stored)
 scripts/             ops + one-off; scripts/<job>/ once >3 files serve one job; 1-line header each
 [eval_cases/]        curated eval set that ships with the service (small, committed)
 [scratchpad/]        <TICKET>-<slug>/ quick trials; gitignored; emptied when the ticket closes
@@ -78,6 +82,8 @@ README.md
 | Pipeline output dir | `outputs/<YYYY-MM-DD>_<slug>/` (+ `run.log` inside) | `outputs/2026-09-16_crawl-shorts/` |
 | Scratch dir | `scratchpad/<TICKET>-<slug>/` (gitignored) | `scratchpad/LP-57-voice-flag-off/` |
 | Decision / problem record | `docs/decisions/D-00xx…` · `docs/problems/P-00xx…` via `./ops` | `docs/decisions/D-0036-…` |
+| Spec page | `docs/spec/<subsystem>.html` (undated, overwritten) · `docs/spec/design-system/{tokens,components,patterns}.md` | `docs/spec/speech.html` |
+| Report for humans | `docs/reports/<YYYY-MM-DD>_<slug>.<ext>` (write-once) | `docs/reports/2026-09-03_standup.txt` |
 | Notebook | `notebooks/<YYYY-MM-DD>_<slug>.ipynb` | `notebooks/2026-09-16_diarization-errors.ipynb` |
 | Checkpoint | `<model>_<data>_<step-or-epoch>` | `whisper-large-v3_vi-med-12k_step-8000` |
 | Branch | `<type>/<TICKET>-<slug>` | `feat/LP-185-identity-across-pods` |
