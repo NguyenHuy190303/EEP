@@ -1,0 +1,385 @@
+/* html-kit tokens — dual theme: Slate Light (default) / Dracula (dark).
+   Redesigned 24/08/2026, replacing the old single-theme "Cà phê sữa" (Huy's decision — see
+   ~/.claude/rules/html-style.md for the full rationale and the contrast/CVD checks run before
+   picking these values unmodified from each theme's canonical spec).
+
+   Toggle contract (matches the general Artifact dark-mode convention):
+     - bare :root                                            → Slate Light values
+     - @media(prefers-color-scheme:dark) :root:not([data-theme="light"]) → Dracula (OS default)
+     - :root[data-theme="dark"]                              → Dracula (explicit override wins)
+   A page's own theme-toggle.js only ever sets/clears [data-theme] — it never has to read
+   matchMedia itself, so first paint always matches the OS setting with zero JS.
+
+   --on-dark-* and the code-block tokens are NOT redeclared per theme: `.code-bd` is always a dark
+   surface in both themes (by design, same as the old kit), and Dracula's own accent set reads well
+   on both slate-900 and Dracula's own background — one set, reused, less to keep in sync. */
+
+:root{
+  /* ── grounds: Slate Light (Tailwind slate scale, same family archify renders on) ──
+     Adopted 2026-09-15 replacing Solarized Light: Huy found Solarized's beige dull next to
+     archify. Accents validated with validate_palette.mjs on #ffffff and #f8fafc — all 8 ≥3.0:1
+     non-text contrast, every pair distinct (min ΔE76 21.9, orange/amber). Dark stays Dracula. */
+  --bg-page:#f8fafc;          /* slate-50 — nền trang */
+  --bg-card:#ffffff;          /* white — card, archify panel */
+  --bg-inner:#f8fafc;         /* slate-50 — lớp trong cùng */
+  --bg-subtle:#f1f5f9;        /* slate-100 — fill cho inline code/ô nhấn nhẹ */
+
+  /* ── thanh nổi: slate-900/950, luôn tối ở cả 2 theme (mỏ neo thị giác) ──── */
+  --bg-toast:#0f172a;         /* slate-900 — thanh header, đầu bảng */
+  --bg-code:#0f172a;          /* slate-900 — thân code block, khung sơ đồ */
+  --bg-code-header:#020617;   /* slate-950 — strip trên code block */
+
+  /* ── chữ: slate-900/700/500/400 ─────────────────────────────────────── */
+  --text-heading:#0f172a;     /* slate-900 — archify --text */
+  --text-body:#334155;        /* slate-700 */
+  --text-muted:#64748b;       /* slate-500 — archify --text-faint */
+  --text-subtle:#94a3b8;      /* slate-400 — archify --text-dim */
+  --text-on-dark:#e2e8f0;     /* slate-200 — chữ trên --bg-code */
+  --text-on-toast:#e2e8f0;    /* slate-200 — chữ trên --bg-toast */
+
+  --border-card:#e2e8f0;      /* slate-200 — archify --panel-border */
+  --border-divider:#cbd5e1;   /* slate-300 — archify --lane-stroke */
+  --border-dark:#020617;
+
+  /* ── accent: Tailwind 600-step, cùng bộ archify dùng cho stroke ───────── */
+  --red:#e11d48;              /* rose-600 — archify security */
+  --orange:#ea580c;           /* orange-600 — archify messagebus */
+  --yellow:#d97706;           /* amber-600 — archify cloud; cảnh báo */
+  --green:#059669;            /* emerald-600 — archify backend; xong / đã xác minh */
+  --blue:#2563eb;             /* blue-600 — thông tin, accent dùng chung */
+  --cyan:#0891b2;             /* cyan-600 — archify frontend */
+  --violet:#7c3aed;           /* violet-600 — archify database */
+  --magenta:#db2777;          /* pink-600 */
+
+  /* ── accent bản sáng cho .code-bd — CHUNG cho cả 2 theme, xem banner trên ── */
+  --on-dark-green:#50fa7b;
+  --on-dark-blue:#8be9fd;
+  --on-dark-cyan:#8be9fd;
+  --on-dark-yellow:#f1fa8c;
+  --on-dark-red:#ff5555;
+  --on-dark-muted:#6272a4;
+
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --mono:'Fira Code','JetBrains Mono','Cascadia Code',ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace;
+
+  --shadow-sm:0 1px 2px rgba(7,54,66,.08),0 1px 3px rgba(7,54,66,.06);
+  --r-sm:.375rem; --r-md:.75rem; --r-lg:1rem;
+}
+
+/* OS báo dark VÀ chưa ai bấm toggle ép sáng → Dracula theo mặc định hệ thống */
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg-page:#282a36;
+    --bg-card:#363a4a;
+    --bg-inner:#21222c;
+    --bg-subtle:#3a3d4d;
+
+    --bg-toast:#44475a;
+    --bg-code:#21222c;
+    --bg-code-header:#191a21;
+
+    --text-heading:#f8f8f2;
+    --text-body:#e6e6e0;
+    --text-muted:#6272a4;
+    --text-subtle:#4d5273;
+    --text-on-dark:#e9e9f0;
+    --text-on-toast:#f8f8f2;
+
+    --border-card:#414458;
+    --border-divider:#4d5273;
+    --border-dark:#14151b;
+
+    --red:#ff5555;
+    --orange:#ffb86c;
+    --yellow:#f1fa8c;
+    --green:#50fa7b;
+    --blue:#8be9fd;
+    --cyan:#8be9fd;
+    --violet:#bd93f9;
+    --magenta:#ff79c6;
+
+    --shadow-sm:0 1px 3px rgba(0,0,0,.45),0 2px 10px rgba(0,0,0,.35);
+  }
+}
+
+/* Toggle bấm tay luôn thắng, cả 2 hướng — theme-toggle.js chỉ set/xoá attribute này */
+:root[data-theme="dark"]{
+  --bg-page:#282a36;
+  --bg-card:#363a4a;
+  --bg-inner:#21222c;
+  --bg-subtle:#3a3d4d;
+
+  --bg-toast:#44475a;
+  --bg-code:#21222c;
+  --bg-code-header:#191a21;
+
+  --text-heading:#f8f8f2;
+  --text-body:#e6e6e0;
+  --text-muted:#6272a4;
+  --text-subtle:#4d5273;
+  --text-on-dark:#e9e9f0;
+  --text-on-toast:#f8f8f2;
+
+  --border-card:#414458;
+  --border-divider:#4d5273;
+  --border-dark:#14151b;
+
+  --red:#ff5555;
+  --orange:#ffb86c;
+  --yellow:#f1fa8c;
+  --green:#50fa7b;
+  --blue:#8be9fd;
+  --cyan:#8be9fd;
+  --violet:#bd93f9;
+  --magenta:#ff79c6;
+
+  --shadow-sm:0 1px 3px rgba(0,0,0,.45),0 2px 10px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+
+html{color-scheme:light dark}
+html[data-theme="dark"]{color-scheme:dark}
+html[data-theme="light"]{color-scheme:light}
+
+body{
+  margin:0;
+  background:var(--bg-page);
+  color:var(--text-body);
+  font-family:var(--sans);
+  font-size:1rem;
+  line-height:1.625;
+  font-feature-settings:'calt' 1,'liga' 1;
+  -webkit-font-smoothing:antialiased;
+}
+
+main{max-width:72rem;margin:1.5rem auto;padding:0 1rem 3rem;
+  display:flex;flex-direction:column;gap:1.5rem}
+
+/* ── type ─────────────────────────────────────────────────────────── */
+h1,h2,h3,h4{color:var(--text-heading);font-family:var(--sans);font-weight:700;
+  letter-spacing:-.015em;text-wrap:balance;margin:0}
+h1{font-size:1.5rem;line-height:2rem}
+h2{font-size:1.25rem;line-height:1.75rem}
+h3{font-size:1.125rem;line-height:1.5rem;font-weight:600}
+h4{font-size:1rem;line-height:1.5rem;font-weight:600}
+p{margin:0 0 1rem;max-width:72ch} p:last-child{margin-bottom:0}
+ul,ol{margin:0 0 1rem;padding-left:1.25rem;max-width:72ch}
+ul:last-child,ol:last-child{margin-bottom:0}
+li{margin-bottom:.375rem} li::marker{color:var(--text-muted)}
+strong{color:var(--text-heading);font-weight:600}
+a{color:var(--blue);text-decoration-thickness:1px;text-underline-offset:2px}
+a:hover{color:var(--cyan)}
+small,.muted{color:var(--text-muted);font-size:.875rem;line-height:1.25rem}
+.subtle{color:var(--text-subtle)}
+.eyebrow{font-size:.75rem;line-height:1rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text-muted)}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+code{font-family:var(--mono);font-size:.8125rem;
+  background:var(--bg-subtle);color:var(--text-heading);
+  border:1px solid var(--border-divider);border-radius:var(--r-sm);
+  padding:.125rem .375rem;word-break:break-word}
+
+/* ── icons (inline SVG sprite — CSP blocks icon-font CDNs) ────────── */
+.i{width:1em;height:1em;flex:none;vertical-align:-.125em;stroke:currentColor;fill:none;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.i-lg{width:1.25rem;height:1.25rem}
+
+/* ── header bar: luôn tối, mỏ neo thị giác ở cả 2 theme ───────────── */
+.hdr{
+  position:sticky;top:0;z-index:20;min-height:4rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.5rem 1.5rem;
+  background:color-mix(in srgb, var(--bg-toast) 94%, transparent);color:var(--text-on-toast);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--bg-code-header);
+  box-shadow:0 1px 8px color-mix(in srgb, var(--text-heading) 22%, transparent);
+}
+.hdr h1,.hdr h2,.hdr h3{color:var(--text-on-toast)}
+.hdr .eyebrow{color:var(--text-on-toast);opacity:.75}
+.hdr .muted{color:color-mix(in srgb, var(--text-on-toast) 75%, var(--bg-toast))}
+.hdr-brand{display:flex;align-items:center;gap:.75rem;min-width:0}
+.hdr-icon{width:2.25rem;height:2.25rem;border-radius:var(--r-sm);
+  background:var(--bg-code-header);color:var(--on-dark-yellow);
+  display:flex;align-items:center;justify-content:center;flex:none}
+
+/* ── theme toggle — nút sáng/tối, build.py tự chèn nếu thiếu ─────────── */
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;
+  width:2.25rem;height:2.25rem;border-radius:var(--r-sm);flex:none;
+  background:color-mix(in srgb, var(--text-on-toast) 14%, transparent);
+  border:1px solid color-mix(in srgb, var(--text-on-toast) 34%, transparent);
+  color:var(--text-on-toast);cursor:pointer}
+.theme-toggle:hover{background:color-mix(in srgb, var(--text-on-toast) 22%, transparent)}
+.theme-toggle .tt-moon{display:none}
+:root[data-theme="dark"] .theme-toggle .tt-sun{display:none}
+:root[data-theme="dark"] .theme-toggle .tt-moon{display:block}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .theme-toggle .tt-sun{display:none}
+  :root:not([data-theme="light"]) .theme-toggle .tt-moon{display:block}
+}
+
+/* ── containers ───────────────────────────────────────────────────── */
+.card{background:var(--bg-card);border:1px solid var(--border-card);
+  border-radius:var(--r-lg);padding:1.5rem;box-shadow:var(--shadow-sm);
+  display:flex;flex-direction:column;gap:1.25rem}
+.inner{background:var(--bg-inner);border:1px solid var(--border-card);
+  border-radius:var(--r-md);padding:1rem}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;
+  flex-wrap:wrap;gap:1rem}
+
+/* ── code block: luôn tối ở cả 2 theme ────────────────────────────── */
+.code{border-radius:var(--r-md);overflow:hidden;border:1px solid var(--border-dark)}
+.code-hd{background:var(--bg-code-header);color:var(--text-subtle);
+  font-family:var(--mono);font-size:.75rem;padding:.5rem .75rem;
+  border-bottom:1px solid var(--bg-code);
+  display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.code-hd .t{display:flex;align-items:center;gap:.375rem;font-weight:600}
+.code-bd{background:var(--bg-code);color:var(--text-on-dark);font-family:var(--mono);
+  font-size:.8125rem;line-height:1.55;padding:1rem;margin:0;overflow-x:auto}
+.code-bd .k{color:var(--on-dark-green)}    /* keyword */
+.code-bd .f{color:var(--on-dark-blue)}     /* function */
+.code-bd .s{color:var(--on-dark-cyan)}     /* string */
+.code-bd .t{color:var(--on-dark-yellow)}   /* type / number */
+.code-bd .c{color:var(--on-dark-muted)}    /* comment */
+.code-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+@media(min-width:900px){.code-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ── alerts ───────────────────────────────────────────────────────── */
+.alert{border-radius:var(--r-md);padding:1rem;
+  border-left-width:4px;border-left-style:solid;
+  border-top:1px solid;border-right:1px solid;border-bottom:1px solid;
+  font-size:.875rem;line-height:1.5rem;color:var(--text-heading)}
+.alert .h{display:flex;align-items:center;gap:.375rem;font-weight:700;font-size:.75rem;
+  letter-spacing:.08em;text-transform:uppercase;margin-bottom:.375rem}
+.alert p{margin-bottom:.5rem;max-width:none} .alert p:last-child{margin-bottom:0}
+.alert.warn{background:color-mix(in srgb, var(--yellow) 13%, transparent);border-left-color:var(--yellow);
+  border-top-color:color-mix(in srgb, var(--yellow) 26%, transparent);
+  border-right-color:color-mix(in srgb, var(--yellow) 26%, transparent);
+  border-bottom-color:color-mix(in srgb, var(--yellow) 26%, transparent)}
+.alert.warn .h{color:var(--yellow)}
+.alert.err{background:color-mix(in srgb, var(--red) 12%, transparent);border-left-color:var(--red);
+  border-top-color:color-mix(in srgb, var(--red) 26%, transparent);
+  border-right-color:color-mix(in srgb, var(--red) 26%, transparent);
+  border-bottom-color:color-mix(in srgb, var(--red) 26%, transparent)}
+.alert.err .h{color:var(--red)}
+.alert.ok{background:color-mix(in srgb, var(--green) 14%, transparent);border-left-color:var(--green);
+  border-top-color:color-mix(in srgb, var(--green) 26%, transparent);
+  border-right-color:color-mix(in srgb, var(--green) 26%, transparent);
+  border-bottom-color:color-mix(in srgb, var(--green) 26%, transparent)}
+.alert.ok .h{color:var(--green)}
+.alert.info{background:color-mix(in srgb, var(--blue) 12%, transparent);border-left-color:var(--blue);
+  border-top-color:color-mix(in srgb, var(--blue) 26%, transparent);
+  border-right-color:color-mix(in srgb, var(--blue) 26%, transparent);
+  border-bottom-color:color-mix(in srgb, var(--blue) 26%, transparent)}
+.alert.info .h{color:var(--blue)}
+
+/* ── badges — MỌI badge phải kèm chữ, không bao giờ chỉ 1 chấm màu ──── */
+.badge{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .5rem;
+  border-radius:var(--r-sm);font-family:var(--sans);font-size:.6875rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;border:1px solid}
+.badge.crit{background:color-mix(in srgb, var(--red) 15%, transparent);color:var(--red);
+  border-color:color-mix(in srgb, var(--red) 35%, transparent)}
+.badge.ok{background:color-mix(in srgb, var(--green) 16%, transparent);color:var(--green);
+  border-color:color-mix(in srgb, var(--green) 35%, transparent)}
+.badge.info{background:color-mix(in srgb, var(--cyan) 15%, transparent);color:var(--cyan);
+  border-color:color-mix(in srgb, var(--cyan) 35%, transparent)}
+.badge.warn{background:color-mix(in srgb, var(--yellow) 16%, transparent);color:var(--yellow);
+  border-color:color-mix(in srgb, var(--yellow) 35%, transparent)}
+.badge.blue{background:color-mix(in srgb, var(--blue) 14%, transparent);color:var(--blue);
+  border-color:color-mix(in srgb, var(--blue) 35%, transparent)}
+/* trên thanh header các tint biến mất — dùng biến thể này ở đó */
+.hdr .badge{background:color-mix(in srgb, var(--text-on-toast) 14%, transparent);color:var(--text-on-toast);
+  border-color:color-mix(in srgb, var(--text-on-toast) 34%, transparent)}
+
+/* ── metrics grid ─────────────────────────────────────────────────── */
+.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;
+  background:var(--bg-inner);border:1px solid var(--border-card);
+  border-radius:var(--r-md);padding:1rem;font-size:.75rem;line-height:1rem}
+@media(min-width:640px){.metrics{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.metrics .l{display:block;color:var(--text-muted);margin-bottom:.25rem}
+.metrics .v{display:block;font-family:var(--mono);font-variant-numeric:tabular-nums;
+  font-weight:700;color:var(--text-heading);font-size:1.125rem;line-height:1.5rem}
+
+/* ── tables: đầu bảng luôn tối ────────────────────────────────────── */
+.tw{overflow-x:auto;border:1px solid var(--border-card);border-radius:var(--r-md);
+  background:var(--bg-inner)}
+table{border-collapse:collapse;width:100%;font-size:.875rem;line-height:1.35rem;min-width:34rem}
+thead th{background:var(--bg-toast);color:var(--text-on-toast);
+  font-size:.6875rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  text-align:left;padding:.5rem .75rem;white-space:nowrap;
+  border-bottom:1px solid var(--bg-code-header)}
+tbody td{padding:.5rem .75rem;border-bottom:1px solid var(--border-card);
+  vertical-align:top;color:var(--text-body)}
+tbody tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right;font-family:var(--mono);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+tbody td:first-child{color:var(--text-heading);font-weight:600}
+tr.hl td{background:color-mix(in srgb, var(--red) 9%, transparent)}
+caption{caption-side:bottom;text-align:left;padding:.625rem .75rem;font-size:.75rem;
+  line-height:1.1rem;color:var(--text-muted);border-top:1px solid var(--border-card)}
+
+/* ── system diagram frame (ASCII/code-style, không phải .dflow) ──────── */
+.diagram{background:var(--bg-code);color:var(--text-on-dark);
+  border:1px solid var(--border-dark);border-radius:var(--r-lg);
+  padding:1.25rem;display:flex;flex-direction:column;gap:1.25rem}
+.diagram-hd{display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  flex-wrap:wrap;border-bottom:1px solid color-mix(in srgb, var(--text-on-dark) 28%, transparent);
+  padding-bottom:.5rem;font-family:var(--mono);font-size:.75rem;color:var(--on-dark-muted)}
+.diagram-steps{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:.75rem}
+@media(min-width:640px){
+  .diagram-steps{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .diagram-steps.five{grid-template-columns:repeat(5,minmax(0,1fr))}
+}
+.diagram .step{background:var(--bg-code-header);
+  border:1px solid color-mix(in srgb, var(--text-on-dark) 22%, transparent);
+  border-radius:var(--r-md);padding:.75rem;text-align:center;font-size:.75rem;
+  display:flex;flex-direction:column;align-items:center;gap:.25rem}
+.diagram .step.hot{border-color:var(--on-dark-red);
+  background:color-mix(in srgb, var(--red) 26%, transparent)}
+.diagram .step b{color:var(--bg-inner);font-weight:700}
+.diagram .step span{font-size:.6875rem;color:var(--on-dark-muted)}
+.diagram .step .w{font-family:var(--mono);color:var(--on-dark-cyan)}
+.diagram .step.hot .w{color:var(--on-dark-red);font-weight:600}
+
+/* ── checklist ────────────────────────────────────────────────────── */
+.checklist{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;
+  gap:.5rem;max-width:none}
+.checklist li{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem;
+  border:1px solid var(--border-card);border-radius:var(--r-md);margin:0;
+  background:var(--bg-inner)}
+.checklist .n{font-family:var(--mono);font-size:.75rem;font-weight:700;
+  color:var(--text-on-toast);background:var(--bg-toast);border-radius:var(--r-sm);
+  padding:.05rem .4rem;flex:none;margin-top:.15rem}
+.checklist b{display:block;color:var(--text-heading);font-weight:600}
+.checklist .d{font-size:.8125rem;line-height:1.35rem;color:var(--text-body)}
+.checklist .done{color:var(--text-subtle);text-decoration:line-through}
+
+/* ── timeline ─────────────────────────────────────────────────────── */
+.tl{list-style:none;padding:0;margin:0;max-width:none}
+.tl li{display:grid;grid-template-columns:4.5rem 1fr;gap:1rem;padding:.875rem 0;
+  border-top:1px solid var(--border-card);margin:0}
+.tl li:first-child{border-top:none}
+.tl .when{font-family:var(--mono);font-size:.75rem;color:var(--text-muted);
+  white-space:nowrap;padding-top:.15rem}
+.tl b{display:block;color:var(--text-heading);font-weight:600;margin-bottom:.15rem}
+.tl .d{font-size:.875rem;line-height:1.45rem;color:var(--text-body)}
+.tl li.now{background:color-mix(in srgb, var(--bg-toast) 12%, transparent);border-radius:var(--r-md);
+  padding:.875rem;border-top-color:transparent;margin:0 -.5rem}
+
+/* ── a11y ─────────────────────────────────────────────────────────── */
+:focus-visible{outline:2px solid var(--bg-toast);outline-offset:2px;border-radius:var(--r-sm)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:600px){
+  main{padding:0 .75rem 2.5rem;margin-top:1rem;gap:1rem}
+  .card{padding:1.15rem}
+  .hdr{padding:.5rem 1rem}
+  .tl li{grid-template-columns:1fr;gap:.15rem}
+}
+
+/* ── code không bị viết hoa lây trong các ngữ cảnh uppercase ──────────
+   .eyebrow/.alert .h/.badge/thead th đều uppercase; identifier lọt vào đó
+   sẽ thành WRITE_FILE thay vì write_file — sai tên, đọc ra nghĩa khác. */
+.eyebrow code, .alert .h code, .badge code, thead th code, .fig-hd code {
+  text-transform: none; letter-spacing: 0;
+}

@@ -1,0 +1,107 @@
+/* ── Nút phóng to trên thanh tiêu đề hình vẽ ──────────────────────────── */
+.fig-hd .r { margin-left: auto }
+.fig-zoom {
+  flex: none;
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-family: var(--sans); font-size: .6875rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-on-toast);
+  background: rgba(250, 244, 234, .14);
+  border: 1px solid rgba(250, 244, 234, .38);
+  border-radius: var(--r-sm);
+  padding: .2rem .5rem;
+  cursor: pointer;
+}
+.fig-zoom:hover { background: rgba(250, 244, 234, .26) }
+.fig-bd { cursor: zoom-in }
+
+/* ── Lớp phủ xem hình ─────────────────────────────────────────────────── */
+#zoomOverlay[hidden] { display: none }
+#zoomOverlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(40, 24, 12, .58);
+  display: flex; flex-direction: column;
+  padding: .75rem;
+  gap: .625rem;
+}
+.zoom-bar {
+  flex: none;
+  display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r-md);
+  padding: .5rem .75rem;
+  box-shadow: var(--shadow-sm);
+}
+.zoom-bar .name {
+  font-family: var(--mono); font-size: .75rem; font-weight: 600;
+  color: var(--text-heading);
+  margin-right: auto;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  min-width: 0;
+}
+.zoom-bar .pct {
+  font-family: var(--mono); font-size: .75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  min-width: 3.25rem; text-align: right;
+}
+.zoom-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .3rem;
+  min-width: 1.9rem; height: 1.9rem; padding: 0 .5rem;
+  font-family: var(--sans); font-size: .8125rem; font-weight: 700;
+  color: var(--text-heading);
+  background: var(--bg-inner);
+  border: 1px solid var(--border-divider);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+}
+.zoom-btn:hover { background: var(--bg-subtle) }
+.zoom-btn.close {
+  background: var(--bg-toast); color: var(--text-on-toast);
+  border-color: var(--bg-code-header);
+}
+.zoom-btn.close:hover { background: var(--bg-code-header) }
+
+.zoom-stage {
+  flex: 1 1 auto; min-height: 0;
+  position: relative; overflow: hidden;
+  background: var(--bg-inner);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r-md);
+  cursor: grab;
+  touch-action: none;
+}
+.zoom-stage.grabbing { cursor: grabbing }
+.zoom-layer {
+  position: absolute; top: 0; left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.zoom-layer svg { display: block; max-width: none }
+
+.zoom-hint {
+  flex: none; text-align: center;
+  font-size: .6875rem; color: #E8D9C2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zoom-layer { will-change: auto }
+}
+@media (max-width: 600px) {
+  .zoom-bar .name { display: none }
+  #zoomOverlay { padding: .5rem; gap: .5rem }
+}
+
+/* Toàn màn hình thật: nền hệ thống là đen, nên tự sơn lại bằng nền trang */
+#zoomOverlay:fullscreen,
+#zoomOverlay:-webkit-full-screen { background: var(--bg-page) }
+#zoomOverlay:fullscreen .zoom-hint,
+#zoomOverlay:-webkit-full-screen .zoom-hint { color: var(--text-muted) }
+
+.zoom-note {
+  position: absolute; inset: 0; margin: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .8125rem; color: var(--text-muted); text-align: center; padding: 1rem;
+}
+.zoom-note[hidden] { display: none }
