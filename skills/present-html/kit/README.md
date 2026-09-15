@@ -104,7 +104,7 @@ ic-search ic-layers ic-list ic-eye ic-net ic-expand ic-shrink ic-sun ic-moon`
 
 ## Kiểm màu
 
-`scripts` không có trong kit này — dùng `~/.claude/skills/dataviz/scripts/validate_palette.js`
+Validator nằm ngay trong kit — `node kit/validate_palette.mjs "#hex,…" --mode light --surface "#f8fafc" --pairs all`
 (contrast WCAG + CVD OKLab) trước khi đổi bất kỳ accent nào. Chi tiết lệnh ở `../references/design-rules.md`.
 
 ## Nguồn gốc
