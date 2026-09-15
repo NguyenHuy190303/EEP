@@ -1,0 +1,229 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   diagram.css — lớp trình bày kiểu infographic: poster header, panel grid,
+   node có icon, mũi tên có nhãn, và sơ đồ chạy theo bước.
+
+   Vì sao là HTML/CSS chứ không phải SVG: node tự co giãn theo chữ, nên chữ
+   KHÔNG BAO GIỜ tràn khung — lỗi tốn nhiều thời gian nhất khi vẽ SVG tay.
+   SVG vẫn dùng cho hình dạng graph thật (arc, nhánh chéo), xem SKILL.md.
+
+   Mọi màu đi qua var() + color-mix. Không hardcode hex. Không rgba() thô.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── bảng màu theo NGỮ NGHĨA (Semantic Color Rule) ───────────────────────
+   Đặt tên theo vai trò trong hệ thống, không theo màu, để một node đổi
+   theme vẫn giữ nguyên nghĩa. Thêm biến thể mới = thêm một nghĩa mới,
+   không phải thêm một sắc thái đẹp hơn. */
+.nd.fe,    .panel.fe    .panel-hd, .badge-dot.fe    { --cat: var(--blue) }      /* frontend / client */
+.nd.be,    .panel.be    .panel-hd, .badge-dot.be    { --cat: var(--green) }     /* backend / service */
+.nd.db,    .panel.db    .panel-hd, .badge-dot.db    { --cat: var(--violet) }    /* dữ liệu / store */
+.nd.infra, .panel.infra .panel-hd, .badge-dot.infra { --cat: var(--cyan) }      /* hạ tầng / mạng */
+.nd.sec,   .panel.sec   .panel-hd, .badge-dot.sec   { --cat: var(--red) }       /* bảo mật / chặn */
+.nd.warnc, .panel.warnc .panel-hd, .badge-dot.warnc { --cat: var(--yellow) }    /* rủi ro / chờ */
+.nd.model, .panel.model .panel-hd, .badge-dot.model { --cat: var(--magenta) }   /* model / suy luận */
+.nd.ext,   .panel.ext   .panel-hd, .badge-dot.ext   { --cat: var(--text-muted) }/* ngoài phạm vi */
+
+/* ── poster header ──────────────────────────────────────────────────────── */
+.poster {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 1.5rem; flex-wrap: wrap;
+  padding-left: .875rem; border-left: .3125rem solid var(--green);
+}
+.poster h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -.02em; margin: 0 }
+@media (max-width: 640px) { .poster h1 { font-size: 1.5rem } }
+/* chữ trắng trên khối màu đặc — dùng cho ĐÚNG cụm từ là trọng tâm, 1 lần/trang */
+.poster h1 .hl {
+  background: var(--blue); color: var(--bg-page);
+  padding: .0625em .3em; border-radius: var(--r-sm);
+  box-decoration-break: clone; -webkit-box-decoration-break: clone;
+}
+.poster h1 .hl.g { background: var(--green) }
+.poster h1 .hl.v { background: var(--violet) }
+.poster .sub { color: var(--text-muted); font-size: .9375rem; margin: .5rem 0 0 }
+.poster .brand {
+  display: inline-flex; align-items: center; gap: .375rem;
+  font-family: var(--mono); font-size: .75rem; color: var(--text-muted);
+  border: 1px solid var(--border-divider); border-radius: 999px;
+  padding: .25rem .625rem; white-space: nowrap;
+}
+
+/* ── panel grid — N ô, mỗi ô một thanh tiêu đề màu + sơ đồ con ─────────── */
+.panels { display: grid; grid-template-columns: 1fr; gap: 1rem }
+@media (min-width: 900px) { .panels { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+.panels.three { grid-template-columns: 1fr }
+@media (min-width: 1100px) { .panels.three { grid-template-columns: repeat(3, minmax(0, 1fr)) } }
+
+.panel {
+  --cat: var(--blue);
+  border: 1px solid color-mix(in srgb, var(--cat) 40%, transparent);
+  border-radius: var(--r-md); overflow: hidden;
+  background: var(--bg-inner); display: flex; flex-direction: column;
+}
+.panel-hd {
+  /* 2026-09-15: thanh nhạt (tint 16% của --cat) + chữ heading, viền dưới đậm — kiểu archify.
+     Thanh bão hoà không còn dùng được: với accent slate-600, chữ tối chỉ đạt 3.1:1 trên
+     violet/blue, chữ trắng chỉ 3.2:1 trên amber — không màu chữ nào qua 4.5:1 cho cả 8 category.
+     Tint giữ mã màu, chữ heading trên tint > 12:1 ở cả 2 theme. */
+  background: color-mix(in srgb, var(--cat) 16%, var(--bg-card)); color: var(--text-heading);
+  border-bottom: 2px solid var(--cat);
+  display: flex; align-items: center; gap: .5rem;
+  padding: .5rem .75rem; font-weight: 700; font-size: .9375rem;
+}
+.panel-hd .n {
+  flex: none; width: 1.375rem; height: 1.375rem; border-radius: 999px;
+  background: var(--bg-card); color: var(--text-heading); border: 2px solid var(--cat);
+  font-family: var(--mono); font-size: .75rem; font-weight: 700;
+  display: grid; place-items: center;
+}
+.panel-bd { padding: .875rem; flex: 1 }
+.panel-note {
+  margin: 0 .875rem .875rem; padding: .5rem .625rem;
+  background: color-mix(in srgb, var(--cat) 10%, transparent);
+  border-radius: var(--r-sm); font-size: .8125rem; color: var(--text-body);
+}
+
+/* ── node: hộp có icon, tự co theo chữ ─────────────────────────────────── */
+.nd {
+  --cat: var(--text-muted);
+  position: relative; display: flex; flex-direction: column; align-items: center;
+  gap: .25rem; text-align: center;
+  padding: .5rem .625rem; min-width: 5.5rem;
+  background: color-mix(in srgb, var(--cat) 9%, var(--bg-card));
+  border: 1.5px solid color-mix(in srgb, var(--cat) 55%, transparent);
+  border-radius: var(--r-md);
+  font-size: .8125rem; font-weight: 600; color: var(--text-heading);
+  line-height: 1.25;
+}
+.nd .i { width: 1.25rem; height: 1.25rem; color: var(--cat) }
+.nd .s { font-weight: 400; font-size: .6875rem; color: var(--text-muted); line-height: 1.2 }
+.nd.row { flex-direction: row; align-items: center; text-align: left; gap: .5rem }
+.nd.lg { padding: .75rem 1rem; font-size: .9375rem }
+.nd.lg .i { width: 1.75rem; height: 1.75rem }
+.nd.sm { padding: .3125rem .5rem; font-size: .75rem; min-width: 4rem }
+.nd.sm .i { width: 1rem; height: 1rem }
+/* dạng bầu = model / thứ suy luận; dạng vát = cổng quyết định */
+.nd.round { border-radius: 999px; padding-inline: 1.125rem }
+/* Cổng quyết định: viền gạch dày, KHÔNG dùng clip-path hình thoi — clip-path
+   cắt luôn cả viền, node mất khung. Nghĩa "đây là chỗ rẽ nhánh" do viền gạch
+   + icon ic-split mang, không cần hình học. */
+.nd.gate  { border-style: dashed; border-width: 2px }
+/* badge số thứ tự, cắm ở góc trên-trái như các infographic hay dùng */
+.nd .step, .grp > .step, .step-badge {
+  position: absolute; top: -.5rem; left: -.5rem;
+  width: 1.25rem; height: 1.25rem; border-radius: 999px;
+  background: var(--bg-toast); color: var(--text-on-toast);
+  font-family: var(--mono); font-size: .6875rem; font-weight: 700;
+  display: grid; place-items: center; z-index: 2;
+}
+
+/* ── nhóm có nhãn (kiểu "THE HARNESS") ─────────────────────────────────── */
+.grp {
+  position: relative; border: 1.5px dashed color-mix(in srgb, var(--text-muted) 50%, transparent);
+  border-radius: var(--r-md); padding: 1.5rem .875rem .875rem;
+  background: color-mix(in srgb, var(--blue) 4%, transparent);
+}
+.grp > .grp-tab {
+  position: absolute; top: -.6875rem; left: .75rem;
+  background: var(--bg-toast); color: var(--text-on-toast);
+  font-family: var(--mono); font-size: .6875rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: .1875rem .5rem; border-radius: var(--r-sm);
+}
+.grp.plain { background: none }
+
+/* ── flow: chuỗi node + mũi tên có nhãn ────────────────────────────────── */
+.flow { display: flex; flex-direction: column; align-items: center; gap: 0 }
+.flow.h { flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center;
+  /* Nhãn của .arw.r nằm tuyệt đối phía trên mũi tên nên KHÔNG chiếm chỗ trong
+     layout; không có gap là nhãn dài bị node kế bên đè. gap ở đây + min-width
+     bên dưới là hai lớp chặn cùng một lỗi. */
+  gap: 1.25rem }
+.arw.r:has(> .lbl) { min-width: 5rem }
+.flow.h > .nd { flex: 0 1 auto }
+.flow > .grp { width: fit-content; max-width: 100% }  /* nhóm hẹp bằng nội dung, không dàn trải */
+
+/* mũi tên là MỘT PHẦN TỬ tường minh giữa 2 node — không phải toạ độ tính tay,
+   nên không bao giờ lệch khi chữ trong node dài ra. */
+.arw {
+  position: relative; flex: none; align-self: center;
+  width: 1.5rem; height: 1.75rem;
+  display: grid; place-items: center;
+}
+.arw::before {                        /* thân */
+  content: ""; position: absolute; top: 0; bottom: .4375rem;
+  left: 50%; transform: translateX(-50%);
+  border-left: 1.5px solid var(--arw-c, var(--text-muted));
+}
+.arw::after {                         /* đầu */
+  content: ""; position: absolute; bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  border-left: .3125rem solid transparent; border-right: .3125rem solid transparent;
+  border-top: .4375rem solid var(--arw-c, var(--text-muted));
+}
+.arw > .lbl {
+  position: absolute; left: calc(100% + .25rem); top: 50%; transform: translateY(-50%);
+  font-size: .6875rem; color: var(--text-muted); white-space: nowrap;
+  font-family: var(--mono);
+}
+.arw.wide { height: 2.5rem }
+.arw.dashed::before { border-left-style: dashed }
+.arw.fb  { --arw-c: var(--orange) } .arw.fb > .lbl  { color: var(--orange) }
+.arw.ok  { --arw-c: var(--green) }  .arw.ok  > .lbl { color: var(--green) }
+.arw.no  { --arw-c: var(--red) }    .arw.no  > .lbl { color: var(--red) }
+/* nằm ngang: dùng trong .flow.h */
+.arw.r { width: 2.25rem; height: 1.5rem }
+.arw.r::before { inset: 50% .4375rem auto 0; bottom: auto; transform: translateY(-50%);
+  width: auto; right: .4375rem; left: 0; border-left: none;
+  border-top: 1.5px solid var(--arw-c, var(--text-muted)) }
+.arw.r::after { inset: 50% 0 auto auto; transform: translateY(-50%);
+  border-left: .4375rem solid var(--arw-c, var(--text-muted));
+  border-top: .3125rem solid transparent; border-bottom: .3125rem solid transparent;
+  border-right: none }
+.arw.r > .lbl { left: 50%; top: -.75rem; transform: translateX(-50%) }
+.arw.r.dashed::before { border-top-style: dashed }
+
+/* ── sơ đồ chạy theo bước ───────────────────────────────────────────────
+   MẶC ĐỊNH: mọi bước hiện đủ. JS mới hạ những bước chưa tới xuống mờ.
+   Nghĩa là ảnh chụp tĩnh, bản in, và trình đọc không JS đều thấy TRỌN
+   thông tin — motion chỉ dẫn nhịp, không giữ nghĩa. */
+.stepped [data-step] { transition: opacity .3s ease, filter .3s ease }
+.stepped [data-step].todo { opacity: .16 }
+.stepped [data-step].done { opacity: 1 }
+.stepped [data-step].now  { opacity: 1 }
+.stepped [data-step].now > .nd,
+.stepped .nd[data-step].now {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cat) 30%, transparent);
+}
+.stepped svg [data-step].now { filter: drop-shadow(0 0 3px color-mix(in srgb, var(--blue) 60%, transparent)) }
+@media (prefers-reduced-motion: reduce) {
+  .stepped [data-step].todo { opacity: 1 }     /* không nhá: hiện hết */
+}
+
+/* thanh điều khiển — build.py tự chèn khi thấy .stepped */
+.steps {
+  display: flex; align-items: center; gap: .625rem; flex-wrap: wrap;
+  padding: .5rem .75rem; margin-top: .75rem;
+  background: var(--bg-subtle); border: 1px solid var(--border-divider);
+  border-radius: var(--r-md);
+}
+.steps .cap {
+  font-family: var(--mono); font-size: .75rem; color: var(--text-heading);
+  font-weight: 600; margin-right: auto;
+}
+.steps .cap b { color: var(--blue) }
+.steps button {
+  display: grid; place-items: center; width: 1.75rem; height: 1.75rem;
+  background: var(--bg-card); color: var(--text-body);
+  border: 1px solid var(--border-divider); border-radius: var(--r-sm);
+  cursor: pointer; padding: 0;
+}
+.steps button:hover { border-color: var(--blue); color: var(--blue) }
+.steps button .i { width: .875rem; height: .875rem }
+.steps .dots { display: flex; gap: .25rem }
+.steps .dots i {
+  width: .5rem; height: .5rem; border-radius: 999px;
+  background: color-mix(in srgb, var(--text-muted) 35%, transparent);
+}
+.steps .dots i.on { background: var(--blue) }
+.steps .dots i.past { background: color-mix(in srgb, var(--blue) 45%, transparent) }
+/* khi xuất GIF/ảnh thì ẩn đi — Canonical Clean Rule */
+.shooting .steps, .shooting .fig-zoom, .shooting .theme-toggle { display: none !important }

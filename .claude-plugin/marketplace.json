@@ -1,0 +1,9 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "eep",
+  "description": "Easy Engineer Plugin — Huy's personal engineering skills, one copy for Claude Code and Codex.",
+  "owner": { "name": "Huy Nguyen", "email": "nguyenhuy190303@gmail.com" },
+  "plugins": [
+    { "name": "eep", "description": "Investigate, decide, research, review, present, document, ship GPU jobs — evidence-first.", "source": "./", "category": "productivity" }
+  ]
+}

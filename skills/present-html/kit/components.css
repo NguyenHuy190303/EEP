@@ -1,0 +1,133 @@
+/* ── Bổ sung cho preset "Cà phê sữa" — chỉ những gì preset chưa có ─────────
+   Không ghi đè token nào. Ba thành phần mới:
+   .fig  hình vẽ mermaid — thanh nâu mono + thân kem, soi theo .code sẵn có
+   .ba   trước/sau cạnh nhau, vì giữ được cả hai trạng thái trong tầm mắt
+         chính là mục đích của tài liệu này
+   .amp  dải khuếch đại dữ liệu 29KB → 921KB → 18MB                          */
+
+.fig {
+  border: 1px solid var(--border-card);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--bg-inner);
+}
+.fig-hd {
+  background: var(--bg-toast);
+  color: var(--text-on-toast);
+  font-family: var(--mono);
+  font-size: .75rem;
+  padding: .5rem .75rem;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap;
+  border-bottom: 1px solid var(--bg-code-header);
+}
+.fig-hd .t { display: flex; align-items: center; gap: .375rem; font-weight: 600 }
+.fig-hd .r { color: color-mix(in srgb, var(--text-on-toast) 78%, var(--bg-toast)) }
+.fig-bd { padding: 1rem; overflow-x: auto }
+.fig-bd pre.mermaid {
+  margin: 0; background: none; border: 0; padding: 0;
+  min-width: min-content; font-family: var(--mono);
+}
+/* Sơ đồ viết tay (khuyến nghị thay mermaid — xem html-style.md): svg trực tiếp
+   trong .fig-bd, dùng currentColor cho stroke/text/marker để tự đổi màu theo
+   theme, không cần re-render gì khi bấm nút sáng/tối. */
+.fig-bd svg { display: block; max-width: 100%; height: auto; color: var(--text-body) }
+.fig-cap {
+  padding: 0 .875rem .75rem;
+  font-size: .75rem; line-height: 1.15rem; color: var(--text-muted);
+}
+
+/* nét "chảy" biểu diễn dữ liệu di chuyển trên 1 cạnh của sơ đồ viết tay —
+   thuần CSS, tự tắt khi prefers-reduced-motion (rule chung ở tokens.css),
+   không phải SMIL/JS nên không phá quy tắc "svg tự chứa" của skill diagramming */
+.flow-edge { stroke-dasharray: 6 6; animation: flow-dash 1.1s linear infinite }
+@keyframes flow-dash { to { stroke-dashoffset: -24 } }
+/* nốt đang "nóng" trong sơ đồ — nhấp nháy nhẹ, dùng RẤT tiết chế (1 nốt/hình) */
+.flow-pulse { animation: flow-pulse 1.6s ease-in-out infinite }
+@keyframes flow-pulse { 50% { opacity: .35 } }
+
+/* trước / sau — một cột trên máy nhỏ, hai cột khi đủ chỗ */
+.ba { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem }
+@media (min-width: 900px) { .ba { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+.ba > div {
+  background: var(--bg-inner);
+  border: 1px solid var(--border-card);
+  border-radius: var(--r-md);
+  padding: 1rem;
+  border-top-width: 3px; border-top-style: solid;
+}
+.ba .before { border-top-color: var(--red) }
+.ba .after  { border-top-color: var(--green) }
+.ba .lbl {
+  font-size: .6875rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; margin-bottom: .5rem;
+  display: flex; align-items: center; gap: .375rem;
+}
+.ba .before .lbl { color: var(--red) }
+.ba .after  .lbl { color: var(--green) }
+.ba p, .ba ul { font-size: .875rem; line-height: 1.45rem }
+.ba p:last-child, .ba ul:last-child { margin-bottom: 0 }
+
+/* dải khuếch đại dữ liệu */
+.amp {
+  display: flex; align-items: stretch; gap: .5rem; flex-wrap: wrap;
+  font-family: var(--mono);
+}
+.amp .n {
+  background: var(--bg-inner); border: 1px solid var(--border-card);
+  border-radius: var(--r-sm); padding: .625rem .875rem; text-align: center;
+  font-size: .6875rem; color: var(--text-muted); flex: 1 1 7rem;
+}
+.amp .n b {
+  display: block; font-size: 1.25rem; line-height: 1.6rem;
+  font-variant-numeric: tabular-nums; color: var(--text-heading); margin-bottom: .1rem;
+}
+.amp .n.hot { background: var(--red); border-color: var(--red); color: #F3D8D3 }
+.amp .n.hot b { color: #FFF }
+.amp .ar {
+  align-self: center; color: var(--text-subtle); font-size: 1rem;
+  flex: 0 0 auto; padding: 0 .1rem;
+}
+
+/* danh sách vấn đề mở (P-00xx) — mỗi mục gấp lại, mở ra khi cần đọc thân bài */
+.prob-list { display: flex; flex-direction: column; gap: .5rem }
+.prob-item {
+  border: 1px solid var(--border-card); border-radius: var(--r-md);
+  background: var(--bg-inner); padding: .75rem 1rem;
+}
+.prob-item summary {
+  cursor: pointer; display: flex; align-items: baseline; gap: .5rem; flex-wrap: wrap;
+  font-weight: 600; color: var(--text-heading); list-style: none;
+}
+.prob-item summary::-webkit-details-marker { display: none }
+.prob-item summary::before { content: "▸"; color: var(--text-muted); font-size: .75em }
+.prob-item[open] summary::before { content: "▾" }
+.prob-item .body {
+  margin-top: .75rem; padding-top: .75rem; border-top: 1px solid var(--border-card);
+}
+
+/* số nổi bật trong dòng văn — dùng rất tiết chế */
+.big {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-weight: 700; color: var(--text-heading);
+}
+.big.hot { color: var(--red) }
+.big.ok  { color: var(--green) }
+
+/* ── chữ trong SVG vẽ tay: LUÔN theo font stack của kit ─────────────────
+   SVG không kế thừa font-family qua thuộc tính trình bày một cách đáng tin
+   khi tài liệu đổi theme hoặc khi font nhúng vắng mặt. Ép bằng CSS ở đây để
+   không ai phải viết font-family vào SVG nữa (build.py chặn nếu có viết).
+   CSS thắng thuộc tính trình bày, nên font-weight/font-size vẫn khai được
+   trong SVG như bình thường — chỉ font-family là do kit quyết. */
+.fig-bd svg { font-family: var(--sans) }
+.fig-bd svg text, .fig-bd svg tspan {
+  font-family: var(--sans);
+  /* <g stroke="currentColor" stroke-width="1.5"> dùng để vẽ khung sẽ chảy
+     xuống cả <text>: mỗi glyph bị viền 1.5px, chữ dày bệt, dấu tiếng Việt
+     dính vào thân chữ. Đây mới là thủ phạm thật của "font bị điên" trong
+     sơ đồ, không phải font-family. Ép ở đây để không ai phải nhớ gỡ tay. */
+  stroke: none;
+  paint-order: fill;
+}
+.fig-bd svg .m, .fig-bd svg .m tspan { font-family: var(--mono) }

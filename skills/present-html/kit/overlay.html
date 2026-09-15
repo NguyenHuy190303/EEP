@@ -1,0 +1,18 @@
+
+<div id="zoomOverlay" hidden role="dialog" aria-modal="true" aria-label="Sơ đồ toàn màn hình">
+  <div class="zoom-bar">
+    <span class="name" id="zoomName">Sơ đồ</span>
+    <span class="pct" id="zoomPct">100%</span>
+    <button class="zoom-btn" type="button" id="zoomOut" aria-label="Thu nhỏ">−</button>
+    <button class="zoom-btn" type="button" id="zoomIn" aria-label="Phóng to">+</button>
+    <button class="zoom-btn" type="button" id="zoomFit">Vừa khung</button>
+    <button class="zoom-btn close" type="button" id="zoomClose">
+      <svg class="i"><use href="#ic-shrink"/></svg> Đóng
+    </button>
+  </div>
+  <div class="zoom-stage" id="zoomStage">
+    <p class="zoom-note" id="zoomNote" hidden>Đang chờ sơ đồ vẽ xong…</p>
+    <div class="zoom-layer" id="zoomLayer"></div>
+  </div>
+  <p class="zoom-hint">Cuộn để phóng to tại vị trí con trỏ · kéo để di chuyển · <strong>Esc</strong> đóng · <strong>+ − 0</strong> bằng bàn phím</p>
+</div>
