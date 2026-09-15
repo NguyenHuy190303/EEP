@@ -77,19 +77,34 @@ converter, an eval harness, a benchmark, a UI component. The question is not "is
    | Papers with Code / arXiv | web | the method, and its reference code |
    | Kaggle / notebooks | web | working end-to-end examples on similar data |
 
-3. **Qualify each candidate** — license (MIT / Apache-2.0 / BSD: use; GPL / AGPL / CC-NC / gated:
-   stop and ask), last commit or update ≤ 12 months, stars or downloads as a *hint* only, runs on
-   the stack in play (Python version, CUDA, framework), and whether the README's claim survived
-   opening the code.
-4. **Output a three-column verdict:**
+3. **Fit before quality.** Write the need as 3–6 concrete requirements *before* opening a
+   candidate (inputs, outputs, scale, language, runtime, the hard constraint). A candidate missing
+   one hard requirement is **reference only**, however famous — auditing quality first is how a
+   100k-star repo gets adopted for a problem it does not solve.
+4. **Audit what survives fit.** Stars are a popularity number taken once, usually after one HN
+   post; never rank by them. Run `bash scripts/probe.sh <owner>/<repo>` and read it against
+   `references/prior-art-audit.md`, which carries the seven signals that actually separate a
+   maintained project from a weekend demo or an enterprise funnel — bus factor, whether recent
+   issues get answered, real tests and CI, release discipline, commit texture, the code inside two
+   core files, and what the README avoids saying. Licence check includes the open-core trap: BSL /
+   SSPL / Elastic / "free under $X" are not open, and the feature you need sitting under
+   *Enterprise* means the OSS edition is a demo of it. MIT / Apache-2.0 / BSD: use. GPL / AGPL /
+   CC-NC / gated: stop and ask.
+5. **Output a four-column verdict:**
 
-   | Có sẵn — dùng luôn | Gần đúng — fork / adapt (what must change) | Phải tự làm |
-   |---|---|---|
+   | Dùng luôn | Fork / adapt (the one delta) | Tham khảo thôi | Tự làm |
+   |---|---|---|---|
 
-   Code is written only for the third column. The second column names the exact delta, so the
-   fork stays small and the upstream stays mergeable.
-5. **Gaps as usual**: which channels were swept, which candidate could not be verified, what was
+   Code is written only for the last column. "Tham khảo thôi" is what keeps a famous but unfit or
+   undependable repo from becoming a dependency — read it, cite it, do not import it. Choosing
+   **tự làm** is a valid result, not a failed search: say so when the dependency would be a thin
+   wrapper you could write in ~200 lines you understand, when the integration surface is bigger
+   than the problem, when fitting it means forking it, or when it drags in a framework for one
+   function. The comparison is `write + maintain mine` vs `integrate + track upstream + debug
+   through someone else's layer + the day it is abandoned`.
+6. **Gaps as usual**: which channels were swept, which candidate could not be verified, what was
    not searched and why.
 
-Depth: the default is the full sweep with tiers — a wrong "nothing exists" costs days of building.
-Trim to one channel only when Huy says the thing is throwaway.
+Depth: the default is the full sweep with tiers and the audit — a wrong "nothing exists" costs days
+of building, and a wrong "this one is fine" costs longer, because it is discovered after the
+integration. Trim to one channel only when Huy says the thing is throwaway.
