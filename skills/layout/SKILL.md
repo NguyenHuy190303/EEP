@@ -44,6 +44,23 @@ without asking.
    script that does what the first one does with one flag changed. A new file earns its place by
    having a role the existing ones cannot carry.
 
+## Per-directory rules — decided with Huy 2026-09-16
+
+| Directory | Rule |
+|---|---|
+| `tests/` | Mirrors the package: `tests/unit/` repeats the tree of `app/` or `src/<pkg>/` (`app/services/x.py` → `tests/unit/services/test_x.py`); `tests/integration/` needs a real DB or service; `tests/e2e/` drives the deployed thing. Never tests beside the module. |
+| `docs/` | The ops ledger when the repo has `./ops`: `docs/decisions/` (D-00xx), `docs/problems/` (P-00xx). Otherwise `docs/adr/` for decisions. `docs/runbooks/` for how-to-operate. Every record file starts with its date. No loose `notes.md`. |
+| `scripts/` | Plural. Flat until more than 3 files serve one job, then `scripts/<job>/` (`scripts/ops/`, `scripts/audio-bench/`). First line of every script says what it is for. Not a place for library code — that goes in the package. |
+| `outputs/` | What a **pipeline run** produces (crawl, convert, batch inference): `outputs/<YYYY-MM-DD>_<slug>/` holding the results **and** `run.log` together — a log separated from its output is a log of nothing. Gitignored; the README of the run says where the durable copy went. `experiments/` is for runs that test a hypothesis; `outputs/` for runs that just produce. |
+| `experiments/` | Rule 3 above. |
+| `notebooks/` | `<YYYY-MM-DD>_<slug>.ipynb`. Exploration only: nothing imports from a notebook; code that survives moves into the package. |
+| `configs/` | Exists only once ≥2 runs share a config; `configs/<slug>.yaml`. Each run still copies its **resolved** config into its own dir, so a run reproduces without `configs/` history. |
+| `data/` | Research repos: `raw/` (as received, never edited, gitignored) → `interim/` (rebuildable by a script) → `processed/` (model-ready), plus `DATA_SOURCES.md`. Service repos: only small curated fixtures or eval sets, committed; anything larger is a pointer. |
+| `scratchpad/` | Allowed for quick trials beside real code: `scratchpad/<TICKET>-<slug>/`. **Gitignored.** Emptied when the ticket closes; anything worth keeping is promoted into the package, `experiments/`, or `docs/`. |
+| `models/` | Local weights, gitignored; `README.md` holds the HF (`trivitaai`) or cluster pointer. |
+| `_archive/` | Tidy mode parks here (`_archive/<YYYY-MM-DD>/`) instead of deleting. Huy deletes. |
+| `logs/` | Does not exist. A log lives with the run that wrote it (`experiments/…/run.log`, `outputs/…/run.log`); a service's logs go to the platform (k8s / Sentry / Grafana), not into the repo. |
+
 ## Suggested skeletons — offer, never impose
 
 When starting a new repo, or when asked "how should this be organised", pick the closest skeleton

@@ -8,12 +8,19 @@ when the need exists — do not pre-create them.
 
 ```
 app/                 the package: routers/, services/, models/, core/ as the code grows
-tests/               mirrors app/ ; unit next to the module it tests, e2e/ separate
+tests/
+  unit/              mirrors app/ (app/services/x.py -> tests/unit/services/test_x.py)
+  integration/       needs a real DB / service
+  e2e/               drives the deployed thing
 alembic/             migrations (only if there is a DB)
 helm/                chart for the k8s release
-docs/                ADRs, runbooks, API notes — one file per topic, dated when it is a record
-scripts/             one-off and ops scripts; each has a 1-line header saying what it is for
-[eval_cases/]        curated eval set that ships with the service
+docs/
+  decisions/         D-00xx via ./ops decide      (or docs/adr/ when the repo has no ./ops)
+  problems/          P-00xx via ./ops problem
+  runbooks/          how to operate it; every record file starts with its date
+scripts/             ops + one-off; scripts/<job>/ once >3 files serve one job; 1-line header each
+[eval_cases/]        curated eval set that ships with the service (small, committed)
+[scratchpad/]        <TICKET>-<slug>/ quick trials; gitignored; emptied when the ticket closes
 Makefile             test / lint / format / run — the intended entry point
 pyproject.toml  uv.lock  Dockerfile  compose.yaml  README.md  .gitignore
 ```
@@ -27,10 +34,14 @@ data/
   interim/           cleaned / converted, reproducible from raw by a script
   processed/         model-ready
 notebooks/           <YYYY-MM-DD>_<slug>.ipynb ; exploration only, no code other files import
-experiments/         <YYYY-MM-DD>_<slug>/ : config.yaml run.log metrics.json README.md
-scripts/             CLI entry points: prepare_data.py train.py evaluate.py
+experiments/         <YYYY-MM-DD>_<slug>/ : config.yaml run.log metrics.json README.md  (hypothesis runs)
+outputs/             <YYYY-MM-DD>_<slug>/ : results + run.log together, gitignored     (production runs)
+scripts/             CLI entry points: prepare_data.py train.py evaluate.py ; scripts/<job>/ when >3
+tests/               unit/ mirrors src/<pkg>/ ; integration/ for anything touching real data or GPU
 reports/             figures and HTML for humans; regenerated from experiments/, not hand-edited
+[configs/]           <slug>.yaml, only once >=2 runs share one; each run still copies its resolved config
 [models/]            local weights, gitignored; README.md holds the HF / cluster pointer
+[scratchpad/]        <TICKET>-<slug>/ quick trials; gitignored
 pyproject.toml  uv.lock  Makefile  README.md  DATA_SOURCES.md  .gitignore
 ```
 
@@ -64,6 +75,9 @@ README.md
 |---|---|---|
 | Dated artifact | `<YYYY-MM-DD>_<slug>_<what>.<ext>` | `2026-09-16_asr-bench_wer.json` |
 | Experiment dir | `experiments/<YYYY-MM-DD>_<slug>/` | `experiments/2026-09-16_LP-185-identity-eval/` |
+| Pipeline output dir | `outputs/<YYYY-MM-DD>_<slug>/` (+ `run.log` inside) | `outputs/2026-09-16_crawl-shorts/` |
+| Scratch dir | `scratchpad/<TICKET>-<slug>/` (gitignored) | `scratchpad/LP-57-voice-flag-off/` |
+| Decision / problem record | `docs/decisions/D-00xx…` · `docs/problems/P-00xx…` via `./ops` | `docs/decisions/D-0036-…` |
 | Notebook | `notebooks/<YYYY-MM-DD>_<slug>.ipynb` | `notebooks/2026-09-16_diarization-errors.ipynb` |
 | Checkpoint | `<model>_<data>_<step-or-epoch>` | `whisper-large-v3_vi-med-12k_step-8000` |
 | Branch | `<type>/<TICKET>-<slug>` | `feat/LP-185-identity-across-pods` |
