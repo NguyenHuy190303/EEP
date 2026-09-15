@@ -14,6 +14,7 @@ Third-party skills (archify, the Hugging Face marketplace ones) stay outside —
 | `sentry-cli` | inspecting Sentry issues/events/traces via the CLI |
 | `sky-job` | SkyPilot GPU job lifecycle |
 | `vietnamese-writing` | before any Vietnamese prose |
+| `cleanup` | port in use, forgotten dev server / tunnel, disk filling, Docker or OrbStack junk, stray tmux / nohup — reports and tiers safe · ask · never, deletes nothing unasked; local machine only |
 | `toolchain` | installing / adding / upgrading a dependency, making a venv or node_modules, writing a Dockerfile or CI install step — uv for Python, the repo's lockfile for JS, container pinned by digest |
 | `layout` | creating dirs / files / experiments / branches, naming anything, tidying a folder — root stays clean, dates sort, `type/TICKET-slug`; skeletons per repo type in `references/` |
 
