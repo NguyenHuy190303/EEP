@@ -15,8 +15,9 @@ tests/
 alembic/             migrations (only if there is a DB)
 helm/                chart for the k8s release
 docs/
-  spec/              living pages, one per subsystem, undated: architecture.html speech.html index.html
-    design-system/   product UI: tokens.md components.md patterns.md + tokens.css the frontend imports
+  spec/              living, undated, numbered in READING order: 00_overview.md 01_architecture.html
+    10_design-system/  a multi-page spec is a numbered dir; numbering restarts: 00_tokens.md
+                       01_components.md 02_patterns.md + tokens.css the frontend imports
   decisions/         D-00xx via ./ops decide      (or docs/adr/ when the repo has no ./ops)
   problems/          P-00xx via ./ops problem
   runbooks/          how to operate it
@@ -82,7 +83,7 @@ README.md
 | Pipeline output dir | `outputs/<YYYY-MM-DD>_<slug>/` (+ `run.log` inside) | `outputs/2026-09-16_crawl-shorts/` |
 | Scratch dir | `scratchpad/<TICKET>-<slug>/` (gitignored) | `scratchpad/LP-57-voice-flag-off/` |
 | Decision / problem record | `docs/decisions/D-00xx…` · `docs/problems/P-00xx…` via `./ops` | `docs/decisions/D-0036-…` |
-| Spec page | `docs/spec/<subsystem>.html` (undated, overwritten) · `docs/spec/design-system/{tokens,components,patterns}.md` | `docs/spec/speech.html` |
+| Spec page | `docs/spec/<NN>_<slug>.md\|.html` — `NN` from `00` in reading order, step by 10 once sections exist; multi-page spec = numbered dir | `docs/spec/02_speech.html` · `docs/spec/10_design-system/00_tokens.md` |
 | Report for humans | `docs/reports/<YYYY-MM-DD>_<slug>.<ext>` (write-once) | `docs/reports/2026-09-03_standup.txt` |
 | Notebook | `notebooks/<YYYY-MM-DD>_<slug>.ipynb` | `notebooks/2026-09-16_diarization-errors.ipynb` |
 | Checkpoint | `<model>_<data>_<step-or-epoch>` | `whisper-large-v3_vi-med-12k_step-8000` |
