@@ -45,6 +45,34 @@ claude plugin eval . --runs 1       # behaviour evals (spends tokens; 9 cases, w
 
 Evals live in `evals/<skill>-<n>/` in the native `claude plugin eval` format: `prompt.md` + `graders/criteria.md` (llm rubric) + `graders/skill-fired.md` (was the skill actually invoked).
 
+## Recommended companions
+
+EEP only covers Huy's own skills. These are third-party plugins/skills used alongside it day to day — install separately, they're not bundled here.
+
+Claude Code marketplace plugins (`claude plugin install <name>@<marketplace>`):
+
+| Plugin | Marketplace | Use when |
+|---|---|---|
+| `ponytail` | `ponytail` | forces the laziest correct solution on every coding task — the reflex that keeps EEP's own skills from over-building |
+| `code-review` | `claude-plugins-official` | review a diff/PR/branch for correctness bugs at a chosen effort level |
+| `differential-review` | `trailofbits` | security-focused diff review: blast radius by caller count, git-blame context, re-introduced-bug detection |
+| `sharp-edges` | `trailofbits` | flag footgun APIs/configs — dangerous defaults, error-prone interfaces |
+| `spec-to-code-compliance` | `trailofbits` | check code against a written spec/whitepaper requirement by requirement |
+| `supply-chain-risk-auditor` | `trailofbits` | dependency-tree risk: advisories, abandoned upstreams, install-time scripts |
+| `property-based-testing` | `trailofbits` | write/review Hypothesis-style tests over a whole input domain, not hand-picked examples |
+| `second-opinion` | `trailofbits` | independent review of uncommitted changes via Codex or Antigravity |
+| `langfuse` | `claude-plugins-official` | LLM tracing/eval/dataset work when the project uses Langfuse |
+| `claude-md-management` | `claude-plugins-official` | audit/update CLAUDE.md files against the project templates |
+| `skill-creator` | `claude-plugins-official` | scaffold, edit, or eval a new skill from scratch |
+| `context7` | `claude-plugins-official` | current library/framework docs instead of model memory |
+
+Outside the marketplace system, installed per their own tooling:
+
+| Skill | Source | Use when |
+|---|---|---|
+| `archify` | `npx skills` (canonical copy in `~/.agents/skills`) | architecture/workflow/sequence/state diagrams as standalone HTML+SVG, or converting pasted Mermaid |
+| `hf-cli`, `hf-mem`, `huggingface-*` bundle | `hf skills add` (Hugging Face marketplace) | HF Hub CLI, model memory-footprint estimation, dataset viewer, local GGUF serving, HF Jobs training |
+
 ## Layout
 
 ```
