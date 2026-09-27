@@ -1,6 +1,6 @@
 # EEP — Easy Engineer Plugin
 
-Huy's own agent skills, one copy, loaded by Claude Code and Codex as the plugin `eep`.
+One engineer's own agent skills, one copy, loaded by Claude Code and Codex as the plugin `eep`.
 Third-party skills (archify, the Hugging Face marketplace ones) stay outside — they have their own installers.
 
 | Skill | Use when |
@@ -47,7 +47,7 @@ Evals live in `evals/<skill>-<n>/` in the native `claude plugin eval` format: `p
 
 ## Recommended companions
 
-EEP only covers Huy's own skills. These are third-party plugins/skills used alongside it day to day — install separately, they're not bundled here.
+EEP only covers this author's own skills. These are third-party plugins/skills used alongside it day to day — install separately, they're not bundled here.
 
 Claude Code marketplace plugins (`claude plugin install <name>@<marketplace>`):
 

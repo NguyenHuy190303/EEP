@@ -32,8 +32,9 @@ error; paste it.
 the root cause is the most common way an investigation ends early and the bug comes back.
 
 **Close with what is open.** What is now established, what is still UNCHECKED, and specifically what
-observation would close each open item. A green local test does not close a claim about a running
-system (user CLAUDE.md §4b).
+observation would close each open item. A green local test suite proves the code does not
+contradict itself; it does not prove a claim about the running system in production — that needs
+an observation from that system.
 
 **Do not fix while investigating** unless the fix is one line and obviously correct, or you were
 asked to. Report first. A fix mid-investigation destroys the evidence for whether it was the cause.

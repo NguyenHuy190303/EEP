@@ -1,11 +1,11 @@
 # html-kit — 2 theme: Slate Light / Dracula
 
-Style mặc định cho mọi trang HTML làm cho Huy. Kit này thuộc skill `present-html` —
+Default style for every HTML page built with this skill. Kit này thuộc skill `present-html` —
 quy trình và luật nằm ở `../SKILL.md`, lý do và catalogue lỗi ở `../references/design-rules.md`.
 File này chỉ là tham chiếu component + token.
 
 ```bash
-python3 ~/Projects/EEP/skills/present-html/kit/build.py body.html out.html --title "Tên Trang" \
+python3 ${CLAUDE_PLUGIN_ROOT}/skills/present-html/kit/build.py body.html out.html --title "Tên Trang" \
   --shot /tmp/shot.png --shot-size 1500x3000   # rồi MỞ ẢNH RA XEM
 ```
 
@@ -109,7 +109,7 @@ Validator nằm ngay trong kit — `node kit/validate_palette.mjs "#hex,…" --m
 
 ## Nguồn gốc
 
-Preset gốc "Cà phê sữa" do Huy chốt, dùng lần đầu ở báo cáo LP-167 (17/08/2026) — 1 theme cố định.
+Original "Cà phê sữa" preset, first used in an early report (2026-08-17) — one fixed theme.
 **24/08/2026: đổi hẳn sang 2 theme** (Solarized Light / Dracula) + nút đổi tay + component sơ đồ vẽ
 tay thay mermaid cho file tĩnh trong repo — lý do đầy đủ ở `../references/design-rules.md`. Bảng màu 2 theme tra từ
 nguồn chính thức (draculatheme.com/spec, ethanschoonover.com/solarized), không tự chỉnh lệch.
@@ -137,6 +137,6 @@ Xuất GIF/MP4 cho feed:
 python3 gif.py trang.html --figure "#id-so-do" --steps 6 --out ra.gif --size 1000x0
 ```
 
-## Giao cho Huy
+## Delivering to the user
 
-Không đưa `file://` — anh ấy nối vào bằng VS Code Remote SSH nên đường dẫn file vô nghĩa với máy anh. Copy trang vào `~/reports/<việc>/` rồi đưa link `http://REDACTED-TAILNET-IP:8777/<việc>/trang.html`. Chi tiết ở `../SKILL.md` mục "Giao kết quả".
+Do not hand over `file://` if the user connects remotely — see `../SKILL.md`, "Deliver by HTTP link", for the actual rule.

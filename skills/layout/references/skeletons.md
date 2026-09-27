@@ -4,7 +4,7 @@ Offered when creating a repo or when asked. Each is the widely used shape for th
 project, trimmed to what this workspace actually uses. Directories in `[brackets]` are added only
 when the need exists — do not pre-create them.
 
-## Service (FastAPI / worker) — what REDACTED-REPO-C already does
+## Service (FastAPI / worker) — a service repo shape that already works well
 
 ```
 app/                 the package: routers/, services/, models/, core/ as the code grows
@@ -51,10 +51,11 @@ pyproject.toml  uv.lock  Makefile  README.md  DATA_SOURCES.md  .gitignore
 ```
 
 `DATA_SOURCES.md` lists every external source with URL, license, date fetched, and the script
-that fetches it. Clinical audio and transcripts never leave `REDACTED-HF-ORG` / the cluster (user
-CLAUDE.md autoMode environment) — the README says where they are, it does not contain them.
+that fetches it. Regulated or sensitive source data (patient records, proprietary corpora, anything
+under a data-processing agreement) never leaves the org's own Hub org or cluster — the README says
+where it is, it does not contain it.
 
-## Infra (Helm, ArgoCD, k8s) — what REDACTED-REPO-D already does
+## Infra (Helm, ArgoCD, k8s) — an infra repo shape that already works well
 
 ```
 helm/<chart>/        one chart per deployable
@@ -79,14 +80,14 @@ README.md
 | Thing | Pattern | Example |
 |---|---|---|
 | Dated artifact | `<YYYY-MM-DD>_<slug>_<what>.<ext>` | `2026-09-16_asr-bench_wer.json` |
-| Experiment dir | `experiments/<YYYY-MM-DD>_<slug>/` | `experiments/2026-09-16_LP-185-identity-eval/` |
+| Experiment dir | `experiments/<YYYY-MM-DD>_<slug>/` | `experiments/2026-09-16_TICKET-123-identity-eval/` |
 | Pipeline output dir | `outputs/<YYYY-MM-DD>_<slug>/` (+ `run.log` inside) | `outputs/2026-09-16_crawl-shorts/` |
-| Scratch dir | `scratchpad/<TICKET>-<slug>/` (gitignored) | `scratchpad/LP-57-voice-flag-off/` |
+| Scratch dir | `scratchpad/<TICKET>-<slug>/` (gitignored) | `scratchpad/TICKET-45-voice-flag-off/` |
 | Decision / problem record | `docs/decisions/D-00xx…` · `docs/problems/P-00xx…` via `./ops` | `docs/decisions/D-0036-…` |
 | Spec page | `docs/spec/<NN>_<slug>.md\|.html` — `NN` from `00` in reading order, step by 10 once sections exist; multi-page spec = numbered dir | `docs/spec/02_speech.html` · `docs/spec/10_design-system/00_tokens.md` |
 | Report for humans | `docs/reports/<YYYY-MM-DD>_<slug>.<ext>` (write-once) | `docs/reports/2026-09-03_standup.txt` |
 | Notebook | `notebooks/<YYYY-MM-DD>_<slug>.ipynb` | `notebooks/2026-09-16_diarization-errors.ipynb` |
 | Checkpoint | `<model>_<data>_<step-or-epoch>` | `whisper-large-v3_vi-med-12k_step-8000` |
-| Branch | `<type>/<TICKET>-<slug>` | `feat/LP-185-identity-across-pods` |
+| Branch | `<type>/<TICKET>-<slug>` | `feat/TICKET-123-identity-across-pods` |
 | Commit | `type(scope): message` | `fix(proctor): keep identity across pod restarts` |
 | Script | verb-first, one purpose | `scripts/prepare_data.py`, `scripts/deploy-watch.sh` |

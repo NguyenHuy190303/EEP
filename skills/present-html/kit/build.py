@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Ghép một fragment HTML thành trang publish được, theo bộ "Cà phê sữa".
 
-    python3 ~/Projects/EEP/skills/present-html/kit/build.py body.html out.html --title "Tên Trang"
+    python3 ${CLAUDE_PLUGIN_ROOT}/skills/present-html/kit/build.py body.html out.html --title "Tên Trang"
 
 Fragment đầu vào chỉ cần phần nội dung: <header class="hdr"> + <main> với các
 <section class="card">. Script tự lo phần còn lại:
@@ -232,7 +232,7 @@ def shoot(html: Path, png: Path, size: str, theme: str) -> str | None:
 
     Lý do tồn tại: extension Chrome từ chối URL file://, nên cách duy nhất để
     TỰ soi lại trang vừa build là headless. Không có bước này thì lỗi hiển thị
-    (font rơi về Courier, chữ tràn khung, dấu tiếng Việt vỡ) chỉ lộ ra khi Huy
+    (font rơi về Courier, chữ tràn khung, dấu tiếng Việt vỡ) chỉ lộ ra khi người dùng
     mở file — tức là sau khi đã giao.
     """
     import shutil

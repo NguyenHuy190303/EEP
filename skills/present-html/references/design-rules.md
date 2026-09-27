@@ -8,7 +8,7 @@ Operational steps are in `../SKILL.md`; component syntax is in `../kit/README.md
 - **2026-08-17** — first preset ("Cà phê sữa"), one fixed light theme, used on the LP-167 report.
 - **2026-09-15** — light theme swapped to **Slate Light** (Tailwind slate grounds, 600-step accents = archify's stroke set) because Solarized beige read as dull beside archify pages; dark stays Dracula. `.panel-hd` moved from saturated bar to 16% tint + heading text + 2px accent rule, since no single text colour clears 4.5:1 on all eight 600-step accents.
 - **2026-08-24** — retired that for **two committed themes**, Solarized Light (default) and Dracula,
-  switched by a button in the header independent of the OS. Reason: Huy reads these across
+  switched by a button in the header independent of the OS. Reason: the user reads these across
   different lighting, and needs to switch on the spot rather than wait on an OS setting. Palettes
   taken from the official sources (ethanschoonover.com/solarized, draculatheme.com/spec), not
   hand-adjusted.
@@ -62,7 +62,7 @@ must carry the same information. `prefers-reduced-motion` is already handled in 
 Each of these shipped or nearly shipped. The kit now blocks them; the entry stays so the reasoning
 survives.
 
-**Diagram text rendered as a bold smear (2026-09-03, delivered to Huy, he had to report it).**
+**Diagram text rendered as a bold smear (2026-09-03, delivered to the user, who had to report it).**
 Two independent causes stacked. First, the SVG was drawn as `<g fill="none" stroke="currentColor"
 stroke-width="1.5">` and `<text>` inherits `stroke` — every glyph got a 1.5px outline, and Vietnamese
 tone marks fused into the letter bodies. Second, the page was built with `--no-fonts` while the SVG
@@ -112,7 +112,7 @@ regex `<svg\b[^>]*>(.*)</svg>` với DOTALL. Cũng nhân đây sửa một lỗi
 giờ soi trên `bare`.
 
 **Giao trang bằng `file://` cho người ngồi ở đầu kia SSH (2026-09-03).** Năm trang mẫu giao xong,
-Huy click không mở được: anh ấy nối vào bằng VS Code Remote SSH, `file://` trỏ vào ổ đĩa máy này chứ
+The user clicks and it does not open: they connect over VS Code Remote SSH, `file://` trỏ vào ổ đĩa máy này chứ
 không phải máy anh, và VS Code mở nó bằng editor. Sửa: mọi trang giao kèm URL HTTP qua tailnet
 Tailscale — xem `SKILL.md` mục "Giao kết quả". Bài học rộng hơn: **đường dẫn chỉ có nghĩa trên máy
 sinh ra nó**; thứ giao đi phải là địa chỉ mà người nhận mở được từ chỗ họ đang ngồi.
@@ -120,7 +120,7 @@ sinh ra nó**; thứ giao đi phải là địa chỉ mà người nhận mở �
 ## Mermaid, if it is ever the right choice
 
 Only inside an Artifact. In a static repo file the runtime does not exist and `<pre class="mermaid">`
-shows as raw text (verified in a real browser, REDACTED-INTERNAL-PROJECT `docs/spec/`, 2026-08-24). Mermaid also
+shows as raw text (verified in a real browser against a repo's `docs/spec/`, 2026-08-24). Mermaid also
 bakes color into the SVG at render time, so it cannot follow the theme button — which is why the
 Artifact viewer's single light theme is the only context where it is safe:
 

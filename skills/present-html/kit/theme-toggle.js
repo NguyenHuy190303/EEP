@@ -33,7 +33,7 @@
     apply(current() === "dark" ? "light" : "dark");
   });
 
-  // Đồng bộ nếu Huy đổi theme ở 1 tab/file rồi mở lại tab khác cùng phiên
+  // Sync if the user switches theme in one tab/file then reopens another tab in the same session
   // (chỉ có tác dụng nếu browser thật sự share localStorage giữa các file://
   // — chưa chắc, xem html-style.md).
   window.addEventListener("storage", function (e) {

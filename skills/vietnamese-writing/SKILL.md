@@ -1,13 +1,13 @@
 ---
 name: vietnamese-writing
-description: Use before writing ANY Vietnamese prose — an ops-ledger record in docs/decisions/ or docs/problems/, a spec page, a postmortem, a standup entry, a commit body, or a reply after Huy switches to Vietnamese. Default output language is English; this skill loads only when Vietnamese is actually being produced. Holds the senior-engineer register, the four mechanisms that produce translationese, the glossary of banned calques taken from real corrections, and the terms that always stay English.
+description: Use before writing ANY Vietnamese prose — an ops-ledger record in docs/decisions/ or docs/problems/, a spec page, a postmortem, a standup entry, a commit body, or a reply after the user switches to Vietnamese. Default output language is English; this skill loads only when Vietnamese is actually being produced. Holds the senior-engineer register, the four mechanisms that produce translationese, the glossary of banned calques taken from real corrections, and the terms that always stay English.
 ---
 
 # Vietnamese technical writing
 
-Scope: **technical prose between Huy and me only** — ledger records, specs, postmortems, standup,
+Scope: **technical prose between engineers only** — ledger records, specs, postmortems, standup,
 commit bodies. Not administrative Vietnamese, not customer-facing copy, not công văn / tờ trình.
-Huy does not write those and this skill must not drift into that register.
+This skill must not drift into that register unless the user's own writing does.
 
 Root cause this fixes: my Vietnamese defaults to a close translation of an English sentence
 skeleton rather than how a Vietnamese engineer actually talks.
@@ -100,6 +100,15 @@ same fix twice.
 | Nguội dần | **Score decay** / **Cooldown** |
 | Trần cứng | **Hard limit** / **Concurrency cap** |
 | Máy phát tải | **Load generator** |
+| Băng (chỉ khoảng giá trị) | nói thẳng điều kiện: `screen` = `yaw ∈ [−18°, +25°]` |
+
+**Câu dẫn đếm ý là rác.** "Ba hệ quả cần nhớ:", "Hai chi tiết quyết định hành vi của cả nhóm:",
+"Mọi dòng dưới đây là…" — người đọc thấy bullet list ngay bên dưới, không cần ai đếm hộ. Bỏ câu
+dẫn, vào thẳng gạch đầu dòng. Cùng họ: "Ghi chú chung:", "Lưu ý rằng:", "Như đã nói ở trên".
+
+**Không tự chế thuật ngữ.** Khái niệm chưa có từ tiếng Việt quen thuộc thì viết thẳng điều kiện bằng
+số, hoặc giữ nguyên tiếng Anh — đừng dịch sáng tạo ("băng" cho *band*). Từ tự chế bắt người đọc dừng
+lại đoán nghĩa.
 
 ## Structure of a spec, ledger record, or postmortem
 

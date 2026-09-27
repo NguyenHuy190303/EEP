@@ -94,6 +94,9 @@ Three distinct targets exist. They are not interchangeable.
 
 | Target | Reach it via | Notes |
 | --- | --- | --- |
-| SkyPilot k8s pool — `REDACTED-SKYPILOT-ENDPOINT` | `sky launch` (everything above) | 2 nodes × 8 H100, shared, usually near-full. The default choice. |
-| On-prem 8×H100 NVLink node | `REDACTED-KUBECONFIG` | Single node, time-shared between training / generation / eval. Not a SkyPilot cluster. |
-| GB200 SLURM cluster | SSH via bastion → `sbatch` | arm64 Grace CPUs, Enroot/SQSH containers not Docker. **Never run training or heavy inference on the login node** — admins kill the process. Not currently in use; confirm before starting here. |
+| SkyPilot k8s pool | `sky launch` (everything above) | Whatever shared cluster `sky gpus list` shows for your org — usually near-full. The default choice. |
+| On-prem GPU node | your org's kubeconfig context for it | Single node, time-shared between training / generation / eval. Not a SkyPilot cluster. |
+| SLURM cluster | SSH via bastion → `sbatch` | Check CPU arch and container runtime (Enroot/SQSH vs Docker) before assuming either. **Never run training or heavy inference on the login node** — admins kill the process. Confirm it is actually in use before starting here. |
+
+Fill in your org's actual endpoint names, kubeconfig context, and bastion host in a local note —
+this skill deliberately ships without them so it stays portable across machines and teams.

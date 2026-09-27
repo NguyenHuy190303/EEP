@@ -1,5 +1,5 @@
 /* html-kit tokens — dual theme: Slate Light (default) / Dracula (dark).
-   Redesigned 24/08/2026, replacing the old single-theme "Cà phê sữa" (Huy's decision — see
+   Redesigned 24/08/2026, replacing the old single-theme "Cà phê sữa" (the user's decision — see
    ~/.claude/rules/html-style.md for the full rationale and the contrast/CVD checks run before
    picking these values unmodified from each theme's canonical spec).
 
@@ -16,7 +16,7 @@
 
 :root{
   /* ── grounds: Slate Light (Tailwind slate scale, same family archify renders on) ──
-     Adopted 2026-09-15 replacing Solarized Light: Huy found Solarized's beige dull next to
+     Adopted 2026-09-15 replacing Solarized Light: the user found Solarized's beige dull next to
      archify. Accents validated with validate_palette.mjs on #ffffff and #f8fafc — all 8 ≥3.0:1
      non-text contrast, every pair distinct (min ΔE76 21.9, orange/amber). Dark stays Dracula. */
   --bg-page:#f8fafc;          /* slate-50 — nền trang */

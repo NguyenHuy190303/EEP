@@ -25,8 +25,8 @@ without asking.
 3. **One experiment, one dated folder.** `experiments/<YYYY-MM-DD>_<slug>/` containing
    `config.yaml` (what was run), `run.log`, `metrics.json` (numbers, machine-readable), and a
    `README.md` of ≤5 lines: goal, result, conclusion, what to do next. Slug carries the ticket when
-   one exists (`2026-09-16_LP-185-identity-eval`). Checkpoints and datasets are not committed —
-   `.gitignore` them and put their real location (HF org `REDACTED-HF-ORG`, cluster path, or
+   one exists (`2026-09-16_TICKET-123-identity-eval`). Checkpoints and datasets are not committed —
+   `.gitignore` them and put their real location (your HF org, cluster path, or
    `memory/artifacts`) in that README.
 4. **Branches: `<type>/<TICKET>-<slug>`.** Types: `feat` · `fix` · `chore` · `docs` · `exp` ·
    `refactor`. Ticket omitted when there is none (`exp/whisper-vi-lora`). Commits follow
@@ -37,19 +37,19 @@ without asking.
    |---|---|
    | Code, config, tests, docs, small eval sets | the repo |
    | Result that cost GPU/quota/money, not project-curated | `~/.claude/projects/<slug>/memory/artifacts/` + pointer line in `MEMORY.md` |
-   | Weights, large datasets | HF org `REDACTED-HF-ORG` or the cluster volume; repo holds only the pointer |
+   | Weights, large datasets | your HF org or the cluster volume; repo holds only the pointer |
    | Build context, scratch, re-downloadable | `/tmp` (swept after 3 days — nothing expensive stays there alone) |
 
 6. **Do not create when editing will do.** No scaffolding "for later", no empty `utils/`, no second
    script that does what the first one does with one flag changed. A new file earns its place by
    having a role the existing ones cannot carry.
 
-## Per-directory rules — decided with Huy 2026-09-16
+## Per-directory rules — decided conventions
 
 | Directory | Rule |
 |---|---|
 | `tests/` | Mirrors the package: `tests/unit/` repeats the tree of `app/` or `src/<pkg>/` (`app/services/x.py` → `tests/unit/services/test_x.py`); `tests/integration/` needs a real DB or service; `tests/e2e/` drives the deployed thing. Never tests beside the module. |
-| `docs/` | Four kinds of document, four subdirs — never mixed: **`spec/`** living documents, **ordered by a 2-digit prefix** (below); **`decisions/`** + **`problems/`** the ops ledger (D-00xx, P-00xx via `./ops`; `adr/` when the repo has no `./ops`); **`runbooks/`** how to operate; **`reports/`** dated, write-once outputs for humans — standups, findings, journals, postmortems — `<YYYY-MM-DD>_<slug>.<ext>`. The doc *styling* kit is not stored here: present-html embeds it into each page from `~/Projects/EEP/skills/present-html/kit/`. Images and diagrams a spec references go in `docs/assets/<spec-slug>/`. No loose `notes.md`, no `build/` that mixes kinds. |
+| `docs/` | Four kinds of document, four subdirs — never mixed: **`spec/`** living documents, **ordered by a 2-digit prefix** (below); **`decisions/`** + **`problems/`** the ops ledger (D-00xx, P-00xx via `./ops`; `adr/` when the repo has no `./ops`); **`runbooks/`** how to operate; **`reports/`** dated, write-once outputs for humans — standups, findings, journals, postmortems — `<YYYY-MM-DD>_<slug>.<ext>`. The doc *styling* kit is not stored here: present-html embeds it into each page from `${CLAUDE_PLUGIN_ROOT}/skills/present-html/kit/`. Images and diagrams a spec references go in `docs/assets/<spec-slug>/`. No loose `notes.md`, no `build/` that mixes kinds. |
 
 ### `docs/spec/` — numbered, living, undated
 
@@ -84,15 +84,15 @@ docs/spec/
 | `configs/` | Exists only once ≥2 runs share a config; `configs/<slug>.yaml`. Each run still copies its **resolved** config into its own dir, so a run reproduces without `configs/` history. |
 | `data/` | Research repos: `raw/` (as received, never edited, gitignored) → `interim/` (rebuildable by a script) → `processed/` (model-ready), plus `DATA_SOURCES.md`. Service repos: only small curated fixtures or eval sets, committed; anything larger is a pointer. |
 | `scratchpad/` | Allowed for quick trials beside real code: `scratchpad/<TICKET>-<slug>/`. **Gitignored.** Emptied when the ticket closes; anything worth keeping is promoted into the package, `experiments/`, or `docs/`. |
-| `models/` | Local weights, gitignored; `README.md` holds the HF (`REDACTED-HF-ORG`) or cluster pointer. |
-| `_archive/` | Tidy mode parks here (`_archive/<YYYY-MM-DD>/`) instead of deleting. Huy deletes. |
+| `models/` | Local weights, gitignored; `README.md` holds the HF org or cluster pointer. |
+| `_archive/` | Tidy mode parks here (`_archive/<YYYY-MM-DD>/`) instead of deleting. the user deletes. |
 | `logs/` | Does not exist. A log lives with the run that wrote it (`experiments/…/run.log`, `outputs/…/run.log`); a service's logs go to the platform (k8s / Sentry / Grafana), not into the repo. |
 
 ## Suggested skeletons — offer, never impose
 
 When starting a new repo, or when asked "how should this be organised", pick the closest skeleton
 from `references/skeletons.md` (service · research/data · infra · skills/plugin) and adapt it.
-An existing repo is **not** reshuffled to match a skeleton unless Huy asks; the hard rules above are
+An existing repo is **not** reshuffled to match a skeleton unless asked; the hard rules above are
 enough for an existing repo.
 
 ## Tidy mode — when asked to clean a folder
@@ -101,7 +101,7 @@ enough for an existing repo.
 2. Propose moves as a table (`from → to`, reason), grouped by rule 1–3 above. Flag anything that
    looks like a result that cost money (rule 5) — those get a pointer, not a delete.
 3. Move only after OK. `git mv` inside a repo so history follows. Never delete — park in
-   `_archive/<YYYY-MM-DD>/` and let Huy delete.
+   `_archive/<YYYY-MM-DD>/` and let the user delete.
 
 ## Output
 

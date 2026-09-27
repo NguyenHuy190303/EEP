@@ -1,15 +1,15 @@
 ---
 name: present-html
-description: Build any HTML page for Huy — technical report, postmortem, spec, memo, one-pager, dashboard, diagram page — whether it is published as an Artifact or lives as a file in a repo. Use whenever the output is .html/.css, whenever an analysis or report is being turned into a page, whenever a diagram needs drawing, and when Huy says "xuất ra HTML", "làm báo cáo HTML", "trang HTML", "present html", or asks for a page to be prettier. Owns the 2-theme kit (Slate Light / Dracula), the embedded Vietnamese-capable fonts, the hand-drawn SVG diagram rules, and the mandatory render-and-look check before anything is handed over.
+description: Build any HTML page for the user — technical report, postmortem, spec, memo, one-pager, dashboard, diagram page — whether it is published as an Artifact or lives as a file in a repo. Use whenever the output is .html/.css, whenever an analysis or report is being turned into a page, whenever a diagram needs drawing, and when the user asks to "export as HTML", "make an HTML report", or asks for a page to be prettier. Owns the 2-theme kit (Slate Light / Dracula), the embedded Vietnamese-capable fonts, the hand-drawn SVG diagram rules, and the mandatory render-and-look check before anything is handed over.
 ---
 
 # present-html
 
-Huy reads these pages to sync technical knowledge — bright office, dimmer at home, sometimes
-forwarded to his lead or to QA. One kit, two themes, no invented palettes. His word > this kit >
-my taste.
+The reader syncs technical knowledge from these pages — different screens, different lighting,
+sometimes forwarded to a lead or to QA. One kit, two themes, no invented palettes. The user's word
+> this kit > the model's taste.
 
-Everything lives in `~/Projects/EEP/skills/present-html/kit/` (`~/.claude/assets/html-kit` is a symlink
+Everything lives in `${CLAUDE_PLUGIN_ROOT}/skills/present-html/kit/` (`~/.claude/assets/html-kit` is a symlink
 kept for older references).
 
 ## Fast path
@@ -18,7 +18,7 @@ Write a **fragment** — `<header class="hdr">` plus `<main>` holding `<section 
 blocks — then build, then look at it:
 
 ```bash
-K=~/Projects/EEP/skills/present-html/kit
+K=${CLAUDE_PLUGIN_ROOT}/skills/present-html/kit
 python3 $K/build.py body.html out.html --title "Short Distinctive Noun" \
   --shot /tmp/shot.png --shot-size 1500x3000
 python3 $K/build.py body.html out.html --title "…" --shot /tmp/dark.png --shot-theme dark
@@ -46,52 +46,35 @@ Component reference: `kit/README.md`. Design laws and the catalogue of bugs that
 Need computed styles rather than pixels: `python3 -m http.server` in the directory and drive
 `http://localhost:PORT/out.html` with the Chrome extension — `http://` is allowed, `file://` is not.
 
-## Giao kết quả bằng LINK HTTP, không bao giờ bằng đường dẫn file
+## Deliver by HTTP link, never by a file path
 
-Huy ngồi ở máy khác, nối vào máy này qua **VS Code Remote SSH**. Với anh ấy, `file://REDACTED-HOME-DIR/...`
-là vô nghĩa hai lần: browser máy anh không thấy ổ đĩa máy này, còn VS Code thì bắt lấy đường dẫn và
-mở bằng **editor** chứ không phải browser. Đưa `file://` là giao một thứ không mở được — đã xảy ra
-03/09/2026.
+If the user connects to this machine remotely (VS Code Remote SSH, a container, a VM), a
+`file:///...` path is meaningless twice over: their local browser cannot see this machine's disk,
+and their editor intercepts the path and opens it as text instead of rendering it. Handing over
+`file://` delivers something that cannot be opened — confirm the user's actual setup before
+assuming a link is even needed.
 
-**Luật:** mọi trang HTML giao cho Huy đều đi kèm một URL `http://…` mở được ngay, không phải đường
-dẫn file. Thứ tự ưu tiên:
+**Rule:** every HTML page handed to the user comes with an `http://…` URL that opens immediately,
+not a file path. In priority order:
 
-1. **URL tailnet (mặc định, đã dựng thường trực 04/09/2026).** `~/reports` được phục vụ liên tục
-   trên cổng 8777, bind vào IP tailnet của máy này. **Chỉ cần copy file vào `~/reports/` là có
-   link ngay**, không phải mở server gì nữa:
+1. **A private-network URL, if the user already runs one.** Many setups keep a small static-file
+   server (Tailscale, a VPN, a reverse proxy) bound to a fixed folder and port, reachable from every
+   device on that private network without touching the public internet. If one exists, use it —
+   ask the user for the base URL and the folder it serves rather than assuming a default. Keep one
+   subdirectory per task so the folder listing stays navigable.
+2. **`http://localhost:<port>` + the editor's own port-forward** — the fallback when no persistent
+   server exists or the private network is down. `python3 -m http.server <port>` in the output
+   directory, then forward that port through the remote connection (VS Code's PORTS tab, or
+   `ssh -L <port>:127.0.0.1:<port>`).
+3. **Never bind `0.0.0.0`.** That exposes internal documents to the whole LAN this machine sits on.
+   Bind the address the delivery channel actually needs — the private-network interface, or
+   `127.0.0.1` for an SSH/port-forward setup.
+4. **Never push to a public host** (Vercel, Netlify, Cloudflare Pages, a public tunnel) without the
+   user's explicit go-ahead for that specific page. These pages often carry internal endpoint names,
+   service names, or system numbers that should not leave the private network.
 
-   ```
-   http://REDACTED-TAILNET-IP:8777/<đường-dẫn-trong-reports>
-   ```
-
-   Mở được từ máy Windows của Huy, điện thoại, mọi thiết bị trong tailnet — không lộ ra internet.
-   Tên MagicDNS `REDACTED-TAILNET-HOST:8777` cũng có thể chạy tuỳ thiết bị, nhưng **IP là thứ
-   luôn đúng, đưa IP**. Sắp xếp: mỗi việc một thư mục con
-   (`~/reports/html-samples/`, `~/reports/<tên-việc>/`); gốc chưa có index nên trình duyệt hiện
-   danh sách thư mục — đủ dùng, đừng dựng thêm gì.
-
-   | Việc | Lệnh |
-   |---|---|
-   | Kiểm còn sống | `curl -sS -o /dev/null -w "%{http_code}" http://REDACTED-TAILNET-IP:8777/` |
-   | Xem log | `tail ~/reports/.serve.log` |
-   | Dựng lại | `launchctl kickstart -k gui/$(id -u)/REDACTED-LAUNCHAGENT-LABEL` |
-
-   Cơ chế: LaunchAgent `REDACTED-LAUNCHAGENT-LABEL` (`~/Library/LaunchAgents/REDACTED-LAUNCHAGENT-LABEL.plist`)
-   chạy `~/reports/.serve.sh`, `KeepAlive` nên bị giết là tự lên lại trong ~15s (đã thử: giết pid,
-   15s sau có pid mới, HTTP 200). Script đọc IP tailnet mỗi lần chạy chứ không ghi cứng — Tailscale
-   chưa lên thì thoát để launchd gọi lại. Agent chạy ở phiên đăng nhập, nên máy reboot mà chưa ai
-   đăng nhập thì chưa có server.
-2. **`http://localhost:8777` + port forward của VS Code** — dùng khi Tailscale trục trặc. Cần thêm
-   một tiến trình nữa bind vào `127.0.0.1` (hai server, hai địa chỉ, cùng cổng 8777 là hợp lệ). Nói
-   Huy kiểm tab **PORTS** cạnh tab TERMINAL, hoặc `ssh -L 8777:127.0.0.1:8777`.
-3. **Đừng** bind `0.0.0.0`. Nó phơi tài liệu nội bộ ra toàn bộ LAN của máy này. Bind đúng địa chỉ
-   cần dùng: IP tailnet cho tailnet, `127.0.0.1` cho SSH forward.
-4. **Đừng đẩy lên host công khai** (Vercel / Netlify / Cloudflare Pages / trycloudflare) nếu Huy
-   chưa đồng ý *cho đúng trang đó*. Các trang này thường chứa endpoint nội bộ, tên service, số liệu
-   hệ thống — Tailscale cho đúng thứ cần (xem được ở mọi nơi) mà không phải xuất bản gì ra ngoài.
-
-Đường dẫn file vẫn nên nói kèm, nhưng là **phần phụ**, để anh ấy biết file nằm đâu mà `scp` hay mở
-trong editor — không phải cách để xem.
+Still mention the file path as a secondary detail, so the user knows where the file lives for
+`scp` or opening in an editor — just not as the way to view it.
 
 ## Non-negotiables
 
@@ -99,7 +82,7 @@ trong editor — không phải cách để xem.
   `prefers-color-scheme:dark`. Every component reads `var(--x)`; tints go through
   `color-mix(in srgb, var(--x) N%, transparent)` — a hardcoded `rgba()` freezes that layer in one
   theme. Verify any accent change with
-  `node ~/Projects/EEP/skills/present-html/kit/validate_palette.mjs "#hex,…" --mode light --surface "#bg" --pairs all`.
+  `node ${CLAUDE_PLUGIN_ROOT}/skills/present-html/kit/validate_palette.mjs "#hex,…" --mode light --surface "#bg" --pairs all`.
 - **Always embed the fonts.** `--no-fonts` is for a throwaway preview only. Inter and Fira Code are
   not installed on this Mac; `fonts.css` carries the Vietnamese unicode-range subset
   (`U+1EA0-1EF9`, `U+0102-0103`, `U+01A0-01B0`…) that makes diacritics sit correctly. 1 MB per file
@@ -139,7 +122,7 @@ Wrap in `<figure class="fig">` + `<figcaption class="fig-cap">`, keep `role="img
 
 ## Infographic layer — khi trang cần "đọc như một tấm poster"
 
-Thêm 2026-09-03 sau khi Huy đối chiếu với ByteByteGo / các infographic trên LinkedIn. Toàn bộ
+Thêm 2026-09-03 after comparing against ByteByteGo / các infographic trên LinkedIn. Toàn bộ
 nằm trong `kit/diagram.css`, không cần lib ngoài.
 
 | Muốn gì | Dùng gì |

@@ -65,8 +65,8 @@ converter, an eval harness, a benchmark, a UI component. The question is not "is
 "does the thing already exist". Same tiering discipline: a repo is T1 only after its code was read.
 
 1. **Name the problem as a query**, plus 2–3 synonyms the field uses (`speaker diarization` /
-   `who-spoke-when`; `Vietnamese ASR` / `vi speech-to-text`). Queries never contain patient data,
-   internal hostnames, or anything from a clinical dataset.
+   `who-spoke-when`; `Vietnamese ASR` / `vi speech-to-text`). Queries never contain PII,
+   internal hostnames, or anything from a regulated dataset.
 2. **Sweep the channels that hold artifacts**, not just prose:
 
    | Channel | How | Finds |
@@ -140,4 +140,4 @@ answer, the specific exporter or chart still gets checked.
 
 Depth: the default is the full sweep with tiers and the audit — a wrong "nothing exists" costs days
 of building, and a wrong "this one is fine" costs longer, because it is discovered after the
-integration. Trim to one channel only when Huy says the thing is throwaway.
+integration. Trim to one channel only when the user says the thing is throwaway.

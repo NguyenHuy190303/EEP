@@ -33,7 +33,7 @@ failure cost is marketing, not design.
 
 ## 3. Decide, with the contract
 
-State the choice with the decision contract (see user CLAUDE.md §8):
+State the choice with the decision contract — one line naming the horizon (throwaway/tactical/durable), the basis (fact/guess/taste), the choice, and what would make it wrong:
 
 ```
 [horizon · basis] <the choice>; wrong if <observable condition>
@@ -49,7 +49,7 @@ In a repo with a decision ledger (this workspace: `./ops`), a `durable` choice e
 line, not a written file:
 
 ```
-./ops decide "<title>" --basis fact|guess|taste --who huy,claude
+./ops decide "<title>" --basis fact|guess|taste --who <you>,claude
 ```
 
 `guess` requires `--revisit-when`. Do not run it unattended — hand it over.

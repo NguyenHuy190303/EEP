@@ -59,8 +59,8 @@ global installs (`npm i -g`) for anything a project needs — that is an undecla
 
 ## Repos that predate this rule
 
-`REDACTED-REPO-A` and `REDACTED-REPO-B` carry `requirements.txt`, and one `environment.yml`
-exists. **Do not convert them as a side effect of an unrelated change.** Record the debt once —
+Some legacy repos in your org still carry `requirements.txt` or an `environment.yml` from before
+this convention. **Do not convert them as a side effect of an unrelated change.** Record the debt once —
 `./ops problem` where the repo has it, otherwise a line in `docs/problems/` — and migrate to
 `pyproject.toml` + `uv.lock` the next time work lands in that repo on purpose.
 

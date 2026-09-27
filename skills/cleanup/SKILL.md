@@ -1,6 +1,6 @@
 ---
 name: cleanup
-description: Use when a port is already in use, a background dev server or tunnel was left running, disk is filling up, Docker or OrbStack has accumulated containers, images, build cache or volumes, a tmux or nohup process is still alive after work finished, or Huy asks to tidy up the machine. Reports what is holding each resource, tiers it safe / ask / never, and deletes nothing until he says so.
+description: Use when a port is already in use, a background dev server or tunnel was left running, disk is filling up, Docker or OrbStack has accumulated containers, images, build cache or volumes, a tmux or nohup process is still alive after work finished, or the user asks to tidy up the machine. Reports what is holding each resource, tiers it safe / ask / never, and deletes nothing until the user says so.
 ---
 
 # Cleanup — local machine only
@@ -26,7 +26,7 @@ terminal), tmux sessions, and the Docker table with containers, volumes and recl
 It deletes nothing.
 
 Then present a table: **what · how much it frees · tier · the exact command**, and wait. Even the
-safe tier is proposed, not executed, unless Huy already said go.
+safe tier is proposed, not executed, unless the user already said go.
 
 ## Tiers
 
@@ -45,7 +45,7 @@ safe tier is proposed, not executed, unless Huy already said go.
 - **Images that are slow to rebuild**: GPU/ML bases, anything multi-GB or built from a private
   registry. Freeing 700 MB to spend 10 minutes rebuilding is a bad trade — say the trade out loud.
 - **Terminal processes**: a dev server (`npm run dev`, `uvicorn --reload`), an SSH tunnel, a
-  training run. Show PID, elapsed time and the full command; Huy decides. `SIGTERM` first
+  training run. Show PID, elapsed time and the full command; the user decides. `SIGTERM` first
   (`kill <pid>`), `SIGKILL` (`kill -9`) only after it refuses.
 - **tmux sessions**: `tmux attach -t <name>` and look before `tmux kill-session`. A session holding
   a half-finished run is not junk.
@@ -56,15 +56,15 @@ safe tier is proposed, not executed, unless Huy already said go.
   Redis dumps. `LINKS=0` means no container references it *right now*, not that it is junk: a
   `compose down` leaves its data volume at 0 links and `compose up` expects it back. **Never**
   `docker system prune --volumes`, never `docker volume prune`. List them with owner and size;
-  delete only a volume Huy names, one at a time.
-- **Anything this session did not start**, unless Huy says whose it is. Another terminal, another
+  delete only a volume the user names, one at a time.
+- **Anything this session did not start**, unless the user says whose it is. Another terminal, another
   person's tunnel, an editor's language server.
-- **Processes under launchd.** The reports server on `:8777` is the LaunchAgent
-  `REDACTED-LAUNCHAGENT-LABEL` with `KeepAlive` — killing the PID achieves nothing. To actually stop it:
-  `launchctl bootout gui/$(id -u)/REDACTED-LAUNCHAGENT-LABEL`. Same shape for anything else in
-  `~/Library/LaunchAgents`.
-- **`/tmp` artifacts that were never persisted.** Check the durable-storage rule first (user
-  CLAUDE.md §2) — an expensive result living only there gets copied out before anything is removed.
+- **Processes under launchd.** A port that keeps reopening after you kill its PID is usually held by
+  a LaunchAgent with `KeepAlive` — find its label (`launchctl list | grep -i <name>`) and
+  `launchctl bootout gui/$(id -u)/<label>`; killing the bare PID achieves nothing. Same shape for
+  anything else in `~/Library/LaunchAgents`.
+- **`/tmp` artifacts that were never persisted.** Check the project's durable-storage rule first —
+  an expensive result living only there gets copied out before anything is removed.
 
 ## Port already in use
 

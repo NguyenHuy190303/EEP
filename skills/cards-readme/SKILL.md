@@ -1,13 +1,13 @@
 ---
 name: cards-readme
-description: Write or overhaul a Hugging Face model card, a Hugging Face dataset card, or a GitHub README so it reads like a top-tier lab release — hero block, badges, quickstart on the first screen, sourced results table — while every number stays traceable. Use when Huy says "model card", "dataset card", "viết README", "README đẹp", "card cho model/dataset", asks to document a checkpoint or dataset before pushing to the Hub, or asks to make an existing README/card prettier. Owns the Hub metadata specs, the card templates, the beauty patterns that render on both Hub and GitHub, and the check that fails on placeholders and unsourced metrics. Uploading goes through hf-cli.
+description: Write or overhaul a Hugging Face model card, a Hugging Face dataset card, or a GitHub README so it reads like a top-tier lab release — hero block, badges, quickstart on the first screen, sourced results table — while every number stays traceable. Use when asked to document a checkpoint or dataset before pushing to the Hub, write or improve a model/dataset card or README, or make an existing one prettier. Owns the Hub metadata specs, the card templates, the beauty patterns that render on both Hub and GitHub, and the check that fails on placeholders and unsourced metrics. Uploading goes through hf-cli.
 ---
 
 # cards-readme
 
 Three outputs, one method: **HF model card**, **HF dataset card**, **GitHub README**. "Beautiful" means
 a reader decides in ten seconds whether this is for them and can run it in thirty — not decoration.
-Huy's rule §4 applies with no exceptions: a number without a source does not go in the card.
+No exceptions: a number without a source does not go in the card.
 
 ## Workflow
 
@@ -28,7 +28,7 @@ Huy's rule §4 applies with no exceptions: a number without a source does not go
    block, highlights and quickstart first — that is the first screen and the only part most readers see.
 5. **Check**, then look:
    ```bash
-   python3 ~/Projects/EEP/skills/cards-readme/scripts/check_card.py README.md --type model   # or dataset | readme
+   python3 ${CLAUDE_PLUGIN_ROOT}/skills/cards-readme/scripts/check_card.py README.md --type model   # or dataset | readme
    ```
    It validates the frontmatter against the Hub's own validator (needs internet), fails on leftover
    template placeholders, and fails on a results table with no source column or link. Then render it:
