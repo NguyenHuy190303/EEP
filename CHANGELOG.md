@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.6.2 (2026-09-28)
+
+- The 1.6.0 scrub was incomplete in two ways an independent re-audit caught: (1) three commits made
+  *after* the scrub (1.6.0 and 1.6.1's own commits) were themselves authored with the company email,
+  because the repo's local git config still pointed at it — the earlier mailmap rewrite only fixed
+  commits that already existed, not the identity used for new ones; (2) the local absolute path
+  `/Users/<name>/Projects/EEP`, committed in the old (already-deleted) v1.0.0 eval-results run, was
+  still recoverable from history — only removed from the current tree, never rewritten out of the
+  commits that carried it. Both are now fixed: repo-local `user.email` corrected, history rewritten
+  again (`git-filter-repo --mailmap` + `--replace-text` + `--replace-message`), tags recreated to
+  point at the new commit hashes, and force-pushed. Verified via the GitHub API (not just local
+  `git log`) that every commit on the remote now shows the personal email and no local path.
+- Corrected `evals/RESULTS.md`: it previously said only `sentry-cli` (3 of 12 skills) had no eval
+  coverage. The accurate count is 8 of 12 skills with zero eval directory at all
+  (`design-decision`, `deepsearch`, `present-html`, `sky-job`, `vietnamese-writing`, `cleanup`,
+  `toolchain`, `layout`); `sentry-cli` specifically has case files but no working fixture, which is
+  a narrower and less serious gap than "no eval at all." Fixed to report the real number.
+
 ## 1.6.0 (2026-09-27)
 
 - Scrubbed employer infrastructure and personal references from the whole repo, including git

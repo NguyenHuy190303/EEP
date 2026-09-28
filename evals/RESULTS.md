@@ -4,12 +4,22 @@ Ran with `--scaffold` so each case gets a real fixture repo instead of the empty
 every v1.0.0 case fail regardless of the skill. Judge model: default (`haiku`), 2-3 runs per case,
 `--ablation with-without` (a no-skill baseline arm runs alongside).
 
-**Known gap, not run this round: `sentry-cli-1/2/3` have no fixture and are excluded from the table
-below.** These 3 of 12 skills have zero eval coverage. Fixing them needs a fake `sentry` CLI on
-`PATH` plus `Bash` in `allowed_tools`; `case.yaml`'s `execution.env` only accepts `EVAL_*`-prefixed
-keys (confirmed by running a case with `env: {PATH: ...}` — it is rejected: `"execution.env key
-'PATH' is not allowed"`), so seeding a stub binary this way needs a different mechanism than the one
-used for the other 7 cases. Left undone rather than shipped half-working.
+**Real eval coverage: 4 of 12 skills have any case directory at all** (`investigate`, `review-pr`,
+`cards-readme`, `sentry-cli`), and only 3 of those 4 (`investigate`, `review-pr`, `cards-readme`) have
+a working `scaffold_script`-backed fixture. The other **8 of 12 skills have zero eval presence**:
+`design-decision`, `deepsearch`, `present-html`, `sky-job`, `vietnamese-writing`, `cleanup`,
+`toolchain`, `layout`. An earlier version of this file named only `sentry-cli` as a gap and did not
+mention the other 7 — that was an accurate count of "cases without a fixture" but a misleading count
+of "skills without any eval," which is the number that actually matters for judging how tested this
+plugin is. Corrected here rather than left standing.
+
+`sentry-cli-1/2/3` specifically have case dirs (prompt + graders) but no `scaffold_script`, so they
+are excluded from the results table below. Fixing them needs a fake `sentry` CLI reachable on `PATH`
+plus `Bash` in `allowed_tools`; `case.yaml`'s `execution.env` only accepts `EVAL_*`-prefixed keys
+(confirmed by running a case with `env: {PATH: ...}` — it is rejected: `"execution.env key 'PATH' is
+not allowed"`), so seeding a stub binary this way needs a different mechanism than the one used for
+the other 3 fixtured skills. The other 8 skills have no case directory at all — not attempted this
+round, not just blocked by a framework limitation.
 
 | Case | With skill | Without skill | Note |
 |---|---|---|---|
