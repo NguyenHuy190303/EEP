@@ -57,6 +57,20 @@ line, not a written file:
 `throwaway` and `tactical` choices do not go in the ledger. A ledger that records everything records
 nothing.
 
+## When the decision is ML/agent/LLM-shaped
+
+Pair a cheap deterministic gate with a rare expensive truth check, and price both. A model-free
+benchmark (assertions over known inputs, seconds, $0) can run on every change and catch regressions;
+an LLM-judged or human-graded eval is the actual truth signal but costs real money and time, so it
+runs rarely. State the cost and cadence of each rather than presenting one number as "the" eval.
+
+Split failure handling by how the component is invoked, not by habit: a background job or hook that
+runs on every turn must fail silently with a kill switch, because a hard failure there breaks
+everything downstream of it; a path invoked directly by the user or another component should raise
+a typed, retryable error so the caller can tell a transient failure from a real one. Never do slow
+work (an embedding call, a network request) inside a lock or a database write transaction — move it
+outside the critical section before the constraint becomes a deadlock or timeout nobody can explain.
+
 ## Do not
 
 - Propose an abstraction with one implementation, a factory for one product, or config for a value

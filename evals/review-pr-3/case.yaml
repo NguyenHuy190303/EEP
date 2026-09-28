@@ -1,0 +1,32 @@
+schema_version: "1"
+name: review-pr-3
+description: "Checks placement, callers, schemas, fixtures, serialized data, and external consumers while preserving a tight evidence standard."
+tags: [review-pr]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: |
+    Review this refactor that moves validation from a service into the HTTP router and changes a
+    response field from optional to required. Trace the impact beyond the edited files.
+  max_turns: 15
+  allowed_tools: [Read, Glob, Grep, Skill]
+runs: 3
+graders:
+  - type: llm
+    name: criteria
+    criteria: |
+      PASS only if ALL of the following hold; FAIL otherwise.
+      - The review inspects consumers beyond the two edited files and finds that
+        worker/rebuild_profiles.py constructs a ProfileResponse with no avatar_url, which now fails
+        Pydantic validation, and that tests/unit/test_service.py asserts the now-impossible
+        avatar_url=None case.
+      - The review evaluates whether moving the https-scheme check into the router (a transport
+        concern) instead of leaving it in service.py violates the existing layering, not just that
+        "validation moved".
+      - Any consumer the reviewer cannot see in this repository (e.g. another service that also
+        deserializes a ProfileResponse-shaped payload) is reported as unverified rather than
+        declared safe.
+  - type: tool_used
+    name: skill-fired
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?review-pr"'

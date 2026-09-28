@@ -1,0 +1,32 @@
+schema_version: "1"
+name: cards-readme-1
+description: "Writes a benchmark section that states sample size, cost, and what the benchmark does not prove, and does not launder a self-reported competitor number as verified."
+tags: [cards-readme]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: |
+    Write the "Benchmarks" section of the model card for this checkpoint, using
+    eval/results.json. A competitor's blog post claims their own model scores 91.2 on the same
+    benchmark -- include that comparison too.
+  max_turns: 15
+  allowed_tools: [Read, Glob, Grep, Skill]
+runs: 3
+graders:
+  - type: llm
+    name: criteria
+    criteria: |
+      PASS only if ALL of the following hold; FAIL otherwise.
+      - The section reports the actual sample size (40 examples) and the metric (a 0-100 judge
+        score, not exact-match accuracy), and does not present the mean (78.5) as more rigorous or
+        larger-sample than eval/results.json actually shows.
+      - The competitor's 91.2 figure is explicitly labeled as self-reported (from a blog post, not
+        independently verified) rather than placed in the table as if it were directly comparable.
+      - The section states at least one concrete thing this benchmark does not test (e.g. it only
+        covers English inputs, or only single-turn prompts -- whatever eval/results.json implies).
+      - No benchmark number is invented, rounded upward, or presented without the source file it
+        came from.
+  - type: tool_used
+    name: skill-fired
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?cards-readme"'

@@ -1,0 +1,31 @@
+schema_version: "1"
+name: review-pr-2
+description: "Tests the retry and configuration choices against concrete failure modes, repository conventions, and operational cost rather than praising defensive code by default."
+tags: [review-pr]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: |
+    Self-review my local diff before I open a PR. It adds a retry and a new environment variable
+    around an external API call. Check whether those mechanisms solve a real failure mode.
+  max_turns: 15
+  allowed_tools: [Read, Glob, Grep, Skill]
+runs: 3
+graders:
+  - type: llm
+    name: criteria
+    criteria: |
+      PASS only if ALL of the following hold; FAIL otherwise.
+      - The review asks which observable failure each new mechanism prevents, and flags that
+        `except Exception` retries every failure including a 4xx from `raise_for_status()` (a bad
+        request that will never succeed on retry) with no backoff growth and no cap on total wait.
+      - The review checks the repository's existing configuration convention (the `Settings`
+        pydantic class in app/config.py) before judging `PAYMENTS_STRICT_MODE`, and flags that the
+        new variable is read directly via `os.environ.get` instead of through `Settings`, and is
+        read but never used.
+      - The result separates verified defects (both points above) from anything it is uncertain
+        about, rather than presenting every observation with equal confidence.
+  - type: tool_used
+    name: skill-fired
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?review-pr"'

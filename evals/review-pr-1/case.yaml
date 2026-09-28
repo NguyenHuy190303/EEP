@@ -1,0 +1,30 @@
+schema_version: "1"
+name: review-pr-1
+description: "Runs configured checks, inspects the exact diff and surrounding transaction lifecycle, then returns severity-ordered actionable findings or an explicit no-findings result."
+tags: [review-pr]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: |
+    Review the current branch against main. The diff changes an async FastAPI endpoint and its
+    database transaction. Report only concrete regressions with file and line evidence; do not
+    edit anything.
+  max_turns: 15
+  allowed_tools: [Read, Glob, Grep, Skill]
+runs: 3
+graders:
+  - type: llm
+    name: criteria
+    criteria: |
+      PASS only if ALL of the following hold; FAIL otherwise.
+      - The review identifies the exact base (main) and head (current branch) commits it compared,
+        or explicitly labels any inference about which commit is which.
+      - It reports the missing rollback on the exception path in app/orders.py with a file
+        reference — the session is left in an aborted-transaction state for the connection's next
+        use — as a concrete regression, not a generic "add error handling" comment.
+      - The review does not modify the branch or repeat raw tool output as if it were a manual
+        finding.
+  - type: tool_used
+    name: skill-fired
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?review-pr"'

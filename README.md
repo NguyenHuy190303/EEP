@@ -53,6 +53,7 @@ Claude Code marketplace plugins (`claude plugin install <name>@<marketplace>`):
 
 | Plugin | Marketplace | Use when |
 |---|---|---|
+| `superpowers` | `claude-plugins-official` | covers the dev loop EEP deliberately does not: brainstorming, writing/executing plans, TDD, systematic debugging, verification-before-completion, git worktrees, finishing a branch. EEP is the ops/research/docs layer on top — use both |
 | `ponytail` | `ponytail` | forces the laziest correct solution on every coding task — the reflex that keeps EEP's own skills from over-building |
 | `code-review` | `claude-plugins-official` | review a diff/PR/branch for correctness bugs at a chosen effort level |
 | `differential-review` | `trailofbits` | security-focused diff review: blast radius by caller count, git-blame context, re-introduced-bug detection |

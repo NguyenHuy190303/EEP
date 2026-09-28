@@ -1,0 +1,32 @@
+schema_version: "1"
+name: investigate-2
+description: "Produces a hop-by-hop flow with protocols and shape changes, separating code inference from runtime observation."
+tags: [investigate]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: |
+    Trace where the tenant_id field travels from an HTTP request through validation, persistence,
+    and an outbound event. Mark anything you cannot observe directly.
+  max_turns: 15
+  allowed_tools: [Read, Glob, Grep, Skill]
+runs: 3
+graders:
+  - type: llm
+    name: criteria
+    criteria: |
+      PASS only if ALL of the following hold; FAIL otherwise.
+      - Each hop names its source, destination, protocol, and relevant payload shape: HTTP POST
+        /signup body (SignupRequest) -> Pydantic validation -> insert_signup (SQL insert) ->
+        publish_signup_event (Kafka JSON payload).
+      - Validation (schemas.py), persistence (db.py), and the JSON shape change in events.py are
+        each located with a file reference and their intended behavior described from the code
+        (docstring/SQL/JSON construction) -- even though db.py and events.py are stub bodies that
+        do not actually run, correctly reporting them as stubs satisfies this bullet.
+      - Inferred hops (e.g. the actual SQL executed, the real Kafka broker behavior — neither is
+        observed, only described in a docstring/comment) are visibly separated from hops directly
+        read from code.
+  - type: tool_used
+    name: skill-fired
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?investigate"'

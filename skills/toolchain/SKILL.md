@@ -46,6 +46,15 @@ the stray one rather than letting both live.
 Lockfile is committed with the change that caused it. `node_modules/` is never committed. No
 global installs (`npm i -g`) for anything a project needs — that is an undeclared dependency.
 
+## Keep the installable surface small
+
+A library used by many callers should default to few, light dependencies. Push anything heavy or
+niche (a specific embedding backend, an optional storage driver) behind an extra so installing the
+core does not pull it in. A script meant to run out-of-process (a git hook, a background job) that
+duplicates logic from the main package should stay stdlib-only and never import the package back --
+and carry one test asserting the duplicated function still matches the original, so the two cannot
+silently drift apart.
+
 ## Container and GPU cluster — the container is the env, the lock still rules
 
 - Base image pinned by **digest** (`python:3.12-slim@sha256:…`), not a moving tag, and never

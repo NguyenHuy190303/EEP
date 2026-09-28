@@ -1,0 +1,43 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Validate plugin manifests
+        run: claude plugin validate .
+
+  palette-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Run palette validator test
+        run: node --test skills/present-html/kit/validate_palette.test.mjs
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Shellcheck all scripts
+        run: |
+          shopt -s globstar nullglob
+          scripts=(**/*.sh)
+          if [ "${#scripts[@]}" -eq 0 ]; then
+            echo "no shell scripts found"
+            exit 0
+          fi
+          shellcheck "${scripts[@]}"

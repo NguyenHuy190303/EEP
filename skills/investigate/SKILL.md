@@ -76,11 +76,21 @@ Measure before attributing. `hyperfine` for commands, in-process timing for hot 
 the time went as a breakdown that sums to the total, and say what environment it was measured on —
 a laptop number is not a pod number.
 
-## Tools available on this machine
+**Comparing two configs/variants is a paired test, not two point estimates.** "77% vs 75.9%" from
+two independent runs is noise dressed as a finding. Run both on the same inputs, use a paired test
+(McNemar for pass/fail pairs, a paired t-test or Wilcoxon for continuous metrics), and report the
+interval and sample size next to the delta. A result that does not clear the test is a null, and a
+null with its cost (tokens, dollars, wall time) reported is still useful — it rules something out.
+Include at least one negative control: a case that should show no effect, so a wiring bug that
+makes everything look like an improvement gets caught before the real comparison is trusted.
 
-`rg` `fd` `ast-grep` · `jq` `gron` `jless` `yq` · `curl` `httpie` `websocat` `dig` `lsof` `tcpdump`
-`nc` · `psql` `redis-cli` `sqlite3` · `kubectl` `helm` `argocd` `docker` · `hyperfine` · `gh` ·
-MCP: grafana (metrics, logs), sentry (errors), atlassian (Jira, Confluence), chrome (browser).
+## Reach for the right tool
+
+Text search finds strings, not call sites — `ast-grep` for structural matches. `gron` makes JSON
+greppable. `websocat` tests a WebSocket without writing a script. `hyperfine` for command-level
+timing. Whatever observability stack the project actually uses (metrics, error tracking, issue
+tracker) beats re-deriving the same facts from logs by hand — check what's configured before
+falling back to raw log-diving.
 
 Reach for the CLI before writing a script. `gron` makes JSON greppable; `ast-grep` makes code
 structurally searchable; `websocat` tests a WebSocket without a Python harness.

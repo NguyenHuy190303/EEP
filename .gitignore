@@ -2,3 +2,6 @@
 __pycache__/
 node_modules/
 *.pyc
+
+# local eval run output — not committed; a curated run gets a deliberate commit
+evals/results/

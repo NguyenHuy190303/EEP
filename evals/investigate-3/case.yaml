@@ -1,0 +1,31 @@
+schema_version: "1"
+name: investigate-3
+description: "Covers structural callers, tests, fixtures, migrations, serialized data, configuration, and external consumers without claiming exhaustive external visibility."
+tags: [investigate]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: |
+    Changing Customer.id from integer to UUID looks local. Perform an impact analysis and state
+    what could break outside this repository.
+  max_turns: 15
+  allowed_tools: [Read, Glob, Grep, Skill]
+runs: 3
+graders:
+  - type: llm
+    name: criteria
+    criteria: |
+      PASS only if ALL of the following hold; FAIL otherwise.
+      - The analysis goes beyond text search and lists the consumer categories checked: callers
+        (Order.customer_id FK in app/models.py), tests (tests/unit/test_orders.py), fixtures/config
+        (config/feature_flags.yaml), migrations (migrations/0007_orders.sql), and serialized data
+        (the Kafka payload in app/events.py).
+      - External consumers that cannot be enumerated from this repository (e.g. other services
+        reading the 'orders' Kafka topic, or a BI/reporting system reading the customers table
+        directly) remain explicitly named as unverified, not declared safe.
+      - The conclusion states evidence for ruled-out and still-in-scope areas rather than a single
+        blanket verdict.
+  - type: tool_used
+    name: skill-fired
+    tool: Skill
+    input_match: '"skill"\s*:\s*"(?:[\w-]+:)?investigate"'

@@ -83,6 +83,19 @@ Not optional, not "later". An idle GPU cluster bills and blocks the shared pool.
 
 Never `sky down --all` — it kills clusters other people are using. Cancel or down by name only.
 
+## Long or interruptible jobs -- resumable, never silently lossy
+
+A job that can hit a rate limit, preemption, or a multi-hour wall clock needs to survive being
+re-run, not just complete once:
+
+- Tag each run so re-running with the same tag resumes instead of restarting from zero.
+- On a rate limit or transient failure, pause and retry -- do not treat it as a fatal error.
+- Never persist a failed call's output as if it succeeded; a partial result is worse than no result
+  because it looks complete.
+- Fail loudly on a partial ingest/write rather than silently continuing with incomplete data.
+- Commit the raw per-run artifacts (rows, summary, config) alongside the aggregate, not just the
+  aggregate -- the aggregate is not reproducible once the raw rows are gone.
+
 ## Hugging Face
 
 `HF_API_TOKEN` is the org-scoped token. `HF_TOKEN` is a different, personal one — using it where the
