@@ -4,6 +4,13 @@ Ran with `--scaffold` so each case gets a real fixture repo instead of the empty
 every v1.0.0 case fail regardless of the skill. Judge model: default (`haiku`), 2-3 runs per case,
 `--ablation with-without` (a no-skill baseline arm runs alongside).
 
+**Known gap, not run this round: `sentry-cli-1/2/3` have no fixture and are excluded from the table
+below.** These 3 of 12 skills have zero eval coverage. Fixing them needs a fake `sentry` CLI on
+`PATH` plus `Bash` in `allowed_tools`; `case.yaml`'s `execution.env` only accepts `EVAL_*`-prefixed
+keys (confirmed by running a case with `env: {PATH: ...}` — it is rejected: `"execution.env key
+'PATH' is not allowed"`), so seeding a stub binary this way needs a different mechanism than the one
+used for the other 7 cases. Left undone rather than shipped half-working.
+
 | Case | With skill | Without skill | Note |
 |---|---|---|---|
 | investigate-1 | 2/2 pass | 2/2 pass | clear fixture (broad `except` swallowing a heartbeat timeout); both arms diagnose it correctly |
