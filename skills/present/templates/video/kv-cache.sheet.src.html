@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>KV cache — drawing sheet</title>
+<link rel="stylesheet" href="fonts/plex.css">
+<style>
+/* Ink colours sampled from the user's reference sheet (image #1): darkest well-represented pixels per hue.
+   paper #ffffff · ink #111a27 · drafting blue #1256a3 · drafting red #b3261e · blue wash #e3ecf7 · zebra #f4f6f8 */
+html,body{margin:0;background:#ffffff;overflow:hidden}
+svg{display:block;width:1920px;height:1080px}
+svg text{font-family:'IBM Plex Mono',ui-monospace,monospace;stroke:none}
+svg text.h{font-family:'IBM Plex Sans Condensed',sans-serif;font-weight:600}
+</style></head><body>
+<svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <line x1="0" y1="0" x2="0" y2="9" stroke="#b3261e" stroke-width="2"/></pattern>
+  <marker id="ar" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+    <path d="M0 1.5 L10 5 L0 8.5 z" fill="context-stroke"/></marker>
+</defs>
+<g id="s"></g></svg>
+<script>
+const TL = /*TIMELINE*/;
+const C = TL.cues.map(c => c.start);
+const INK = '#111a27', BLUE = '#1256a3', RED = '#b3261e', WASH = '#e3ecf7', ZEBRA = '#f4f6f8';
+const clamp = (x,a=0,b=1) => Math.max(a, Math.min(b, x));
+const ease = x => { x = clamp(x); return 1 - Math.pow(1 - x, 2); };   // pen decelerates into the stroke end
+let t = 0;
+const P = (a, d=.5) => ease((t - a) / d);
+// one inked stroke: drawn from its start to its end over d seconds
+function ln(x1, y1, x2, y2, a, d=.4, o={}) {
+  const p = P(a, d); if (p <= 0) return '';
+  return `<path d="M${x1} ${y1} L${x2} ${y2}" pathLength="1" stroke-dasharray="1" stroke-dashoffset="${1 - p}"`
+   + ` stroke="${o.c||INK}" stroke-width="${o.w||1.5}" fill="none" ${o.m ? `marker-start="url(#ar)" marker-end="url(#ar)"` : ''} ${o.dash ? `style="stroke-dasharray:${o.dash}"` : ''}/>`;
+}
+function rc(x, y, w, h, a, d=.6, o={}) {
+  const p = P(a, d); if (p <= 0) return '';
+  const fill = o.fill && p >= 1 ? `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${o.fill}" opacity="${P(a + d, .25)}"/>` : '';
+  return fill + `<path d="M${x} ${y} h${w} v${h} h${-w} z" pathLength="1" stroke-dasharray="1" stroke-dashoffset="${1 - p}"`
+   + ` stroke="${o.c||INK}" stroke-width="${o.w||1.5}" fill="none"/>`;
+}
+// lettering: characters appear left to right
+function tx(x, y, s, a, o={}) {
+  const n = Math.floor(clamp((t - a) / (o.d ?? Math.max(.25, s.length * .035))) * s.length); if (n <= 0) return '';
+  return `<text x="${x}" y="${y}" font-size="${o.size||22}" fill="${o.c||INK}" text-anchor="${o.anchor||'start'}"`
+   + ` font-weight="${o.w||400}" ${o.h ? 'class="h"' : ''} dominant-baseline="middle">${s.slice(0, n)}</text>`;
+}
+function panel(x, y, w, h, letter, title, spec, a) {
+  return rc(x, y, w, h, a, .7, {w:2})
+    + (P(a + .5, .2) > 0 ? `<rect x="${x}" y="${y}" width="44" height="44" fill="${INK}" opacity="${P(a + .5, .2)}"/>` : '')
+    + tx(x + 22, y + 23, letter, a + .6, {c:'#ffffff', anchor:'middle', h:1, size:24})
+    + ln(x, y + 44, x + w, y + 44, a + .4, .5)
+    + tx(x + 62, y + 23, title, a + .7, {h:1, size:26})
+    + (spec ? tx(x + w - 16, y + 23, spec, a + .9, {anchor:'end', size:18}) : '');
+}
+const TOK = ['Paris', 'is', 'the', 'capital', 'of', 'France'];
+
+function render(now) {
+  t = now; const o = [];
+  // sheet border, zone ticks 1–8 / A–D
+  o.push(rc(20, 20, 1880, 1040, 0, 1.1, {w:1.2}), rc(44, 44, 1832, 992, .2, 1.1, {w:2}));
+  for (let i = 0; i < 8; i++) {
+    const x = 44 + i * 229, cx = x + 114.5;
+    if (i) o.push(ln(x, 20, x, 44, .5 + i*.05, .2, {w:1.2}), ln(x, 1036, x, 1060, .5 + i*.05, .2, {w:1.2}));
+    o.push(tx(cx, 32, String(i + 1), .6 + i*.05, {anchor:'middle', size:15}), tx(cx, 1048, String(i + 1), .6 + i*.05, {anchor:'middle', size:15}));
+  }
+  'ABCD'.split('').forEach((L, i) => {
+    const y = 44 + i * 248, cy = y + 124;
+    if (i) o.push(ln(20, y, 44, y, .6 + i*.05, .2, {w:1.2}), ln(1876, y, 1900, y, .6 + i*.05, .2, {w:1.2}));
+    o.push(tx(32, cy, L, .7 + i*.05, {anchor:'middle', size:15}), tx(1888, cy, L, .7 + i*.05, {anchor:'middle', size:15}));
+  });
+
+  // A — decode: tokens, query arcs, k/v
+  o.push(panel(80, 80, 860, 420, 'A', 'DECODE', 'one token / step', .4));
+  const ax = i => 160 + i * 136;
+  TOK.forEach((w, i) => {
+    const a = C[0] + .4 + i * .28, q = i === 5 && t >= C[1];
+    o.push(rc(ax(i) - 58, 300, 116, 52, a, .3, {c: q ? BLUE : INK, w: q ? 2.5 : 1.5}), tx(ax(i), 327, w, a + .2, {anchor:'middle', size:22, c: q ? BLUE : INK}));
+  });
+  for (let j = 0; j < 5; j++) {
+    const a = C[1] + .2 + (4 - j) * .25, x0 = ax(5) - 20, x1 = ax(j), cy = 300 - 50 - (5 - j) * 26;
+    const p = P(a, .55);
+    if (p > 0) o.push(`<path d="M${x0} 298 Q ${(x0 + x1)/2} ${cy} ${x1} 298" pathLength="1" stroke-dasharray="1" stroke-dashoffset="${1 - p}" stroke="${BLUE}" stroke-width="1.8" fill="none"/>`);
+    const b = C[1] + 1.8 + j * .16;
+    o.push(rc(ax(j) - 56, 372, 52, 40, b, .25), tx(ax(j) - 30, 393, `k${j+1}`, b + .15, {anchor:'middle', size:20}),
+           rc(ax(j) + 4, 372, 52, 40, b + .08, .25, {fill:ZEBRA}), tx(ax(j) + 30, 393, `v${j+1}`, b + .23, {anchor:'middle', size:20}));
+  }
+  o.push(tx(ax(5), 393, 'q6', C[1] + .3, {anchor:'middle', size:20, c:BLUE}));
+  o.push(tx(100, 462, 'k = key   v = value   q = query', C[1] + 2.8, {size:18}));
+
+  // B, C — computation grids: column = decode step, row = token; filled cell = K,V computed at that step
+  const grid = (x0, y0, a, recompute, col) => {
+    const cs = 44, out = [];
+    out.push(tx(x0 + 3*cs, y0 - 22, 'step →', a, {anchor:'middle', size:16}), tx(x0 - 14, y0 + 3*cs, 'tok', a, {anchor:'end', size:16}));
+    for (let s = 0; s < 6; s++) {
+      const at = a + .3 + s * .5;
+      for (let j = 0; j <= s; j++) {
+        const x = x0 + s*cs, y = y0 + j*cs, computed = recompute || j === s;
+        out.push(computed ? rc(x, y, cs - 6, cs - 6, at + j*.03, .22, {c:col, fill: recompute ? 'url(#hatch)' : WASH, w:1.8})
+                          : rc(x, y, cs - 6, cs - 6, at, .22, {w:1, c:'#9aa3ad'}));
+      }
+    }
+    return out.join('');
+  };
+  o.push(panel(960, 80, 440, 420, 'B', 'NO CACHE', '', C[2] - .2));
+  o.push(grid(1040, 180, C[2] + .2, true, RED));
+  o.push(tx(1040, 470, 'total 21', C[2] + 3.5, {size:26, c:RED, w:500}), tx(1380, 470, '∝ n²', C[3], {size:30, c:RED, anchor:'end', w:500}));
+  o.push(panel(1420, 80, 420, 420, 'C', 'CACHE', '', C[4] - .4));
+  o.push(grid(1500, 180, C[4], false, BLUE));
+  o.push(tx(1500, 470, 'total 6', C[4] + 3.1, {size:26, c:BLUE, w:500}), tx(1820, 470, '∝ n', C[4] + 3.4, {size:30, c:BLUE, anchor:'end', w:500}));
+
+  // D — memory: factor chain with leaders, then dimension lines
+  o.push(panel(80, 520, 1320, 480, 'D', 'MEMORY', 'Llama 3.1 8B · bf16', C[5]));
+  const F = [['2','K,V'],['32','layers'],['8','KV heads'],['128','head dim'],['2 B','bytes']];
+  F.forEach((f, k) => {
+    const a = C[6] + .1 + k * .5, cx = 200 + k * 190;
+    o.push(tx(cx, 640, f[0], a, {anchor:'middle', size:40, w:500}), ln(cx, 668, cx, 700, a + .15, .2, {w:1}),
+           tx(cx, 716, f[1], a + .25, {anchor:'middle', size:17}));
+    if (k < 4) o.push(tx(cx + 95, 640, '×', a + .3, {anchor:'middle', size:30}));
+  });
+  o.push(tx(1130, 640, '= 128 KiB', C[6] + 2.8, {anchor:'middle', size:40, c:BLUE, w:500}),
+         tx(1130, 716, 'per token', C[6] + 3.0, {anchor:'middle', size:17, c:BLUE}));
+  const dim = (y, label, bytes, c, a, d) => {
+    const L = bytes / 17.18e9 * 1180, x0 = 140;
+    return ln(x0, y - 22, x0, y + 12, a, .15, {w:1}) + ln(x0 + L, y - 22, x0 + L, y + 12, a + d, .15, {w:1})
+      + ln(x0, y, x0 + L, y, a + .1, d, {c, w:1.8, m:1})
+      + (L < 400 ? tx(x0 + L + 16, y, label, a + .2, {size:20, c}) : tx(x0 + 8, y - 22, label, a + .2, {size:20, c}));
+  };
+  o.push(dim(800, '8,192 tok = 1 GiB', 1.074e9, INK, C[6] + 3.6, .3));
+  o.push(dim(880, '131,072 tok = 16 GiB', 17.18e9, RED, C[7] + .1, 1.3));
+  o.push(dim(960, 'weights ≈ 16 GB', 16.06e9, INK, C[7] + 2.3, 1.0));
+
+  // title block
+  const tb = (y, h, key, val, a, vc) => rc(1420, y, 420, h, a, .4) + tx(1436, y + 18, key, a + .2, {size:15, c:'#5b6470'})
+    + tx(1436, y + h - 26, val, a + .4, {h:1, size:28, c: vc || INK});
+  o.push(tb(520, 120, 'Title', 'KV cache', C[5] + .2), tb(640, 120, 'Model', 'Llama 3.1 8B', C[6]),
+         tb(760, 120, 'Per token', '128 KiB', C[6] + 3.2, BLUE), tb(880, 120, 'Full context', '16 GiB', C[7] + 1.2, RED));
+  document.getElementById('s').innerHTML = o.join('');
+}
+window.render = render;
+const q = new URLSearchParams(location.search);
+render(q.has('t') ? +q.get('t') : 99);
+</script></body></html>

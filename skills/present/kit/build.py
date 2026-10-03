@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Ghép một fragment HTML thành trang publish được, theo bộ "Cà phê sữa".
+"""Ghép một fragment HTML thành trang publish được, theo bộ "reading room" (paper / deep green).
 
-    python3 ${CLAUDE_PLUGIN_ROOT}/skills/present-html/kit/build.py body.html out.html --title "Tên Trang"
+    python3 ${CLAUDE_PLUGIN_ROOT}/skills/present/kit/build.py body.html out.html --title "Tên Trang"
 
 Fragment đầu vào chỉ cần phần nội dung: <header class="hdr"> + <main> với các
 <section class="card">. Script tự lo phần còn lại:
@@ -131,7 +131,10 @@ def add_theme_toggle(body: str) -> tuple[str, int]:
         head = m.group(1)
         return m.group(0) if "theme-toggle" in head else head + THEME_BUTTON + m.group(2)
 
-    return re.subn(r'(<header class="hdr">.*?)(\s*</header>)', repl, body, flags=re.S)
+    # Hosts: the report masthead, and the reading-room TOC footer (explorable pages have no .hdr).
+    body, n = re.subn(r'(<header class="hdr">.*?)(\s*</header>)', repl, body, flags=re.S)
+    body, m = re.subn(r'(<div class="toc-ft">.*?)(\s*</div>)', repl, body, flags=re.S)
+    return body, n + m
 
 
 def strip_inline(html: str) -> str:
@@ -208,10 +211,13 @@ def check(doc: str) -> list[str]:
             errs.append(f"SVG có chữ {size}px — sàn là 11px; cắt chữ hoặc "
                         f"nới khung chứ đừng thu nhỏ font")
 
-    hdrs = len(re.findall(r'<header class="hdr">', lean))
-    toggles = len(re.findall(r'class="theme-toggle"', lean))
-    if hdrs != toggles:
-        errs.append(f"{hdrs} header nhưng {toggles} nút đổi theme")
+    # Every page needs a way to switch paper <-> dark: the user reads in changing light.
+    # A drawing sheet carries its toggle in the title block (class="theme-toggle flip").
+    hosts = len(re.findall(r'<header class="hdr">|<div class="toc-ft">', lean))
+    toggles = len(re.findall(r'class="theme-toggle\b', lean))
+    if toggles < max(hosts, 1):
+        errs.append(f"{hosts} chỗ đặt nút (hdr/toc-ft) nhưng {toggles} nút đổi theme — "
+                    f"trang nào cũng phải đổi được sáng/tối")
 
     if len(doc) > 16 * 1024 * 1024:
         errs.append(f"file {len(doc)/1e6:.1f} MB — trần publish là 16 MB")
@@ -278,6 +284,8 @@ def main() -> int:
     ap.add_argument("body", type=Path, help="fragment: header.hdr + main")
     ap.add_argument("out", type=Path, help="file html để publish")
     ap.add_argument("--title", required=True, help="tên trang — danh từ ngắn, đặc trưng")
+    ap.add_argument("--css", type=Path, action="append", default=[],
+                    help="extra stylesheet inlined after the kit (a template's layout); repeatable")
     ap.add_argument("--no-fonts", action="store_true",
                     help="bỏ font nhúng (~950 KB) — CHỈ khi build nháp để xem thử; "
                          "bản giao cho người khác luôn nhúng font")
@@ -299,6 +307,7 @@ def main() -> int:
     css = ["" if args.no_fonts else (KIT / "fonts.css").read_text(encoding="utf8")]
     css += [(KIT / f).read_text(encoding="utf8")
             for f in ("tokens.css", "components.css", "diagram.css", "fullscreen.css")]
+    css += [f.read_text(encoding="utf8") for f in args.css]   # a template's own layout, after the kit
 
     # charset tường minh: khi mở trang bằng http.server hay file://, không có header
     # charset nào và Chrome rơi về windows-1252 — toàn bộ tiếng Việt thành mojibake.

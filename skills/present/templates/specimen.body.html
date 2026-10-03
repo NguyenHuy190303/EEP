@@ -1,0 +1,60 @@
+<!-- Every kit component on one page. Rebuild + screenshot both themes after any change to tokens/components. -->
+<header class="hdr"><div><div class="eyebrow">Kit specimen</div><h1>Every Component, Once</h1></div><span class="badge ok">build green</span></header>
+<main>
+<section class="card">
+  <div class="card-top"><div><div class="eyebrow">Metrics</div><h2>KV cache, Llama 3.1 8B</h2></div><span class="badge info">config.json</span></div>
+  <div class="metrics"><div><span class="l">per token</span><span class="v">128 KiB</span></div><div><span class="l">8K tokens</span><span class="v">1 GiB</span></div><div><span class="l">128K tokens</span><span class="v">16 GiB</span></div><div><span class="l">KV heads</span><span class="v">8</span></div></div>
+  <p>Body copy with <code>inline_code</code>, a <a href="#">link</a>, and <strong>strong</strong> text. Tiếng Việt: Kiểm tra dấu — ơ ư ă đ ỹ ộ.</p>
+</section>
+<section class="card">
+  <h2>Alerts and badges</h2>
+  <div class="alert ok"><div class="h">Verified</div><p>Measured on the target host.</p></div>
+  <div class="alert info"><div class="h">Info</div><p>Neutral context.</p></div>
+  <div class="alert warn"><div class="h">Risk</div><p>Drift since last week.</p></div>
+  <div class="alert err"><div class="h">Broken</div><p>Cache does not fit.</p></div>
+  <p><span class="badge ok">ok</span> <span class="badge info">info</span> <span class="badge warn">warn</span> <span class="badge crit">crit</span> <span class="badge blue">blue</span></p>
+</section>
+<section class="card">
+  <h2>Table and code</h2>
+  <div class="tw"><table><thead><tr><th>Lever</th><th>Change</th><th class="num">Per token</th></tr></thead><tbody>
+  <tr><td>GQA</td><td>32 → 8 KV heads</td><td class="num">128 KiB</td></tr>
+  <tr><td>FP8 KV</td><td>2 B → 1 B</td><td class="num">64 KiB</td></tr>
+  <tr class="hl"><td>No cache</td><td>recompute every step</td><td class="num">0 KiB</td></tr>
+  </tbody><caption>Source: config.json, 2026-10-03.</caption></table></div>
+  <div class="code"><div class="code-hd"><span class="t">kv.py</span><span>python</span></div><pre class="code-bd"><span class="k">def</span> <span class="f">kv_bytes</span>(L, H, d, b): <span class="c"># per token</span>
+    <span class="k">return</span> <span class="t">2</span> * L * H * d * b   <span class="s">"K and V"</span></pre></div>
+</section>
+<section class="card">
+  <h2>Checklist, timeline, before/after</h2>
+  <ul class="checklist"><li><span class="n">1</span><div><b>Measure</b><div class="d">bytes per token</div></div></li><li><span class="n">2</span><div><b class="done">Guess</b><div class="d">struck through</div></div></li></ul>
+  <ul class="tl"><li><span class="when">09:00</span><div><b>Prefill</b><div class="d">prompt in one pass</div></div></li><li class="now"><span class="when">09:01</span><div><b>Decode</b><div class="d">one token per step</div></div></li></ul>
+  <div class="ba"><div class="before"><div class="lbl">Before</div><p>Recompute t rows.</p></div><div class="after"><div class="lbl">After</div><p>Append one row.</p></div></div>
+</section>
+<section class="card">
+  <h2>Figure and stepped nodes</h2>
+  <figure class="fig"><div class="fig-hd"><span class="t">decode step</span><span class="r">svg</span></div><div class="fig-bd">
+    <svg viewBox="0 0 520 90" role="img" aria-label="Token, project, append, attend"><g fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="10" y="25" width="100" height="40"/><rect x="150" y="25" width="100" height="40"/><rect x="290" y="25" width="100" height="40"/><rect x="420" y="25" width="90" height="40"/>
+      <path d="M110 45h40M250 45h40M390 45h30"/></g>
+      <text x="60" y="50" text-anchor="middle" font-size="13">token</text><text x="200" y="50" text-anchor="middle" font-size="13">project</text>
+      <text x="340" y="50" text-anchor="middle" font-size="13" class="m">append</text><text x="465" y="50" text-anchor="middle" font-size="13">attend</text></svg>
+  </div><figcaption class="fig-cap">One decode step.</figcaption></figure>
+  <div class="stepped" id="sp" data-dwell="1500">
+    <div class="nd fe" data-step="1" data-label="New token"><svg class="i"><use href="#ic-user"/></svg> token</div>
+    <div class="arw" data-step="1"><span class="lbl">x_t</span></div>
+    <div class="nd model round" data-step="2" data-label="Project once"><svg class="i"><use href="#ic-cpu"/></svg> project</div>
+    <div class="arw" data-step="2"><span class="lbl">k, v</span></div>
+    <div class="nd db" data-step="3" data-label="Append to cache"><svg class="i"><use href="#ic-db"/></svg> cache</div>
+  </div>
+</section>
+<section class="card">
+  <div class="poster"><h1>The cache <span class="hl">never recomputes</span> the past</h1><p class="sub">poster + .hl</p></div>
+  <div class="panels"><div class="panel be"><div class="panel-hd"><span class="n">1</span>Panel</div><div class="panel-bd"><div class="nd db sm"><svg class="i"><use href="#ic-db"/></svg> KV cache</div></div><div class="panel-note">note under the panel</div></div></div>
+  <div class="grp"><span class="grp-tab">The harness</span><div class="nd infra"><span class="step">3</span><svg class="i"><use href="#ic-server"/></svg> GPU</div></div>
+  <div class="amp"><div class="n"><b>128 KiB</b>per token</div><span class="ar">→</span><div class="n"><b>1 GiB</b>8K tokens</div><span class="ar">→</span><div class="n hot"><b>16 GiB</b>128K tokens</div></div>
+  <p>Inline <span class="big hot">16 GiB</span> and <span class="big ok">8 heads</span>.</p>
+  <div class="inner">.inner box</div>
+  <div class="prob-list"><details class="prob-item" open><summary>Open problem</summary><div class="body">Body text.</div></details></div>
+  <div class="diagram"><div class="diagram-hd"><span>pipeline</span><span>.diagram</span></div><div class="diagram-steps"><div class="step"><b>Prefill</b><span>n rows</span><span class="w">compute</span></div><div class="step"><b>Decode</b><span>1 row</span><span class="w">memory</span></div><div class="step hot"><b>No cache</b><span>t rows</span><span class="w">n²</span></div><div class="step"><b>Emit</b><span>token</span><span class="w">t+1</span></div></div></div>
+</section>
+</main>

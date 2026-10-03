@@ -1,0 +1,8 @@
+A model writes one token at a time.
+Each new token looks back at every earlier key and value.
+Without a cache, it computes all of them again, every step.
+Work grows with the square of the length.
+With a cache, it computes one new row, and reuses the rest.
+The cost is memory.
+For Llama 3.1 8B, 128 kibibytes per token.
+At full context, 16 gibibytes. About the size of the weights.

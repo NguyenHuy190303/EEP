@@ -1,139 +1,129 @@
-/* html-kit tokens — dual theme: Slate Light (default) / Dracula (dark).
-   Redesigned 24/08/2026, replacing the old single-theme "Cà phê sữa" (the user's decision — see
-   ~/.claude/rules/html-style.md for the full rationale and the contrast/CVD checks run before
-   picking these values unmodified from each theme's canonical spec).
+/* present kit tokens — the "reading room": paper light (default) / deep-green dark.
+   Locked 2026-10-03 from the user's pick of the DAIR.AI-style explorable sample (W1); replaces
+   Slate Light / Dracula, which the user rejected ("color is terrible"). Every text colour clears
+   4.5:1 on its paper — re-run validate_palette.mjs after any change.
 
-   Toggle contract (matches the general Artifact dark-mode convention):
-     - bare :root                                            → Slate Light values
-     - @media(prefers-color-scheme:dark) :root:not([data-theme="light"]) → Dracula (OS default)
-     - :root[data-theme="dark"]                              → Dracula (explicit override wins)
-   A page's own theme-toggle.js only ever sets/clears [data-theme] — it never has to read
-   matchMedia itself, so first paint always matches the OS setting with zero JS.
+   Toggle contract:
+     - bare :root                                                         → paper
+     - @media(prefers-color-scheme:dark) :root:not([data-theme="light"])  → deep green (OS default)
+     - :root[data-theme="dark"]                                           → deep green (explicit wins)
 
-   --on-dark-* and the code-block tokens are NOT redeclared per theme: `.code-bd` is always a dark
-   surface in both themes (by design, same as the old kit), and Dracula's own accent set reads well
-   on both slate-900 and Dracula's own background — one set, reused, less to keep in sync. */
+   --on-dark-* and the code-block tokens are not redeclared per theme: `.code-bd` and the
+   interactive panel are always deep green, in both themes. */
 
 :root{
-  /* ── grounds: Slate Light (Tailwind slate scale, same family archify renders on) ──
-     Adopted 2026-09-15 replacing Solarized Light: the user found Solarized's beige dull next to
-     archify. Accents validated with validate_palette.mjs on #ffffff and #f8fafc — all 8 ≥3.0:1
-     non-text contrast, every pair distinct (min ΔE76 21.9, orange/amber). Dark stays Dracula. */
-  --bg-page:#f8fafc;          /* slate-50 — nền trang */
-  --bg-card:#ffffff;          /* white — card, archify panel */
-  --bg-inner:#f8fafc;         /* slate-50 — lớp trong cùng */
-  --bg-subtle:#f1f5f9;        /* slate-100 — fill cho inline code/ô nhấn nhẹ */
+  --bg-page:#f3f1e8;          /* paper */
+  --bg-card:#f9f7f0;          /* paper, raised */
+  --bg-inner:#f3f1e8;
+  --bg-subtle:#e4e9d8;        /* sage tint: active TOC row, inline code */
 
-  /* ── thanh nổi: slate-900/950, luôn tối ở cả 2 theme (mỏ neo thị giác) ──── */
-  --bg-toast:#0f172a;         /* slate-900 — thanh header, đầu bảng */
-  --bg-code:#0f172a;          /* slate-900 — thân code block, khung sơ đồ */
-  --bg-code-header:#020617;   /* slate-950 — strip trên code block */
+  --bg-toast:#1f3b2c;         /* deep green: mechanism panel, chips */
+  --bg-code:#18301f;          /* code block + interactive panel body */
+  --bg-code-header:#132619;
 
-  /* ── chữ: slate-900/700/500/400 ─────────────────────────────────────── */
-  --text-heading:#0f172a;     /* slate-900 — archify --text */
-  --text-body:#334155;        /* slate-700 */
-  --text-muted:#64748b;       /* slate-500 — archify --text-faint */
-  --text-subtle:#94a3b8;      /* slate-400 — archify --text-dim */
-  --text-on-dark:#e2e8f0;     /* slate-200 — chữ trên --bg-code */
-  --text-on-toast:#e2e8f0;    /* slate-200 — chữ trên --bg-toast */
+  --text-heading:#1c2620;     /* 13.8:1 on paper */
+  --text-body:#3a443d;        /* 9.0:1 */
+  --text-muted:#646b62;       /* 4.9:1 — the floor for anything read */
+  --text-subtle:#9aa096;      /* decoration only, never text you must read */
+  --text-on-dark:#ecefe4;
+  --text-on-toast:#ecefe4;
 
-  --border-card:#e2e8f0;      /* slate-200 — archify --panel-border */
-  --border-divider:#cbd5e1;   /* slate-300 — archify --lane-stroke */
-  --border-dark:#020617;
+  --border-card:#dfdbcd;
+  --border-divider:#cfcab8;
+  --border-dark:#0f1d14;
 
-  /* ── accent: Tailwind 600-step, cùng bộ archify dùng cho stroke ───────── */
-  --red:#e11d48;              /* rose-600 — archify security */
-  --orange:#ea580c;           /* orange-600 — archify messagebus */
-  --yellow:#d97706;           /* amber-600 — archify cloud; cảnh báo */
-  --green:#059669;            /* emerald-600 — archify backend; xong / đã xác minh */
-  --blue:#2563eb;             /* blue-600 — thông tin, accent dùng chung */
-  --cyan:#0891b2;             /* cyan-600 — archify frontend */
-  --violet:#7c3aed;           /* violet-600 — archify database */
-  --magenta:#db2777;          /* pink-600 */
+  /* semantic accents, all ≥4.5:1 on paper (validate_palette.mjs, 2026-10-03) */
+  --red:#b3412a;              /* broken / blocked / cost */
+  --orange:#a65a1c;
+  --yellow:#8a6400;           /* risk, drift */
+  --green:#2f6b47;            /* verified */
+  --blue:#2b5c8a;             /* neutral info, links */
+  --cyan:#2a6f75;
+  --violet:#6b4c9a;
+  --magenta:#a23b6b;
 
-  /* ── accent bản sáng cho .code-bd — CHUNG cho cả 2 theme, xem banner trên ── */
-  --on-dark-green:#50fa7b;
-  --on-dark-blue:#8be9fd;
-  --on-dark-cyan:#8be9fd;
-  --on-dark-yellow:#f1fa8c;
-  --on-dark-red:#ff5555;
-  --on-dark-muted:#6272a4;
+  /* accents on the always-dark panel / code block — shared by both themes */
+  --on-dark-green:#cde98d;    /* the highlight lime */
+  --on-dark-blue:#9cc7e8;
+  --on-dark-cyan:#8fc2a0;
+  --on-dark-yellow:#e7dcb8;
+  --on-dark-red:#e88a68;
+  --on-dark-muted:#93a597;
 
+  --serif:'Newsreader','Iowan Old Style',Georgia,serif;
   --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
   --mono:'Fira Code','JetBrains Mono','Cascadia Code',ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace;
 
-  --shadow-sm:0 1px 2px rgba(7,54,66,.08),0 1px 3px rgba(7,54,66,.06);
-  --r-sm:.375rem; --r-md:.75rem; --r-lg:1rem;
+  --shadow-sm:none;           /* flat at rest — rules and tone, not shadows */
+  --r-sm:2px; --r-md:3px; --r-lg:3px;
 }
 
-/* OS báo dark VÀ chưa ai bấm toggle ép sáng → Dracula theo mặc định hệ thống */
 @media(prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg-page:#282a36;
-    --bg-card:#363a4a;
-    --bg-inner:#21222c;
-    --bg-subtle:#3a3d4d;
+    --bg-page:#14241a;
+    --bg-card:#1a2e21;
+    --bg-inner:#142519;
+    --bg-subtle:#223a2b;
 
-    --bg-toast:#44475a;
-    --bg-code:#21222c;
-    --bg-code-header:#191a21;
+    --bg-toast:#1f3b2c;
+    --bg-code:#0f1d14;
+    --bg-code-header:#0b170f;
 
-    --text-heading:#f8f8f2;
-    --text-body:#e6e6e0;
-    --text-muted:#6272a4;
-    --text-subtle:#4d5273;
-    --text-on-dark:#e9e9f0;
-    --text-on-toast:#f8f8f2;
+    --text-heading:#ecefe4;
+    --text-body:#d3d9cc;
+    --text-muted:#93a597;
+    --text-subtle:#5f7465;
+    --text-on-dark:#ecefe4;
+    --text-on-toast:#ecefe4;
 
-    --border-card:#414458;
-    --border-divider:#4d5273;
-    --border-dark:#14151b;
+    --border-card:#2a4434;
+    --border-divider:#355240;
+    --border-dark:#0b170f;
 
-    --red:#ff5555;
-    --orange:#ffb86c;
-    --yellow:#f1fa8c;
-    --green:#50fa7b;
-    --blue:#8be9fd;
-    --cyan:#8be9fd;
-    --violet:#bd93f9;
-    --magenta:#ff79c6;
+    --red:#ef9a7a;
+    --orange:#e9a66b;
+    --yellow:#e3c76a;
+    --green:#cde98d;
+    --blue:#9cc7e8;
+    --cyan:#8fc9b0;
+    --violet:#bba6e6;
+    --magenta:#e8a0c4;
 
-    --shadow-sm:0 1px 3px rgba(0,0,0,.45),0 2px 10px rgba(0,0,0,.35);
+    --shadow-sm:none;
   }
 }
 
-/* Toggle bấm tay luôn thắng, cả 2 hướng — theme-toggle.js chỉ set/xoá attribute này */
 :root[data-theme="dark"]{
-  --bg-page:#282a36;
-  --bg-card:#363a4a;
-  --bg-inner:#21222c;
-  --bg-subtle:#3a3d4d;
+  --bg-page:#14241a;
+  --bg-card:#1a2e21;
+  --bg-inner:#142519;
+  --bg-subtle:#223a2b;
 
-  --bg-toast:#44475a;
-  --bg-code:#21222c;
-  --bg-code-header:#191a21;
+  --bg-toast:#1f3b2c;
+  --bg-code:#0f1d14;
+  --bg-code-header:#0b170f;
 
-  --text-heading:#f8f8f2;
-  --text-body:#e6e6e0;
-  --text-muted:#6272a4;
-  --text-subtle:#4d5273;
-  --text-on-dark:#e9e9f0;
-  --text-on-toast:#f8f8f2;
+  --text-heading:#ecefe4;
+  --text-body:#d3d9cc;
+  --text-muted:#93a597;
+  --text-subtle:#5f7465;
+  --text-on-dark:#ecefe4;
+  --text-on-toast:#ecefe4;
 
-  --border-card:#414458;
-  --border-divider:#4d5273;
-  --border-dark:#14151b;
+  --border-card:#2a4434;
+  --border-divider:#355240;
+  --border-dark:#0b170f;
 
-  --red:#ff5555;
-  --orange:#ffb86c;
-  --yellow:#f1fa8c;
-  --green:#50fa7b;
-  --blue:#8be9fd;
-  --cyan:#8be9fd;
-  --violet:#bd93f9;
-  --magenta:#ff79c6;
+  --red:#ef9a7a;
+  --orange:#e9a66b;
+  --yellow:#e3c76a;
+  --green:#cde98d;
+  --blue:#9cc7e8;
+  --cyan:#8fc9b0;
+  --violet:#bba6e6;
+  --magenta:#e8a0c4;
 
-  --shadow-sm:0 1px 3px rgba(0,0,0,.45),0 2px 10px rgba(0,0,0,.35);
+  --shadow-sm:none;
 }
 
 *{box-sizing:border-box}
@@ -159,8 +149,9 @@ main{max-width:72rem;margin:1.5rem auto;padding:0 1rem 3rem;
 /* ── type ─────────────────────────────────────────────────────────── */
 h1,h2,h3,h4{color:var(--text-heading);font-family:var(--sans);font-weight:700;
   letter-spacing:-.015em;text-wrap:balance;margin:0}
-h1{font-size:1.5rem;line-height:2rem}
-h2{font-size:1.25rem;line-height:1.75rem}
+h1,h2{font-family:var(--serif);font-weight:400;letter-spacing:-.012em}
+h1{font-size:2.75rem;line-height:1.08}
+h2{font-size:1.75rem;line-height:1.2}
 h3{font-size:1.125rem;line-height:1.5rem;font-weight:600}
 h4{font-size:1rem;line-height:1.5rem;font-weight:600}
 p{margin:0 0 1rem;max-width:72ch} p:last-child{margin-bottom:0}
@@ -172,7 +163,7 @@ a{color:var(--blue);text-decoration-thickness:1px;text-underline-offset:2px}
 a:hover{color:var(--cyan)}
 small,.muted{color:var(--text-muted);font-size:.875rem;line-height:1.25rem}
 .subtle{color:var(--text-subtle)}
-.eyebrow{font-size:.75rem;line-height:1rem;font-weight:700;letter-spacing:.1em;
+.eyebrow{font-family:var(--mono);font-size:.6875rem;line-height:1rem;font-weight:400;letter-spacing:.14em;
   text-transform:uppercase;color:var(--text-muted)}
 .mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
@@ -186,31 +177,25 @@ code{font-family:var(--mono);font-size:.8125rem;
   stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .i-lg{width:1.25rem;height:1.25rem}
 
-/* ── header bar: luôn tối, mỏ neo thị giác ở cả 2 theme ───────────── */
+/* ── header: masthead on paper — big serif title, mono eyebrow, one rule below ── */
 .hdr{
-  position:sticky;top:0;z-index:20;min-height:4rem;
-  display:flex;align-items:center;justify-content:space-between;gap:1rem;
-  padding:.5rem 1.5rem;
-  background:color-mix(in srgb, var(--bg-toast) 94%, transparent);color:var(--text-on-toast);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--bg-code-header);
-  box-shadow:0 1px 8px color-mix(in srgb, var(--text-heading) 22%, transparent);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;
+  max-width:72rem;margin:0 auto;padding:3rem 1rem 1.5rem;
+  border-bottom:1px solid var(--border-divider);color:var(--text-heading);
 }
-.hdr h1,.hdr h2,.hdr h3{color:var(--text-on-toast)}
-.hdr .eyebrow{color:var(--text-on-toast);opacity:.75}
-.hdr .muted{color:color-mix(in srgb, var(--text-on-toast) 75%, var(--bg-toast))}
+.hdr .eyebrow{color:var(--text-muted)}
+.hdr .muted{color:var(--text-muted)}
 .hdr-brand{display:flex;align-items:center;gap:.75rem;min-width:0}
 .hdr-icon{width:2.25rem;height:2.25rem;border-radius:var(--r-sm);
-  background:var(--bg-code-header);color:var(--on-dark-yellow);
+  background:var(--bg-toast);color:var(--on-dark-green);
   display:flex;align-items:center;justify-content:center;flex:none}
 
 /* ── theme toggle — nút sáng/tối, build.py tự chèn nếu thiếu ─────────── */
 .theme-toggle{display:inline-flex;align-items:center;justify-content:center;
   width:2.25rem;height:2.25rem;border-radius:var(--r-sm);flex:none;
-  background:color-mix(in srgb, var(--text-on-toast) 14%, transparent);
-  border:1px solid color-mix(in srgb, var(--text-on-toast) 34%, transparent);
-  color:var(--text-on-toast);cursor:pointer}
-.theme-toggle:hover{background:color-mix(in srgb, var(--text-on-toast) 22%, transparent)}
+  background:transparent;border:1px solid var(--border-divider);
+  color:var(--text-muted);cursor:pointer}
+.theme-toggle:hover{color:var(--text-heading);border-color:var(--text-heading)}
 .theme-toggle .tt-moon{display:none}
 :root[data-theme="dark"] .theme-toggle .tt-sun{display:none}
 :root[data-theme="dark"] .theme-toggle .tt-moon{display:block}
@@ -289,26 +274,26 @@ code{font-family:var(--mono);font-size:.8125rem;
 .badge.blue{background:color-mix(in srgb, var(--blue) 14%, transparent);color:var(--blue);
   border-color:color-mix(in srgb, var(--blue) 35%, transparent)}
 /* trên thanh header các tint biến mất — dùng biến thể này ở đó */
-.hdr .badge{background:color-mix(in srgb, var(--text-on-toast) 14%, transparent);color:var(--text-on-toast);
-  border-color:color-mix(in srgb, var(--text-on-toast) 34%, transparent)}
+
 
 /* ── metrics grid ─────────────────────────────────────────────────── */
 .metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;
   background:var(--bg-inner);border:1px solid var(--border-card);
-  border-radius:var(--r-md);padding:1rem;font-size:.75rem;line-height:1rem}
+  border-radius:var(--r-md);padding:1.25rem;font-size:.75rem;line-height:1rem}
 @media(min-width:640px){.metrics{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .metrics .l{display:block;color:var(--text-muted);margin-bottom:.25rem}
-.metrics .v{display:block;font-family:var(--mono);font-variant-numeric:tabular-nums;
-  font-weight:700;color:var(--text-heading);font-size:1.125rem;line-height:1.5rem}
+.metrics .l{font-family:var(--mono);font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase}
+.metrics .v{display:block;font-family:var(--serif);font-variant-numeric:tabular-nums;
+  font-weight:400;color:var(--text-heading);font-size:2rem;line-height:1.15}
 
 /* ── tables: đầu bảng luôn tối ────────────────────────────────────── */
 .tw{overflow-x:auto;border:1px solid var(--border-card);border-radius:var(--r-md);
   background:var(--bg-inner)}
 table{border-collapse:collapse;width:100%;font-size:.875rem;line-height:1.35rem;min-width:34rem}
-thead th{background:var(--bg-toast);color:var(--text-on-toast);
-  font-size:.6875rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  text-align:left;padding:.5rem .75rem;white-space:nowrap;
-  border-bottom:1px solid var(--bg-code-header)}
+thead th{background:transparent;color:var(--text-muted);font-family:var(--mono);
+  font-size:.6875rem;font-weight:400;letter-spacing:.1em;text-transform:uppercase;
+  text-align:left;padding:.625rem .75rem;white-space:nowrap;
+  border-bottom:1px solid var(--text-heading)}
 tbody td{padding:.5rem .75rem;border-bottom:1px solid var(--border-card);
   vertical-align:top;color:var(--text-body)}
 tbody tr:last-child td{border-bottom:none}
@@ -337,7 +322,7 @@ caption{caption-side:bottom;text-align:left;padding:.625rem .75rem;font-size:.75
   display:flex;flex-direction:column;align-items:center;gap:.25rem}
 .diagram .step.hot{border-color:var(--on-dark-red);
   background:color-mix(in srgb, var(--red) 26%, transparent)}
-.diagram .step b{color:var(--bg-inner);font-weight:700}
+.diagram .step b{color:var(--text-on-dark);font-weight:700}
 .diagram .step span{font-size:.6875rem;color:var(--on-dark-muted)}
 .diagram .step .w{font-family:var(--mono);color:var(--on-dark-cyan)}
 .diagram .step.hot .w{color:var(--on-dark-red);font-weight:600}
@@ -368,7 +353,7 @@ caption{caption-side:bottom;text-align:left;padding:.625rem .75rem;font-size:.75
   padding:.875rem;border-top-color:transparent;margin:0 -.5rem}
 
 /* ── a11y ─────────────────────────────────────────────────────────── */
-:focus-visible{outline:2px solid var(--bg-toast);outline-offset:2px;border-radius:var(--r-sm)}
+:focus-visible{outline:2px solid var(--text-heading);outline-offset:2px;border-radius:var(--r-sm)}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media(max-width:600px){
   main{padding:0 .75rem 2.5rem;margin-top:1rem;gap:1rem}

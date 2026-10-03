@@ -14,6 +14,16 @@ Operational steps are in `../SKILL.md`; component syntax is in `../kit/README.md
   hand-adjusted.
 - **2026-09-03** — the kit became this skill. Font embedding made mandatory, SVG text rules added
   and enforced in `build.py`, screenshot verification added, six design laws adopted from archify.
+- **2026-10-03** — `present-html` became `present`. The user saw same-topic samples of every
+  format, called the Slate/Dracula look "terrible" and the pages too wordy, and picked:
+  the 80%-STE register for prose; the DAIR.AI-style reading room for pages (paper + Newsreader
+  serif; dark = deep green, derived from the sample's own panel colours); the drawing sheet
+  (white / blueprint, from the user's engineering-sheet reference) for explaining a concept;
+  archify for architecture/stack design. That narrows the old rule, which sent every
+  workflow, sequence and data-flow diagram to archify. For video they picked a 3b1b look in
+  manim's palette, rendered through headless Chrome, not manim. Rejected: the kit `.panels`
+  poster, a kit-styled report, a narrated stepped kit figure, a sheet-styled explorable, and a
+  sheet-styled video.
 
 ## Six laws taken from archify
 

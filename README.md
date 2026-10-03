@@ -9,7 +9,7 @@ Third-party skills (archify, the Hugging Face marketplace ones) stay outside —
 | `design-decision` | choosing architecture/stack/library/schema — constraints first, ≥2 priced options, horizon + falsifier |
 | `deepsearch` | research needing sourced answers; model memory is never evidence. Mode `before-cook`: before building anything, sweep GitHub / HF Hub / PyPI / Papers with Code / Kaggle for an existing repo, model, dataset, notebook |
 | `review-pr` | evidence-first review of a PR/branch/diff |
-| `present-html` | any HTML page (report, spec, memo, dashboard); owns the 2-theme kit |
+| `present` | any explanation as a page, sheet, diagram or video (report, spec, explorable, explainer); owns the reading-room / drawing-sheet / 3b1b looks |
 | `cards-readme` | HF model card, dataset card, GitHub README |
 | `sentry-cli` | inspecting Sentry issues/events/traces via the CLI |
 | `sky-job` | SkyPilot GPU job lifecycle |

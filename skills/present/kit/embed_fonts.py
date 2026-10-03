@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch Inter + Fira Code from Google Fonts and inline them as data: URIs.
+"""Fetch Inter + Fira Code + Newsreader from Google Fonts and inline them as data: URIs.
 
 The Artifact CSP blocks every external host, so a <link> to fonts.googleapis.com
 fails silently and the page falls back to a system face. Embedding keeps the real
@@ -17,7 +17,8 @@ import urllib.request
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 
-FAMILIES = ["Inter:wght@400;500;600;700", "Fira+Code:wght@400;500;600"]
+FAMILIES = ["Inter:wght@400;500;600;700", "Fira+Code:wght@400;500;600",
+            "Newsreader:opsz,wght@6..72,400..600"]   # display serif of the reading-room look
 
 FACE = re.compile(r"@font-face\s*\{[^}]*\}", re.S)
 URL = re.compile(r"url\((https://[^)]+\.woff2)\)")

@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.7.0 (2026-10-03)
+
+- **`present-html` → `present`.** The skill now covers four output types, with a style catalogue
+  from one same-topic sample round: writing A/B/C (`kit/ste_check.py`), pages W1/W2, diagrams
+  D1/D2 and narrated explainer video V1/V2. It asks the user to pick a style before building;
+  the defaults are B, W1, D1 (concept) / D2 (architecture) and V1.
+- **New look for pages: the reading room** (paper + Newsreader display serif; dark = deep green).
+  It replaces Slate Light / Dracula in `kit/tokens.css`. Every existing component inherits it;
+  `templates/specimen.body.html` exercises them all.
+- **Diagram routing changed.** Explaining a concept → drawing sheet (`templates/sheet/`, white /
+  blueprint). Architecture or stack design → archify. Previously every workflow, sequence and
+  data-flow diagram went to archify.
+- **New templates**: `templates/explorable/` (TOC + question cards + interactive panel) and
+  `templates/video/` (`say` narration → `render(t)` page → headless Chrome frames → ffmpeg, in
+  manim's palette, or V2 inked on a drawing sheet with IBM Plex), `templates/explorable-sheet/`
+  (W2, light only as sampled) and `templates/archify/` (D2 example). Each ships the KV-cache
+  worked example.
+- **`build.py`**: new `--css` flag for a template's layout. The theme toggle is also inserted into
+  a reading-room `.toc-ft`. The check now requires at least one toggle per page instead of one
+  per `.hdr`.
+- **`components.css`**: SVG `<text>` without its own `fill` now follows the theme. It used to
+  paint black, which made it invisible on dark paper. Four more components were unreadable on
+  dark paper and now contrast in both themes: `.diagram .step b`, `.amp .n.hot`, `.step` badges
+  and `.grp-tab`.
+- **Delivery gate**: open the `http://` URL in the user's browser yourself.
+
 ## 1.6.2 (2026-09-28)
 
 - The 1.6.0 scrub was incomplete in two ways an independent re-audit caught: (1) three commits made

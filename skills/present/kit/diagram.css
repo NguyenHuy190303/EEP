@@ -110,7 +110,7 @@
 .nd .step, .grp > .step, .step-badge {
   position: absolute; top: -.5rem; left: -.5rem;
   width: 1.25rem; height: 1.25rem; border-radius: 999px;
-  background: var(--bg-toast); color: var(--text-on-toast);
+  background: var(--text-heading); color: var(--bg-page);
   font-family: var(--mono); font-size: .6875rem; font-weight: 700;
   display: grid; place-items: center; z-index: 2;
 }
@@ -123,7 +123,7 @@
 }
 .grp > .grp-tab {
   position: absolute; top: -.6875rem; left: .75rem;
-  background: var(--bg-toast); color: var(--text-on-toast);
+  background: var(--text-heading); color: var(--bg-page);
   font-family: var(--mono); font-size: .6875rem; font-weight: 700;
   letter-spacing: .06em; text-transform: uppercase;
   padding: .1875rem .5rem; border-radius: var(--r-sm);

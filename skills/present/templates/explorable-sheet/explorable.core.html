@@ -1,0 +1,203 @@
+<div class="rr">
+<nav class="toc" aria-label="Chapters">
+  <div class="toc-eb">The reading room</div>
+  <ol>
+    <li><a href="#s0" class="on"><span>00</span>The idea</a></li>
+    <li><a href="#s1"><span>01</span>Ways in</a></li>
+    <li><a href="#s2"><span>02</span>The decode loop</a></li>
+    <li><a href="#s3"><span>03</span>Two phases</a></li>
+    <li><a href="#s4"><span>04</span>The bill</a></li>
+    <li><a href="#s5"><span>05</span>Change one thing</a></li>
+    <li><a href="#s6"><span>06</span>Four levers</a></li>
+  </ol>
+  <div class="toc-ft">
+    <p>An explorable edition<br>Llama 3.1 8B</p>
+    <button type="button" id="motion" class="toc-motion" aria-pressed="true">Motion: on</button>
+  </div>
+</nav>
+
+<div class="col">
+
+<section id="s0" class="sec">
+  <header class="sh"><span class="sl">A</span><span class="st">The idea</span><span class="sm">KV cache · overview</span></header>
+  <h1 class="disp">The model never<br>recomputes the past.</h1>
+  <p class="lede">Every new token looks back at all earlier tokens. Their keys and values never change — so compute them once, and keep them.</p>
+  <div class="stats">
+    <div><b>128 KiB</b><span>per token</span></div>
+    <div><b>8 heads</b><span>of K and V, not 32</span></div>
+    <div><b>1 GiB</b><span>per 8K-token sequence</span></div>
+    <div><b>0</b><span>past rows recomputed</span></div>
+  </div>
+</section>
+
+<section id="s1" class="sec">
+  <header class="sh"><span class="sl">B</span><span class="st">Six ways in</span><span class="sm">pick one</span></header>
+  <h2 class="disp">Start with a question.</h2>
+  <div class="ways">
+    <a class="q" href="#s2" data-go="nocache"><span class="qn">01</span><svg viewBox="0 0 48 32" class="qi" aria-hidden="true"><path d="M6 26h8V18h8V10h8V4h12"/><path d="M6 26h36" opacity=".4"/></svg><b>What if every step recomputed everything?</b><span>Turn the cache off.</span></a>
+    <a class="q" href="#s2" data-go="append"><span class="qn">02</span><svg viewBox="0 0 48 32" class="qi" aria-hidden="true"><rect x="8" y="4" width="32" height="6"/><rect x="8" y="13" width="32" height="6"/><rect x="8" y="22" width="32" height="6" stroke-dasharray="3 2"/></svg><b>Why can the past be stored at all?</b><span>Watch a row land.</span></a>
+    <a class="q" href="#s3"><span class="qn">03</span><svg viewBox="0 0 48 32" class="qi" aria-hidden="true"><path d="M6 6v20M12 6v20M18 6v20"/><path d="M28 26h4v-5h4v-5h4v-5h4"/></svg><b>Why is the prompt fast but the answer slow?</b><span>Parallel vs. one at a time.</span></a>
+    <a class="q" href="#s4"><span class="qn">04</span><svg viewBox="0 0 48 32" class="qi" aria-hidden="true"><path d="M6 26 L42 6"/><circle cx="6" cy="26" r="2"/><circle cx="42" cy="6" r="2"/></svg><b>What does one token cost?</b><span>Five numbers, multiplied.</span></a>
+    <a class="q" href="#s5" data-variant="kv32"><span class="qn">05</span><svg viewBox="0 0 48 32" class="qi" aria-hidden="true"><path d="M8 6 L24 26 L40 6"/><path d="M16 6 L24 26 L32 6" opacity=".5"/></svg><b>What if every head kept its own keys?</b><span>Undo GQA. Pay 4×.</span></a>
+    <a class="q" href="#s6"><span class="qn">06</span><svg viewBox="0 0 48 32" class="qi" aria-hidden="true"><path d="M6 16h14"/><path d="M20 16 L42 6M20 16h22M20 16 L42 26"/></svg><b>What if ten users send one prompt?</b><span>Keep one copy.</span></a>
+  </div>
+</section>
+
+<section id="s2" class="sec">
+  <header class="sh"><span class="sl">C</span><span class="st">The decode loop</span><span class="sm">interactive · 12-token toy</span></header>
+  <div class="mech" id="mech">
+    <div class="mech-hd">
+      <div><div class="eb">The mechanism, in your hands</div><h2 class="disp">From one token to the next.</h2></div>
+      <div class="mech-tag">Interactive<br>decode loop</div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" data-sub="0" class="tab on"><span>01</span><b>Append</b><i>new K, V row</i></button>
+      <button type="button" role="tab" data-sub="1" class="tab"><span>02</span><b>Attend</b><i>q · every key</i></button>
+      <button type="button" role="tab" data-sub="2" class="tab"><span>03</span><b>Emit</b><i>token t + 1</i></button>
+    </div>
+    <div class="mech-bd">
+      <div class="viz">
+        <div class="viz-hd"><span>Cache · 1 layer · 1 KV head</span><span class="lg"><i class="sw k"></i>key <i class="sw v"></i>value</span></div>
+        <div class="rows" id="rows" aria-live="polite"></div>
+        <div class="outline" id="outline"></div>
+      </div>
+      <div class="side">
+        <div class="side-eb" id="side-eb">Step 01 · append</div>
+        <h3 class="disp" id="side-h">Store the new row.</h3>
+        <p id="side-p">One new row. Nothing above it moves.</p>
+        <div class="ctr">
+          <div class="ctr-t" id="ctr-t">token t = 5 · “and”</div>
+          <dl>
+            <dt>computed this step</dt><dd id="c-now">1</dd>
+            <dt>computed so far</dt><dd id="c-sum">5</dd>
+            <dt>…with no cache</dt><dd id="c-no">15</dd>
+            <dt>read by attention</dt><dd id="c-read">5</dd>
+          </dl>
+        </div>
+        <div class="work">
+          <div class="eb">Rows computed so far</div>
+          <div class="wb on"><span>with cache</span><i><u id="w-on" style="width:6.4%"></u></i><b id="w-on-n">5</b></div>
+          <div class="wb off"><span>no cache</span><i><u id="w-off" style="width:19.2%"></u></i><b id="w-off-n">15</b></div>
+        </div>
+        <div class="nav">
+          <button type="button" id="prev" aria-label="Previous step">←</button>
+          <span id="pos">01 / 03 · token 5 of 12</span>
+          <button type="button" id="next" class="go">Next: attend →</button>
+        </div>
+      </div>
+    </div>
+    <div class="mech-ft">
+      <div class="eb">Try a thought experiment</div>
+      <div class="pills">
+        <button type="button" class="pill" id="p-cache" aria-pressed="false">Turn the cache off</button>
+        <button type="button" class="pill" id="p-end">Skip to the last token</button>
+        <button type="button" class="pill" id="p-back">One token back</button>
+        <button type="button" class="pill" id="p-reset">Reset ↺</button>
+      </div>
+      <p class="note">Row counts exact · attention weights illustrative</p>
+    </div>
+  </div>
+</section>
+
+<section id="s3" class="sec">
+  <header class="sh"><span class="sl">D</span><span class="st">Two phases</span><span class="sm">prefill · decode</span></header>
+  <h2 class="disp">Prompt: all at once. Answer: one by one.</h2>
+  <div class="phase-grid">
+    <figure class="phase">
+      <svg viewBox="0 0 320 150" role="img" aria-label="Prefill: five prompt tokens processed in one parallel pass">
+        <g class="ink" fill="none" stroke-width="1.5">
+          <rect x="24" y="20" width="120" height="110" rx="6" stroke-dasharray="4 3"/>
+          <path d="M152 75h44"/><path d="M190 69l8 6-8 6"/>
+          <rect x="206" y="20" width="90" height="110" rx="6"/>
+        </g>
+        <g class="tok">
+          <rect x="40" y="32" width="88" height="14" rx="3"/><rect x="40" y="52" width="88" height="14" rx="3"/><rect x="40" y="72" width="88" height="14" rx="3"/><rect x="40" y="92" width="88" height="14" rx="3"/><rect x="40" y="112" width="88" height="10" rx="3" opacity=".5"/>
+        </g>
+        <text x="84" y="146" text-anchor="middle" font-size="12" class="m">5 tokens, 1 pass</text>
+        <text x="251" y="70" text-anchor="middle" font-size="13">cache</text>
+        <text x="251" y="88" text-anchor="middle" font-size="13">filled</text>
+      </svg>
+      <figcaption><b>Prefill</b><span>compute-bound</span></figcaption>
+    </figure>
+    <figure class="phase">
+      <svg viewBox="0 0 320 150" role="img" aria-label="Decode: one token per step, each step reads the whole cache">
+        <g class="ink" fill="none" stroke-width="1.5"><path d="M24 130h272" opacity=".35"/></g>
+        <g class="tok">
+          <rect x="30" y="104" width="40" height="18" rx="3"/>
+          <rect x="84" y="86" width="40" height="36" rx="3"/>
+          <rect x="138" y="68" width="40" height="54" rx="3"/>
+          <rect x="192" y="50" width="40" height="72" rx="3"/>
+          <rect x="246" y="32" width="40" height="90" rx="3"/>
+        </g>
+        <text x="160" y="18" text-anchor="middle" font-size="12" class="m">each step reads every cached row</text>
+        <text x="160" y="146" text-anchor="middle" font-size="12" class="m">step 1 → step 5</text>
+      </svg>
+      <figcaption><b>Decode</b><span>memory-bandwidth-bound</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="s4" class="sec">
+  <header class="sh"><span class="sl">E</span><span class="st">The bill</span><span class="sm">bytes per token</span></header>
+  <h2 class="disp">Five numbers, one bill.</h2>
+  <div class="eq">
+    <div class="eq-f">2 × <i>L</i> × <i>H</i><sub>kv</sub> × <i>d</i> × <i>b</i></div>
+    <div class="eq-n">= 2 × 32 × 8 × 128 × 2 = <b>131,072 B = 128 KiB</b></div>
+    <div class="eq-k"><span><b>2</b> K and V</span><span><b>L 32</b> layers</span><span><b>H<sub>kv</sub> 8</b> KV heads</span><span><b>d 128</b> head dim</span><span><b>b 2</b> bf16 bytes</span></div>
+  </div>
+  <div class="tri">
+    <div><span>then × tokens × batch</span><b>linear</b></div>
+    <div><span>at 131,072 tokens</span><b>16 GiB</b></div>
+    <div><span>bf16 weights</span><b>15.0 GiB</b></div>
+  </div>
+</section>
+
+<section id="s5" class="sec">
+  <header class="sh"><span class="sl">F</span><span class="st">Change one thing</span><span class="sm">Llama 3.1 8B · config.json</span></header>
+  <div class="whatif">
+    <div class="wi-hd">
+      <h2 class="disp">What if you change one thing?</h2>
+      <span class="wi-tag">sizes, not speeds</span>
+    </div>
+    <div class="seg-row">
+      <div class="seg" data-k="seq"><span class="seg-l">Sequence</span><button type="button" data-v="13" class="on">8K</button><button type="button" data-v="15">32K</button><button type="button" data-v="17">128K</button></div>
+      <div class="seg" data-k="kv"><span class="seg-l">KV heads</span><button type="button" data-v="1">1</button><button type="button" data-v="8" class="on">8</button><button type="button" data-v="32">32</button></div>
+      <div class="seg" data-k="b"><span class="seg-l">Value type</span><button type="button" data-v="2" class="on">bf16</button><button type="button" data-v="1">fp8</button></div>
+    </div>
+    <div class="wi-bd">
+      <div class="wi-num">
+        <div class="eb" id="wi-lbl">Base · 8,192 tok · 8 KV · bf16</div>
+        <div class="big"><b id="wi-v">1.00</b><span id="wi-u">GiB per sequence</span></div>
+        <div class="delta" id="wi-d">same as base</div>
+        <code class="wi-f" id="wi-f">2 × 32 × 8 × 128 × 2 B × 8,192</code>
+      </div>
+      <div class="wi-plot">
+        <div class="eb">Per sequence · log scale</div>
+        <svg id="plot" viewBox="0 0 760 120" role="img" aria-label="Dot plot of cache size against base"></svg>
+      </div>
+    </div>
+    <div class="cmp-hd eb">Controlled comparison · KV heads · bf16 · 8K</div>
+    <div class="cmp" id="cmp">
+      <div data-kv="1"><span>1 head</span><b>16 KiB</b><i>0.125 GiB</i></div>
+      <div data-kv="4"><span>4 heads</span><b>64 KiB</b><i>0.5 GiB</i></div>
+      <div data-kv="8" class="on"><span>8 · base</span><b>128 KiB</b><i>1 GiB</i></div>
+      <div data-kv="16"><span>16 heads</span><b>256 KiB</b><i>2 GiB</i></div>
+      <div data-kv="32"><span>32 · no GQA</span><b>512 KiB</b><i>4 GiB</i></div>
+    </div>
+  </div>
+</section>
+
+<section id="s6" class="sec">
+  <header class="sh"><span class="sl">G</span><span class="st">Four levers</span><span class="sm">fewer bytes or fewer copies</span></header>
+  <h2 class="disp">Four levers.</h2>
+  <div class="levers">
+    <div><span class="ln">i</span><h3 class="disp">Share the keys</h3><p>GQA · 512 → 128 KiB / token</p></div>
+    <div><span class="ln">ii</span><h3 class="disp">Shrink the values</h3><p>fp8 · 128 → 64 KiB / token</p></div>
+    <div><span class="ln">iii</span><h3 class="disp">Page the memory</h3><p>PagedAttention · fixed blocks, no reserved gaps</p></div>
+    <div><span class="ln">iv</span><h3 class="disp">Share the prefix</h3><p>Prefix caching · one copy per shared prompt</p></div>
+  </div>
+  <footer class="colophon" id="colophon">Shape: huggingface.co/unsloth/Meta-Llama-3.1-8B-Instruct config.json, read 2026-10-03. Everything else is arithmetic on it.</footer>
+</section>
+<!--tb-->
+</div>
+</div>

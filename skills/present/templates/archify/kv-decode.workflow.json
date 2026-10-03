@@ -1,0 +1,170 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "KV cache decode loop",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1000,
+      528
+    ],
+    "legend": {
+      "mode": "hidden"
+    }
+  },
+  "lanes": [
+    {
+      "id": "tokens",
+      "label": "Tokens"
+    },
+    {
+      "id": "model",
+      "label": "Model"
+    },
+    {
+      "id": "memory",
+      "label": "GPU memory"
+    }
+  ],
+  "phases": [
+    {
+      "id": "prefill_phase",
+      "label": "Prefill",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "decode_phase",
+      "label": "Decode",
+      "fromCol": 2,
+      "toCol": 5,
+      "variant": "emphasis"
+    }
+  ],
+  "mainPath": [
+    "prompt",
+    "prefill",
+    "cache",
+    "attn",
+    "next"
+  ],
+  "nodes": [
+    {
+      "id": "prompt",
+      "lane": "tokens",
+      "col": 0,
+      "type": "frontend",
+      "label": "Prompt",
+      "sublabel": "n tokens",
+      "width": 150
+    },
+    {
+      "id": "newtok",
+      "lane": "tokens",
+      "col": 2,
+      "type": "frontend",
+      "label": "Token x_t",
+      "sublabel": "1 token",
+      "width": 150
+    },
+    {
+      "id": "next",
+      "lane": "tokens",
+      "col": 5,
+      "type": "frontend",
+      "label": "Token x_t+1",
+      "width": 150
+    },
+    {
+      "id": "prefill",
+      "lane": "model",
+      "col": 1,
+      "type": "backend",
+      "label": "Prefill",
+      "sublabel": "parallel",
+      "width": 150
+    },
+    {
+      "id": "project",
+      "lane": "model",
+      "col": 3,
+      "type": "backend",
+      "label": "Project",
+      "sublabel": "q, k, v once",
+      "width": 150
+    },
+    {
+      "id": "attn",
+      "lane": "model",
+      "col": 4,
+      "type": "backend",
+      "label": "Attention",
+      "sublabel": "reads t rows",
+      "width": 150
+    },
+    {
+      "id": "cache",
+      "lane": "memory",
+      "col": 2,
+      "type": "database",
+      "label": "KV cache",
+      "sublabel": "128 KiB / token",
+      "width": 150
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-prompt",
+      "from": "prompt",
+      "to": "prefill"
+    },
+    {
+      "id": "e-fill",
+      "from": "prefill",
+      "to": "cache",
+      "label": "n rows",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e-read",
+      "from": "cache",
+      "to": "attn",
+      "label": "t rows",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e-out",
+      "from": "attn",
+      "to": "next"
+    },
+    {
+      "id": "e-proj",
+      "from": "newtok",
+      "to": "project",
+      "role": "branch"
+    },
+    {
+      "id": "e-append",
+      "from": "project",
+      "to": "cache",
+      "label": "+1 row",
+      "role": "branch"
+    },
+    {
+      "id": "e-q",
+      "from": "project",
+      "to": "attn",
+      "label": "q",
+      "role": "branch"
+    },
+    {
+      "id": "e-loop",
+      "from": "next",
+      "to": "newtok",
+      "label": "repeat",
+      "variant": "dashed",
+      "role": "return"
+    }
+  ]
+}

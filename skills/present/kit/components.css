@@ -82,8 +82,8 @@
   display: block; font-size: 1.25rem; line-height: 1.6rem;
   font-variant-numeric: tabular-nums; color: var(--text-heading); margin-bottom: .1rem;
 }
-.amp .n.hot { background: var(--red); border-color: var(--red); color: #F3D8D3 }
-.amp .n.hot b { color: #FFF }
+.amp .n.hot { background: var(--red); border-color: var(--red); color: color-mix(in srgb, var(--bg-page) 85%, var(--red)) }
+.amp .n.hot b { color: var(--bg-page) }
 .amp .ar {
   align-self: center; color: var(--text-subtle); font-size: 1rem;
   flex: 0 0 auto; padding: 0 .1rem;
@@ -131,3 +131,5 @@
   paint-order: fill;
 }
 .fig-bd svg .m, .fig-bd svg .m tspan { font-family: var(--mono) }
+/* <text> without its own fill would paint black — invisible on the dark paper. Follow the theme. */
+.fig-bd svg text:not([fill]) { fill: currentColor }

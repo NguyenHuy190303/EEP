@@ -1,18 +1,18 @@
-# html-kit — 2 theme: Slate Light / Dracula
+# present kit — reading room: paper / deep green
 
-Default style for every HTML page built with this skill. Kit này thuộc skill `present-html` —
+Default style for every HTML page built with this skill. Kit này thuộc skill `present` —
 quy trình và luật nằm ở `../SKILL.md`, lý do và catalogue lỗi ở `../references/design-rules.md`.
 File này chỉ là tham chiếu component + token.
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/present-html/kit/build.py body.html out.html --title "Tên Trang" \
+python3 ${CLAUDE_PLUGIN_ROOT}/skills/present/kit/build.py body.html out.html --title "Tên Trang" \
   --shot /tmp/shot.png --shot-size 1500x3000   # rồi MỞ ẢNH RA XEM
 ```
 
 | File | Nội dung |
 |---|---|
 | `build.py` | Ghép + kiểm. Thoát khác 0 là có lỗi, đừng publish |
-| `fonts.css` | Inter 400/500/600/700 + Fira Code 400/500/600, nhúng data URI, có subset tiếng Việt |
+| `fonts.css` | Inter 400–700 + Fira Code 400–600 + Newsreader 400–600 (display serif), embedded as data URIs with the Vietnamese subset |
 | `tokens.css` | ~28 token màu (2 theme) + kiểu chữ + toàn bộ component gốc + nút đổi theme |
 | `components.css` | `.fig` `.ba` `.amp` `.big` `.flow-edge` `.flow-pulse` — bổ sung cho tài liệu có sơ đồ |
 | `fullscreen.css` + `fullscreen.js` | Nút và lớp phủ xem sơ đồ toàn màn hình (dùng chung cho mermaid VÀ svg vẽ tay) |
@@ -20,28 +20,24 @@ python3 ${CLAUDE_PLUGIN_ROOT}/skills/present-html/kit/build.py body.html out.htm
 | `sprite.html` | 20 icon, dùng qua `<svg class="i"><use href="#ic-…"/></svg>` |
 | `overlay.html` | Khung lớp phủ — `build.py` tự cắm |
 
-## Token màu — 2 theme, cùng tên biến
+## Color tokens: two themes, same variable names
 
-Slate Light (mặc định, `:root`; Tailwind slate + accent bậc 600 — cùng bộ archify dùng, đổi
-15/09/2026 thay Solarized) và Dracula (`:root[data-theme="dark"]`, hoặc tự động khi
-`prefers-color-scheme:dark` và chưa ai bấm ép sáng). Không đổi hex — 8 accent đã qua
-`validate_palette.mjs` trên `#ffffff` và `#f8fafc`: contrast non-text ≥3.0:1, cặp gần nhất
-orange/amber ΔE76 21.9.
+Locked 2026-10-03 (the user picked the reading-room explorable). Paper is `:root`. Deep green is
+`:root[data-theme="dark"]`, or automatic under `prefers-color-scheme:dark` until the user forces
+light. Every text colour clears 4.5:1 on its paper (`validate_palette.mjs`); change none without
+re-running it.
 
-| Vai trò | Slate Light | Dracula |
+| Role | Paper | Deep green |
 |---|---|---|
-| Nền trang / card / trong cùng | `#f8fafc` `#ffffff` `#f8fafc` | `#282a36` `#363a4a` `#21222c` |
-| Thanh nổi (header/code) — luôn tối ở cả 2 | `#0f172a` / `#0f172a` / `#020617` | `#44475a` / `#21222c` / `#191a21` |
-| Chữ heading/body/muted/subtle | `#0f172a` `#334155` `#64748b` `#94a3b8` | `#f8f8f2` `#e6e6e0` `#6272a4` `#4d5273` |
-| `--red` crit | `#e11d48` | `#ff5555` |
-| `--yellow` warn | `#d97706` | `#f1fa8c` |
-| `--green` ok | `#059669` | `#50fa7b` |
-| `--blue`/`--cyan` info | `#2563eb` / `#0891b2` | `#8be9fd` (chung, Dracula không có blue riêng) |
-| `--violet` / `--magenta` | `#7c3aed` / `#db2777` | `#bd93f9` (Purple) / `#ff79c6` (Pink) |
+| Page / card / inner / subtle | `#f3f1e8` `#f9f7f0` `#f3f1e8` `#e4e9d8` | `#14241a` `#1a2e21` `#142519` `#223a2b` |
+| Panel / code body / code header (deep green in both) | `#1f3b2c` `#18301f` `#132619` | `#1f3b2c` `#0f1d14` `#0b170f` |
+| Text heading / body / muted / subtle | `#1c2620` `#3a443d` `#646b62` `#9aa096` | `#ecefe4` `#d3d9cc` `#93a597` `#5f7465` |
+| `--red` broken · `--yellow` risk · `--green` verified | `#b3412a` `#8a6400` `#2f6b47` | `#ef9a7a` `#e3c76a` `#cde98d` |
+| `--blue` info · `--cyan` · `--violet` · `--magenta` · `--orange` | `#2b5c8a` `#2a6f75` `#6b4c9a` `#a23b6b` `#a65a1c` | `#9cc7e8` `#8fc9b0` `#bba6e6` `#e8a0c4` `#e9a66b` |
 
-`--on-dark-*` (dùng trong `.code-bd`, luôn nền tối ở CẢ 2 theme) **không đổi theo theme** — 1 bộ
-dùng chung (accent Dracula, đọc tốt trên cả `#0f172a` và `#21222c`). `--sans`/`--mono`/`--r-*` cũng
-chỉ khai 1 lần, không cần lặp lại theo theme.
+`--on-dark-*` (text on the always-green panel / code block) is declared once for both themes.
+`--serif` is the display face (h1, h2, `.metrics .v`); `--sans` is the body; `--mono` is for
+eyebrows, table heads and code.
 
 **Mọi rgba/tint trong component đi qua `color-mix(in srgb, var(--x) N%, transparent)`, không
 hardcode hex** — đây là điều dễ quên nhất khi thêm component mới; hardcode là component đó sẽ "kẹt"
@@ -49,7 +45,7 @@ hardcode hex** — đây là điều dễ quên nhất khi thêm component mới
 
 ## Component
 
-**Khung trang** — `<header class="hdr">` dính trên (luôn tối, chữ sáng ở cả 2 theme) rồi `<main>`
+**Khung trang** — `<header class="hdr">` (masthead on paper: mono `.eyebrow` + serif `h1`, one rule below) rồi `<main>`
 (72rem, flex column, gap 1.5rem) chứa các `<section class="card">`. Trong `.card` các con cách nhau
 bằng `gap`, nên **bọc từng nhóm văn trong `<div>`** thay vì dựa vào margin của `<p>`.
 
@@ -139,4 +135,4 @@ python3 gif.py trang.html --figure "#id-so-do" --steps 6 --out ra.gif --size 100
 
 ## Delivering to the user
 
-Do not hand over `file://` if the user connects remotely — see `../SKILL.md`, "Deliver by HTTP link", for the actual rule.
+Do not hand over `file://` if the user connects remotely — see `../SKILL.md`, "Delivery gate", item 4.

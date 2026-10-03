@@ -1,0 +1,175 @@
+<!-- Worked example: the D1 sheet the user approved 2026-10-03. Copy, then replace the panels. -->
+
+<main>
+<div class="sheet" role="img" aria-label="Drawing sheet: the KV cache in six panels">
+  <div class="zr h top"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div>
+  <div class="zr v lft"><span>A</span><span>B</span><span>C</span><span>D</span></div>
+  <div class="zr v rgt"><span>A</span><span>B</span><span>C</span><span>D</span></div>
+  <div class="zr h bot"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div>
+
+  <div class="frame">
+
+    <section class="pn s5">
+      <div class="pn-hd"><span class="tab">A</span><h3>One decode step</h3><span class="r">per layer · per KV head</span></div>
+      <div class="pn-bd">
+        <div class="blk">
+          <div class="cap">No cache, not used</div>
+          <div class="bad">Recompute K,V for all t tokens. Work ~ n².</div>
+        </div>
+        <div class="blk">
+          <h4>1&nbsp; Prefill</h4>
+          <div class="ln">
+            <span class="an"><span>prompt[1..n]</span><span class="br"></span><span class="lb">n tokens</span></span><span class="ar">→</span>
+            <span class="an"><span>K,V = X·W</span><span class="br"></span><span class="lb">one parallel pass</span></span><span class="ar">→</span>
+            <span class="an"><span>cache ← n rows</span><span class="br"></span><span class="lb">filled</span></span>
+          </div>
+        </div>
+        <div class="blk">
+          <h4>2&nbsp; Decode, step t</h4>
+          <div class="ln">
+            <span class="an"><span>x<sub>t</sub></span><span class="br"></span><span class="lb">1 token</span></span><span class="ar">→</span>
+            <span class="an"><span>q,k,v = x<sub>t</sub>·W</span><span class="br"></span><span class="lb">once</span></span><span class="ar">→</span>
+            <span class="an"><span>append k,v</span><span class="br"></span><span class="lb">+1 row</span></span><span class="ar">→</span>
+            <span class="an bad"><span>softmax(qKᵀ/√128)·V</span><span class="br"></span><span class="lb">reads t rows</span></span><span class="ar">→</span>
+            <span class="an"><span>x<sub>t+1</sub></span><span class="br"></span><span class="lb">next</span></span>
+          </div>
+        </div>
+        <div class="blk">
+          <h4>3&nbsp; Cache after step 6</h4>
+          <div class="cstrip">
+            <span class="rl">K</span><span class="c">k1</span><span class="c">k2</span><span class="c">k3</span><span class="c">k4</span><span class="c">k5</span><span class="c new">k6</span>
+            <span class="rl">V</span><span class="c">v1</span><span class="c">v2</span><span class="c">v3</span><span class="c">v4</span><span class="c">v5</span><span class="c new">v6</span>
+            <span></span><span class="rd">read: 6 rows</span><span class="nw">written</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pn s3">
+      <div class="pn-hd"><span class="tab">B</span><h3>Cache layout</h3><span class="r">Llama 3.1 8B</span></div>
+      <div class="pn-bd">
+        <div class="tree">
+          <div class="root">KV cache</div>
+          <div class="stem"></div>
+          <div class="kids">
+            <div class="kid"><div class="box">K</div>
+              <ul class="dims">
+                <li><span class="v">32</span><span class="d">layers</span></li>
+                <li><span class="v">8</span><span class="d">KV heads</span></li>
+                <li><span class="v">t</span><span class="d">tokens</span></li>
+                <li><span class="v">128</span><span class="d">head_dim</span></li>
+              </ul>
+            </div>
+            <div class="kid"><div class="box">V</div>
+              <ul class="dims">
+                <li><span class="d">same shape</span></li>
+                <li><span class="v">bf16</span><span class="d">2 B</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="ladder">
+          <div><span>128 × 2 B</span><b>256 B</b></div>
+          <div><span>× 8 KV heads</span><b>2 KiB</b></div>
+          <div><span>× 32 layers</span><b>64 KiB</b></div>
+          <div class="tot"><span>× 2 (K, V)</span><b>128 KiB / token</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pn s4">
+      <div class="pn-hd"><span class="tab">C</span><h3>Prefill vs decode</h3><span class="r">two phases</span></div>
+      <div class="pn-bd flush">
+        <table class="st">
+          <thead><tr><th></th><th>Prefill</th><th>Decode</th></tr></thead>
+          <tbody>
+            <tr><td>Tokens per pass</td><td class="m">n</td><td class="m">1</td></tr>
+            <tr><td>Parallel</td><td class="ok"><svg class="i"><use href="#ic-check"/></svg>Yes</td><td class="no"><svg class="i"><use href="#ic-x"/></svg>No</td></tr>
+            <tr><td>Cache writes</td><td class="m">n rows</td><td class="m">1 row</td></tr>
+            <tr><td>Cache reads</td><td class="m">n rows</td><td class="m">t rows, every step</td></tr>
+            <tr><td>Bound by</td><td class="ok">Compute</td><td class="no">Memory bandwidth</td></tr>
+          </tbody>
+        </table>
+        <div class="pad">
+          <div class="cap">Cache read per token</div>
+          <div class="formula">t = 8,192 &nbsp;&nbsp;→ <b>1 GiB</b><br>t = 131,072 → <b>16 GiB</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pn s4">
+      <div class="pn-hd"><span class="tab">D</span><h3>Memory</h3><span class="r">bf16 · batch 1</span></div>
+      <div class="pn-bd">
+        <div class="formula">2 <span class="a">K,V</span> × 32 <span class="a">layers</span> × 8 <span class="a">heads</span> × 128 <span class="a">dim</span> × 2 B<br>= <b>128 KiB / token</b></div>
+        <div class="bars">
+          <div class="bar"><div class="t"><span>Per token</span><span class="mx">128 KiB</span></div>
+            <div class="trk"><div class="fl" style="width:25%"></div><div class="mk" style="left:calc(100% - 2px)"><span>no GQA: 512</span></div></div>
+            <div class="tk"><span style="left:0">0</span><span style="left:25%">128</span><span style="left:50%">256</span><span style="left:75%">384</span><span style="left:100%">512 KiB</span></div></div>
+          <div class="bar"><div class="t"><span>8K tokens</span><span class="mx">1 GiB</span></div>
+            <div class="trk"><div class="fl" style="width:6.25%"></div></div>
+            <div class="tk"><span style="left:0">0</span><span style="left:25%">4</span><span style="left:50%">8</span><span style="left:75%">12</span><span style="left:100%">16 GiB</span></div></div>
+          <div class="bar"><div class="t"><span>128K tokens</span><span class="mx">16 GiB</span></div>
+            <div class="trk"><div class="fl" style="width:100%"></div><div class="mk" style="left:93.5%"><span>weights 15 GiB</span></div></div>
+            <div class="tk"><span style="left:0">0</span><span style="left:25%">4</span><span style="left:50%">8</span><span style="left:75%">12</span><span style="left:100%">16 GiB</span></div></div>
+          <div class="bar"><div class="t"><span>16 × 8K batch</span><span class="mx">16 GiB</span></div>
+            <div class="trk"><div class="fl" style="width:100%"></div></div>
+            <div class="tk"><span style="left:0">0</span><span style="left:25%">4</span><span style="left:50%">8</span><span style="left:75%">12</span><span style="left:100%">16 GiB</span></div></div>
+        </div>
+        <div class="cap">weights: 8.03B × 2 B = 14.96 GiB</div>
+      </div>
+    </section>
+
+    <section class="pn s5">
+      <div class="pn-hd"><span class="tab">E</span><h3>Levers</h3><span class="r">vs panel D</span></div>
+      <div class="pn-bd flush">
+        <table class="st">
+          <thead><tr><th>Lever</th><th>Change</th><th>Per token</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><b>GQA</b></td><td>32 → 8 KV heads</td><td class="m">512 → 128 KiB</td><td class="ok"><svg class="i"><use href="#ic-check"/></svg>In model</td></tr>
+            <tr><td><b>FP8 KV</b></td><td>2 B → 1 B</td><td class="m">128 → 64 KiB</td><td class="ok"><svg class="i"><use href="#ic-check"/></svg>Server flag</td></tr>
+            <tr><td><b>Paged blocks</b></td><td>vLLM PagedAttention</td><td class="m">no waste</td><td class="ok"><svg class="i"><use href="#ic-check"/></svg>Server flag</td></tr>
+            <tr><td><b>Prefix cache</b></td><td>Shared prompt prefix</td><td class="m">stored once</td><td class="ok"><svg class="i"><use href="#ic-check"/></svg>Server flag</td></tr>
+            <tr class="avoid"><td><b>No cache</b></td><td>Recompute every step</td><td class="m">~n² work</td><td><svg class="i"><use href="#ic-x"/></svg>Avoid</td></tr>
+          </tbody>
+        </table>
+        <div class="pad">
+          <div class="cap">GQA + FP8</div>
+          <div class="formula"><b>64 KiB / token</b> · 8K → 512 MiB · 128K → 8 GiB</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="stack s3">
+      <section class="pn">
+        <div class="pn-hd"><span class="tab">F</span><h3>Projections per step</h3><span class="r">8 steps</span></div>
+        <div class="pn-bd">
+          <div>
+            <div class="chart">
+              <div class="col"><i class="nc" style="height:12.5%"></i><i class="wc"></i></div>
+              <div class="col"><i class="nc" style="height:25%"></i><i class="wc"></i></div>
+              <div class="col"><i class="nc" style="height:37.5%"></i><i class="wc"></i></div>
+              <div class="col"><i class="nc" style="height:50%"></i><i class="wc"></i></div>
+              <div class="col"><i class="nc" style="height:62.5%"></i><i class="wc"></i></div>
+              <div class="col"><i class="nc" style="height:75%"></i><i class="wc"></i></div>
+              <div class="col"><i class="nc" style="height:87.5%"></i><i class="wc"></i></div>
+              <div class="col"><i class="nc" style="height:100%"></i><i class="wc"></i></div>
+            </div>
+            <div class="xl"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div>
+          </div>
+          <div class="lg"><span class="a">No cache: Σ 36</span><span class="b">Cache: Σ 8</span></div>
+        </div>
+      </section>
+      <div class="tblk">
+        <div class="full"><span class="l">Title</span><span class="v">KV cache</span></div>
+        <div><span class="l">Model</span><span class="v">Llama 3.1 8B</span></div>
+        <div><span class="l">Dtype</span><span class="v">bfloat16</span></div>
+        <div><span class="l">Source</span><span class="v">config.json</span></div>
+        <div><span class="l">Fetched</span><span class="v">2026-10-03</span></div>
+        <div><span class="l">Paper</span><span class="v"><button type="button" class="theme-toggle flip">white / blueprint</button></span></div>
+        <div><span class="l">Sheet</span><span class="v">1 of 1</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</main>
