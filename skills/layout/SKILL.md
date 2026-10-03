@@ -49,7 +49,7 @@ without asking.
 | Directory | Rule |
 |---|---|
 | `tests/` | Mirrors the package: `tests/unit/` repeats the tree of `app/` or `src/<pkg>/` (`app/services/x.py` → `tests/unit/services/test_x.py`); `tests/integration/` needs a real DB or service; `tests/e2e/` drives the deployed thing. Never tests beside the module. |
-| `docs/` | Four kinds of document, four subdirs — never mixed: **`spec/`** living documents, **ordered by a 2-digit prefix** (below); **`decisions/`** + **`problems/`** the ops ledger (D-00xx, P-00xx via `./ops`; `adr/` when the repo has no `./ops`); **`runbooks/`** how to operate; **`reports/`** dated, write-once outputs for humans — standups, findings, journals, postmortems — `<YYYY-MM-DD>_<slug>.<ext>`. The doc *styling* kit is not stored here: `present` embeds it into each page from `${CLAUDE_PLUGIN_ROOT}/skills/present/kit/`. Images and diagrams a spec references go in `docs/assets/<spec-slug>/`. No loose `notes.md`, no `build/` that mixes kinds. |
+| `docs/` | Four kinds of document, four subdirs — never mixed: **`spec/`** living documents, **ordered by a 2-digit prefix** (below); **`decisions/`** + **`problems/`** the ops ledger (D-00xx, P-00xx via `./ops`; `adr/` when the repo has no `./ops`); **`runbooks/`** how to operate; **`reports/`** dated, write-once outputs for humans — standups, findings, journals, postmortems — `<YYYY-MM-DD>_<slug>.<ext>`. The doc *styling* kit is not stored here: `present` embeds it into each page from its own `kit/` folder. Images and diagrams a spec references go in `docs/assets/<spec-slug>/`. No loose `notes.md`, no `build/` that mixes kinds. |
 
 ### `docs/spec/` — numbered, living, undated
 

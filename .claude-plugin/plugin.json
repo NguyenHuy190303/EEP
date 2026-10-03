@@ -1,6 +1,6 @@
 {
   "name": "eep",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "Easy Engineer Plugin — evidence-first engineering skills: investigate, design-decision, deepsearch (+ before-cook), review-pr, present, cards-readme, sentry-cli, sky-job, vietnamese-writing, layout, toolchain, cleanup.",
   "author": {
     "name": "Huy Nguyen",

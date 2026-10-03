@@ -28,6 +28,13 @@ jobs:
       - name: Run palette validator test
         run: node --test skills/present/kit/validate_palette.test.mjs
 
+  present-selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild every present example
+        run: python3 skills/present/kit/selftest.py
+
   shellcheck:
     runs-on: ubuntu-latest
     steps:

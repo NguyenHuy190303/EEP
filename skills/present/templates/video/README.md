@@ -1,6 +1,7 @@
 # Explainer video: V1 (3b1b, default) and V2 (drawing sheet inked live)
 
 Local only: Google Chrome, ffmpeg, and macOS `say`. No paid API, nothing installed globally.
+Run the commands from a copy of this folder. `$K` is this skill's base directory.
 
 1. `kv-cache.script.txt` holds one sentence per line. Each line is one visual beat, about 80% STE.
 2. `kv-cache.src.html` is an SVG page. `render(t)` draws the frame at second `t`. `TL.cues[i].start` is when sentence i starts, so the visuals follow the voice.

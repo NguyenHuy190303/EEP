@@ -5,7 +5,7 @@ quy trình và luật nằm ở `../SKILL.md`, lý do và catalogue lỗi ở `.
 File này chỉ là tham chiếu component + token.
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/skills/present/kit/build.py body.html out.html --title "Tên Trang" \
+python3 $K/kit/build.py body.html out.html --title "Tên Trang" \
   --shot /tmp/shot.png --shot-size 1500x3000   # rồi MỞ ẢNH RA XEM
 ```
 
@@ -22,7 +22,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/skills/present/kit/build.py body.html out.html --t
 
 ## Color tokens: two themes, same variable names
 
-Locked 2026-10-03 (the user picked the reading-room explorable). Paper is `:root`. Deep green is
+Default page palette since 2026-10-03 (style W1). Paper is `:root`. Deep green is
 `:root[data-theme="dark"]`, or automatic under `prefers-color-scheme:dark` until the user forces
 light. Every text colour clears 4.5:1 on its paper (`validate_palette.mjs`); change none without
 re-running it.

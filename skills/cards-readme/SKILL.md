@@ -28,7 +28,7 @@ No exceptions: a number without a source does not go in the card.
    block, highlights and quickstart first — that is the first screen and the only part most readers see.
 5. **Check**, then look:
    ```bash
-   python3 ${CLAUDE_PLUGIN_ROOT}/skills/cards-readme/scripts/check_card.py README.md --type model   # or dataset | readme
+   python3 $SKILL_DIR/scripts/check_card.py README.md --type model   # or dataset | readme; $SKILL_DIR = this skill's base directory
    ```
    It validates the frontmatter against the Hub's own validator (needs internet), fails on leftover
    template placeholders, and fails on a results table with no source column or link. Then render it:

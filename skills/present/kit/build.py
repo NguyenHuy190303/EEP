@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Ghép một fragment HTML thành trang publish được, theo bộ "reading room" (paper / deep green).
 
-    python3 ${CLAUDE_PLUGIN_ROOT}/skills/present/kit/build.py body.html out.html --title "Tên Trang"
+    python3 $K/kit/build.py body.html out.html --title "Tên Trang"
 
 Fragment đầu vào chỉ cần phần nội dung: <header class="hdr"> + <main> với các
 <section class="card">. Script tự lo phần còn lại:

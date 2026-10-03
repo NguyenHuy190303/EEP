@@ -124,7 +124,7 @@ giờ soi trên `bare`.
 **Giao trang bằng `file://` cho người ngồi ở đầu kia SSH (2026-09-03).** Năm trang mẫu giao xong,
 The user clicks and it does not open: they connect over VS Code Remote SSH, `file://` trỏ vào ổ đĩa máy này chứ
 không phải máy anh, và VS Code mở nó bằng editor. Sửa: mọi trang giao kèm URL HTTP qua tailnet
-Tailscale — xem `SKILL.md` mục "Giao kết quả". Bài học rộng hơn: **đường dẫn chỉ có nghĩa trên máy
+Tailscale — xem `SKILL.md` mục "Delivery gate". Bài học rộng hơn: **đường dẫn chỉ có nghĩa trên máy
 sinh ra nó**; thứ giao đi phải là địa chỉ mà người nhận mở được từ chỗ họ đang ngồi.
 
 ## Mermaid, if it is ever the right choice
