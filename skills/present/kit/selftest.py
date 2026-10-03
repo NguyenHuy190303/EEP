@@ -19,6 +19,7 @@ JOBS = {
                               "--css", str(T / "explorable/explorable.css")],
     "D1-sheet": BUILD + [str(T / "sheet/kv-cache.body.html"), "{out}", "--title", "KV Cache Sheet",
                          "--css", str(T / "sheet/sheet.css")],
+    "writing-abc": BUILD + [str(T / "writing/kv-cache.abc.body.html"), "{out}", "--title", "Writing Styles"],
     "W2-explorable-sheet": [sys.executable, str(T / "explorable-sheet/assemble.py"), "{out}"],
 }
 

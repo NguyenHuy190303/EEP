@@ -1,0 +1,74 @@
+<header class="hdr"><h1>One Cache, Three Registers</h1><p class="sub">Writing styles · same content, three levels of constraint · B is the default</p></header>
+<main>
+<section class="card">
+<h2>How to read this page</h2>
+<p>Each block below explains the same thing: the <b>KV cache</b>, the memory where a language model keeps the keys and values (K, V) of earlier tokens so it does not recompute them for every new token. Only the register changes. The numbers come from the Llama 3.1 8B <code>config.json</code> (32 layers, 8 KV heads, head dimension 128, bfloat16).</p>
+<p>The strip on top of each block was measured from its own text: sentence count, average and longest sentence in words, and how many sentences go over the ASD-STE100 limits (20 words for a procedural sentence, 25 for a descriptive one). To check new prose, run <code>kit/ste_check.py</code>.</p>
+</section>
+
+<section class="card" id="A">
+<h2><span class="badge info">A</span> Strict ASD-STE100</h2>
+<p class="muted">Short sentences, active voice, one topic per paragraph, warnings before the step they protect. Dictionary words where the writer knows them. Not run through an STE dictionary checker.</p>
+<div class="metrics"><div><span class="l">sentences</span><span class="v">35</span></div><div><span class="l">avg words</span><span class="v">9.7</span></div><div><span class="l">longest</span><span class="v">17</span></div><div><span class="l">over 20 / 25</span><span class="v">0 / 0</span></div></div>
+<div class="prose" data-variant="A">
+<h3>1 Function</h3>
+<p>A language model makes text one token at a time. For each new token, the model compares a query with the key of each earlier token. Then it mixes the values of those tokens. The keys and values of earlier tokens do not change. The KV cache keeps them in GPU memory. Thus the model does not calculate them again.</p>
+<h3>2 Operation without a cache</h3>
+<p>Without a cache, the model calculates the keys and values of all tokens at each step. At step 100, it calculates 100 rows. At step 1,000, it calculates 1,000 rows. The total work increases with the square of the length.</p>
+<h3>3 Operation with a cache</h3>
+<p>With a cache, the model calculates the key and value of the new token only. It adds them to the cache. Then it reads all the rows in the cache. The calculation for each step stays the same. The memory that the model reads at each step increases with the length.</p>
+<h3>4 Phases</h3>
+<p><b>Prefill.</b> The model reads the full prompt in one operation. It fills the cache. The speed of the arithmetic units sets the time.</p>
+<p><b>Decode.</b> The model makes one token at each step. It reads the full cache at each step. The memory bandwidth sets the time.</p>
+<h3>5 Memory</h3>
+<p>Each token in the cache uses this quantity of memory: 2 × layers × KV heads × head dimension × bytes for each value. For Llama 3.1 8B, the result is 2 × 32 × 8 × 128 × 2 = 131,072 bytes (128 KiB). A sequence of 8,192 tokens uses 1 GiB. A sequence of 131,072 tokens uses 16 GiB. This is about the same as the memory for the model weights.</p>
+<h3>6 Procedure: decrease the cache memory</h3>
+<div class="alert warn"><div class="h">Caution</div><p>Calculate the cache memory before you increase the batch size or the sequence length. If the cache does not fit, the server must stop some sequences and calculate them again later.</p></div>
+<ol>
+<li>Use a model with fewer KV heads (GQA or MQA).</li>
+<li>Keep the cache in 8-bit floating point (FP8). This decreases the cache memory by 50%.</li>
+<li>Use paged allocation, for example vLLM PagedAttention. This prevents unused gaps in memory.</li>
+<li>Share the cache between prompts that start with the same text (prefix caching).</li>
+</ol>
+</div>
+</section>
+
+<section class="card" id="B">
+<h2><span class="badge ok">B</span> 80% of the way to STE</h2>
+<p class="muted">STE's sentence limits, active voice and one-topic paragraphs, but ordinary vocabulary, "because", and an answer-first line. Jargon is kept and glossed on first use.</p>
+<div class="metrics"><div><span class="l">sentences</span><span class="v">26</span></div><div><span class="l">avg words</span><span class="v">10.2</span></div><div><span class="l">longest</span><span class="v">22</span></div><div><span class="l">over 20 / 25</span><span class="v">1 / 0</span></div></div>
+<div class="prose" data-variant="B">
+<p class="lead"><b>In one line:</b> the KV cache trades GPU memory for speed. The model stores each token's keys and values once and reuses them on every later step.</p>
+<h3>Why it exists</h3>
+<p>A model generates one token per step. Each new token has to attend to every earlier token, which means it needs their keys and values. Those never change once computed. So the model computes them once and keeps them in GPU memory.</p>
+<h3>What it saves</h3>
+<p>Without the cache, step 1,000 recomputes 1,000 rows of keys and values, and total work grows with the square of the length. With the cache, each step computes one new row and appends it. Attention still reads every cached row, so the reading cost still grows with length.</p>
+<h3>Prefill vs decode</h3>
+<p>Prefill processes the whole prompt at once and fills the cache; it is limited by arithmetic speed (compute-bound). Decode adds one token per step and re-reads the whole cache each time; it is limited by memory bandwidth (memory-bound). That split is why the two phases tune differently.</p>
+<h3>What it costs</h3>
+<p>Per token: 2 × layers × KV heads × head dim × bytes. For Llama 3.1 8B that is 2 × 32 × 8 × 128 × 2 = 128 KiB. An 8K-token sequence holds 1 GiB; a 128K-token sequence holds 16 GiB, about as much as the bf16 weights. Multiply by the batch size for the whole server.</p>
+<h3>Four levers</h3>
+<ul>
+<li><b>Fewer KV heads</b> (GQA / MQA). Llama 3.1 8B already uses 8 instead of 32, a 4× saving.</li>
+<li><b>FP8 cache.</b> One byte per value instead of two halves the memory.</li>
+<li><b>Paged allocation</b> (vLLM PagedAttention). Fixed-size blocks, so memory does not fragment.</li>
+<li><b>Prefix caching.</b> Prompts that share a prefix share its cache blocks.</li>
+</ul>
+</div>
+</section>
+
+<section class="card" id="C">
+<h2><span class="badge">C</span> Current house style</h2>
+<p class="muted">What <code>present-html</code> pages read like today: dense engineering prose, terse, jargon glossed once. No sentence-length limit.</p>
+<div class="metrics"><div><span class="l">sentences</span><span class="v">9</span></div><div><span class="l">avg words</span><span class="v">22.2</span></div><div><span class="l">longest</span><span class="v">40</span></div><div><span class="l">over 20 / 25</span><span class="v">4 / 4</span></div></div>
+<div class="prose" data-variant="C">
+<p>Autoregressive decoding emits one token per forward pass, and each pass needs attention over every prior position — i.e. the K and V projections of all earlier tokens. Those projections are deterministic given the prefix, so recomputing them every step is pure waste: without a cache, step <i>t</i> redoes <i>t</i> rows and total projection work over a sequence grows as O(n²); with one, each step projects a single row and appends it, while attention still scans all <i>t</i> cached rows. That asymmetry splits inference into two regimes — prefill, which processes the prompt in parallel and is compute-bound, and decode, which is memory-bandwidth-bound because every step streams the full cache from HBM (the GPU's on-package memory).</p>
+<p>The bill is memory, linear in sequence length × batch: 2 · L · H<sub>kv</sub> · d<sub>head</sub> · bytes per token. Llama 3.1 8B (L = 32, H<sub>kv</sub> = 8 via GQA, d = 128, bf16) lands at 128 KiB/token — 1 GiB at 8K context, 16 GiB at 128K, roughly the size of the weights themselves; without GQA it would be 4× that. The standard levers are fewer KV heads, an FP8 cache (½), paged block allocation to kill fragmentation (vLLM's PagedAttention), and prefix caching so identical prompt heads share blocks.</p>
+</div>
+</section>
+
+<section class="card">
+<h2>Scope note</h2>
+<p>ASD-STE100 is an English specification. Variants A and B do not transfer to Vietnamese output; Vietnamese prose keeps going through <code>eep:vietnamese-writing</code>.</p>
+</section>
+</main>

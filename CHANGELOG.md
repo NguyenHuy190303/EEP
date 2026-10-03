@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.8.0 (2026-10-04)
+
+- **`present` ships a pre-built style gallery** (`skills/present/gallery/`), so showing the styles
+  costs no tokens. `show.py DEST` rebuilds the sample pages from the templates into
+  `DEST/present-gallery/` in about 2 s and copies the committed media (thumbnails, archify render,
+  both videos, about 3.5 MB). `show.py --refresh-media` re-shoots the thumbnails after a template
+  changes. `SKILL.md` now opens the gallery before asking the style question.
+- New `templates/writing/kv-cache.abc.body.html`: the writing A / B / C sample, also in the self-test.
+- Video V2 sample re-rendered with the IBM Plex fix.
+
 ## 1.7.1 (2026-10-03)
 
 - **`present` restructured for reuse and lower token cost.** `SKILL.md` went from 12 KB to under

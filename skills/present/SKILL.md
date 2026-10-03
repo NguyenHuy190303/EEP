@@ -15,10 +15,12 @@ with `K="<base directory>";` or paste the literal path.
 
 ## 1. Ask the style first, then cook
 
-Before building, ask with `AskUserQuestion`: one question per output type the request needs (max
-4), options from this table, the default first and marked "(Recommended)". Link the user's style
-gallery in the question if their global instructions give one. Skip only when the user already
-named a style in this conversation.
+Never build samples to show styles: the gallery is pre-built. Run
+`python3 $K/gallery/show.py <server folder>`; it rebuilds the sample pages from the templates into
+`<server folder>/present-gallery/` (about 2 s, no tokens). Then `open` its `index.html` URL. Then ask
+with `AskUserQuestion`: one question per output type the request needs (max 4), options from this
+table, the default first and marked "(Recommended)", the gallery URL in the question text. Skip
+all of this only when the user already named a style in this conversation.
 
 | Type | Style | Start from |
 |---|---|---|
@@ -67,6 +69,7 @@ named a style in this conversation.
 
 | Path | Read when |
 |---|---|
+| `gallery/` | showing the styles (`show.py`); media is committed, pages are rebuilt |
 | `templates/<style>/README.md` | building that style |
 | `kit/README.md` | building a plain page; component and token reference |
 | `references/writing.md` | writing prose (styles A / B / C) |
@@ -80,7 +83,11 @@ named a style in this conversation.
 - **After any change** to `kit/` or `templates/`: `python3 $K/kit/selftest.py` rebuilds every
   shipped example (CI runs it too), then screenshot what you touched in both themes.
 - **Add a style:** `templates/<name>/` with a worked example + README (what, files, build
-  command, verify), a row in §1, a job in `kit/selftest.py`, a CHANGELOG line.
+  command, verify), a row in §1, a job in `kit/selftest.py`, a card in `gallery/index.html`, a
+  CHANGELOG line.
+- **After changing a template's look:** `python3 $K/gallery/show.py --refresh-media` re-shoots the
+  page thumbnails (macOS + Chrome). Videos: re-render per `templates/video/README.md`, copy the mp4
+  and a still to `gallery/media/`.
 - **Change a palette:** `node $K/kit/validate_palette.mjs "#hex,…" --surface "#paper" --mode
   light|dark`; every text colour clears 4.5:1.
 - **New component:** only when no mix of `.card` / `.alert` / `.tw` / `.code` / `.checklist` /

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>present — pick a style</title>
+<style>
+@font-face{font-family:Plex Mono;src:url(fonts/IBMPlexMono-400.woff2) format("woff2");font-weight:400}
+@font-face{font-family:Plex Mono;src:url(fonts/IBMPlexMono-500.woff2) format("woff2");font-weight:500}
+@font-face{font-family:Plex Cond;src:url(fonts/IBMPlexSansCondensed-500.woff2) format("woff2");font-weight:500}
+@font-face{font-family:Plex Cond;src:url(fonts/IBMPlexSansCondensed-600.woff2) format("woff2");font-weight:600}
+:root{--paper:#fff;--ink:#111a27;--mute:#5b6472;--line:#111a27;--hair:#c9ced6;--blue:#1256a3;--red:#b3261e;--tint:#eef3fa}
+*{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--ink);font:500 15px/1.4 "Plex Cond",system-ui,sans-serif;padding:28px}
+.sheet{border:1.5px solid var(--line);outline:1px solid var(--line);outline-offset:8px;margin:8px;max-width:1720px;margin-inline:auto}
+.rule{display:grid;grid-template-columns:repeat(8,1fr);border-bottom:1px solid var(--line);font:400 11px "Plex Mono",monospace;color:var(--mute)}
+.rule span{text-align:center;padding:3px 0;border-left:1px solid var(--line)}.rule span:first-child{border-left:0}
+.rule.b{border-top:1px solid var(--line);border-bottom:0}
+.in{padding:28px 28px 32px}
+.top{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:24px}
+h1{font:600 30px/1.1 "Plex Cond";letter-spacing:-.01em}
+.m{font:400 12px "Plex Mono",monospace;color:var(--mute)}
+.row{display:grid;grid-template-columns:150px 1fr;border:1.5px solid var(--line);margin-top:18px}
+.row>.tab{background:var(--ink);color:var(--paper);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.tab b{font:600 22px "Plex Cond"}.tab i{font:400 11px "Plex Mono";font-style:normal;opacity:.75}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+.opt{border-left:1px solid var(--line);padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px;color:inherit;text-decoration:none}
+.opt:first-child{border-left:0}
+.hd{display:flex;align-items:baseline;gap:10px}
+.k{font:500 13px "Plex Mono";border:1.5px solid var(--ink);padding:1px 7px}
+.hd b{font:600 18px "Plex Cond"}.hd .m{margin-left:auto}
+.shot{border:1px solid var(--hair);aspect-ratio:16/10;overflow:clip;background:var(--tint)}
+.shot img,.shot video{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+a.opt:hover .shot{outline:2px solid var(--blue);outline-offset:2px}
+a.opt:hover .hd b{color:var(--blue)}
+.note{font:400 11px "Plex Mono";color:var(--red)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:6px}.pair .shot{aspect-ratio:16/10}
+.chosen .k{background:var(--blue);border-color:var(--blue);color:#fff}
+.chosen .hd .m{color:var(--blue)}
+.ask{margin-top:22px;border:1.5px solid var(--line);display:grid;grid-template-columns:150px 1fr}
+.ask .tab{background:var(--paper);color:var(--ink);border-right:1px solid var(--line);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.ask p{padding:14px 16px;font:400 13px/1.7 "Plex Mono"}
+.ask em{font-style:normal;color:var(--red)}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="rule"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div>
+<div class="in">
+<div class="top"><h1>present · pick a style</h1><span class="m">same topic everywhere: KV cache · Llama 3.1 8B · blue = default</span></div>
+
+<section class="row"><div class="tab"><b>Text</b><i>prose inside pages</i></div><div class="opts">
+<a class="opt chosen" href="pages/writing-abc.html#B"><div class="hd"><span class="k">B</span><b>80% of the way to STE</b><span class="m">default</span></div><div class="shot"><img src="media/txt.jpg" alt="80% of the way to STE 0" loading="lazy"></div></a>
+<a class="opt" href="pages/writing-abc.html#A"><div class="hd"><span class="k">A</span><b>Strict ASD-STE100</b><span class="m">numbered · CAUTION</span></div></a>
+<a class="opt" href="pages/writing-abc.html#C"><div class="hd"><span class="k">C</span><b>Dense engineering</b><span class="m">no sentence limit</span></div></a>
+</div></section>
+
+<section class="row"><div class="tab"><b>Page</b><i>report / explorable</i></div><div class="opts">
+<a class="opt chosen" href="pages/W1-explorable.html"><div class="hd"><span class="k">W1</span><b>Reading room</b><span class="m">default · light / dark</span></div><div class="pair"><div class="shot"><img src="media/w1-light.jpg" alt="Reading room 0" loading="lazy"></div><div class="shot"><img src="media/w1-dark.jpg" alt="Reading room 1" loading="lazy"></div></div></a>
+<a class="opt" href="pages/W2-explorable-sheet.html"><div class="hd"><span class="k">W2</span><b>Explorable on a drawing sheet</b><span class="m">same interactions</span></div><div class="shot"><img src="media/w2.jpg" alt="Explorable on a drawing sheet 0" loading="lazy"></div><span class="note">light only for now</span></a>
+</div></section>
+
+<section class="row"><div class="tab"><b>Diagram</b><i>one static figure</i></div><div class="opts">
+<a class="opt chosen" href="pages/D1-sheet.html"><div class="hd"><span class="k">D1</span><b>Drawing sheet</b><span class="m">default · concept</span></div><div class="pair"><div class="shot"><img src="media/d1-light.jpg" alt="Drawing sheet 0" loading="lazy"></div><div class="shot"><img src="media/d1-dark.jpg" alt="Drawing sheet 1" loading="lazy"></div></div></a>
+<a class="opt chosen" href="media/d2.png"><div class="hd"><span class="k">D2</span><b>archify flow</b><span class="m">default · architecture</span></div><div class="shot"><img src="media/d2.png" alt="archify flow 0" loading="lazy"></div></a>
+</div></section>
+
+<section class="row"><div class="tab"><b>Video</b><i>31 s · narrated</i></div><div class="opts">
+<div class="opt chosen"><div class="hd"><span class="k">V1</span><b>3b1b</b><span class="m">default · manim palette</span></div><div class="shot"><video src="media/v1.mp4" poster="media/v1.jpg" controls preload="none"></video></div></div>
+<div class="opt"><div class="hd"><span class="k">V2</span><b>Drawing sheet</b><span class="m">inked live</span></div><div class="shot"><video src="media/v2.mp4" poster="media/v2.jpg" controls preload="none"></video></div></div>
+</div></section>
+
+<div class="ask"><div class="tab"><b>Reply</b><i>one line</i></div>
+<p>Answer Claude's question, or type the codes, e.g. <em>B W1 D1 V1</em>.</p></div>
+</div>
+<div class="rule b"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div>
+</div>
+</body>
+</html>
