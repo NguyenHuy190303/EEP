@@ -100,7 +100,7 @@ ic-search ic-layers ic-list ic-eye ic-net ic-expand ic-shrink ic-sun ic-moon`
 
 ## Kiểm màu
 
-Validator nằm ngay trong kit — `node kit/validate_palette.mjs "#hex,…" --mode light --surface "#f8fafc" --pairs all`
+Validator nằm ngay trong kit — `node kit/validate_palette.mjs "#hex,…" --mode light --surface "#f3f1e8" --pairs all`
 (contrast WCAG + CVD OKLab) trước khi đổi bất kỳ accent nào. Chi tiết lệnh ở `../references/design-rules.md`.
 
 ## Nguồn gốc
@@ -109,29 +109,11 @@ Original "Cà phê sữa" preset, first used in an early report (2026-08-17) —
 **24/08/2026: đổi hẳn sang 2 theme** (Solarized Light / Dracula) + nút đổi tay + component sơ đồ vẽ
 tay thay mermaid cho file tĩnh trong repo — lý do đầy đủ ở `../references/design-rules.md`. Bảng màu 2 theme tra từ
 nguồn chính thức (draculatheme.com/spec, ethanschoonover.com/solarized), không tự chỉnh lệch.
+**2026-10-03:** replaced by the reading room (paper / deep green), the user's pick W1. History: `../references/design-rules.md`.
 
-## Lớp infographic (thêm 03/09/2026) — `diagram.css` + `steps.js` + `gif.py`
+## Infographic layer — `diagram.css` + `steps.js` + `gif.py`
 
-| Component | Dùng để |
-|---|---|
-| `.poster` + `<span class="hl">` | tiêu đề kiểu poster, khối màu đặc sau cụm từ trọng tâm (1 lần/trang) |
-| `.panels` › `.panel.<cat>` › `.panel-hd`/`.panel-bd`/`.panel-note` | lưới N ô, mỗi ô một thanh tiêu đề màu + sơ đồ con |
-| `.nd.<cat>` (+ `.lg .sm .row .round .gate`) | node có icon, TỰ CO theo chữ nên không bao giờ tràn |
-| `<span class="step">N</span>` | badge số cắm góc trên-trái node hoặc `.grp` |
-| `.grp` + `.grp-tab` | khung nhóm có nhãn |
-| `.arw` / `.arw.r` (+ `.dashed .fb .ok .no`, `<span class="lbl">`) | mũi tên có nhãn giữa 2 node |
-| `.stepped` + `data-step` + `data-label` | sơ đồ hé dần từng bước, `steps.js` tự dựng thanh điều khiển |
-
-`<cat>`: `fe` client · `be` service · `db` dữ liệu · `infra` hạ tầng · `sec` bảo mật/chặn ·
-`warnc` rủi ro · `model` suy luận · `ext` ngoài phạm vi. Tên theo **vai trò**, không theo màu.
-
-Icon: 97 icon Lucide (MIT) trong `sprite.html`, dùng `<svg class="i"><use href="#ic-db"/></svg>`.
-Thêm icon mới: sửa dict `ICONS` trong `build_sprite.py` rồi chạy lại nó.
-
-Xuất GIF/MP4 cho feed:
-```bash
-python3 gif.py trang.html --figure "#id-so-do" --steps 6 --out ra.gif --size 1000x0
-```
+Components, categories, icons and GIF export: `../references/infographic.md`.
 
 ## Delivering to the user
 

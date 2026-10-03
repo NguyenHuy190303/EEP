@@ -10,6 +10,8 @@
 - **Fixed: commands pointed at `/skills/…` when EEP is installed as a skills folder.**
   `CLAUDE_PLUGIN_ROOT` is unset there. `present` and `cards-readme` now use the skill's base
   directory.
+- `kit/.ignore` keeps ripgrep (and any agent's repo-wide search) out of the 1.3 MB `fonts.css`.
+  The infographic reference exists once, in `references/infographic.md`.
 - **New `kit/selftest.py`** rebuilds every shipped example and exits 1 if any fails; CI runs it.
 - `SKILL.md` forbids reading `kit/fonts.css` (1.3 MB). The private server URL lives in the user's
   global instructions, never in this repo.

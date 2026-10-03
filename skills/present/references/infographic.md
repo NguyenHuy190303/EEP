@@ -22,6 +22,8 @@ nằm trong `kit/diagram.css`, không cần lib ngoài.
 | Mũi tên có nhãn giữa 2 node | `.arw` (dọc) / `.arw.r` (ngang), thêm `.dashed` `.fb` `.ok` `.no`, nhãn là `<span class="lbl">` |
 | Icon | 97 icon Lucide (MIT) trong sprite: `<svg class="i"><use href="#ic-db"/></svg>` |
 
+Add an icon: edit the `ICONS` dict in `kit/build_sprite.py`, then re-run it.
+
 `<cat>` là **vai trò**, không phải màu — `fe` client · `be` service · `db` dữ liệu · `infra` hạ tầng ·
 `sec` bảo mật/chặn · `warnc` rủi ro · `model` suy luận · `ext` ngoài phạm vi. Đổi theme thì màu đổi,
 nghĩa không đổi.

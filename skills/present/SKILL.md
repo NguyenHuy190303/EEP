@@ -10,7 +10,8 @@ the brief: labels and numbers over paragraphs; the visual or the interaction car
 
 `$K` in every command = this skill's base directory (printed as "Base directory for this skill"
 when it loads). Do not rely on `CLAUDE_PLUGIN_ROOT`: it is unset when the skill is installed as a
-plain skills folder.
+plain skills folder. Shell variables do not persist between Bash calls, so start each command
+with `K="<base directory>";` or paste the literal path.
 
 ## 1. Ask the style first, then cook
 
