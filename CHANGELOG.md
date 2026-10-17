@@ -1,5 +1,33 @@
 # Changelog
 
+## Unreleased
+
+- **New skill `grill-me`**, from mattpocock/skills `grill-me` + `grilling` (MIT, licence kept in
+  `skills/grill-me/LICENSE`). One model-invocable skill instead of his user-only `grill-me` that
+  calls `grilling`, so a hook can route to it. It works a design tree in rounds: the whole frontier
+  per round, numbered, a recommended answer each, facts looked up rather than asked.
+- **Plan mode starts with `grill-me` (Claude Code only).** `hooks/plan-grill.sh` adds a short
+  context note on `UserPromptSubmit` while `permission_mode` is `plan` (plan mode toggled by the
+  user) and on `PostToolUse` of `EnterPlanMode` (the model entered it); subagents are skipped.
+  Codex and `npx skills` installs get the skill but no plan-mode trigger. Checked live with
+  `claude -p --permission-mode plan` (the toggled path only): the first wording ("a plan starts
+  with…") was delivered but ignored; the current one ("the first planning step is the Skill tool
+  call eep:grill-me") made the model invoke the skill and ask a round, and on `--continue` it asked
+  the next round instead of restarting. The `EnterPlanMode` path is UNCHECKED live: `-p` sessions
+  do not offer that tool.
+- New eval case `evals/grill-me-1/`: one run, with 1.00 vs without 0.00 (judge votes on the with
+  arm: FAIL, PASS, PASS).
+
+## 1.9.1 (2026-10-17)
+
+- **Fix: `engineer-mindset` read less evidence on "brief" requests.** 1.9.0 added "read a reference
+  only if it changes the verdict". On the release-gate case 2 of 3 runs then skipped
+  `references/evidence-gates.md`, scoring a mean of 5.0/9 (no skill 4.5). The cap now limits what is
+  written, not what is read. All 3 runs opened the reference and scored a mean of 6.0/9. Trade-off:
+  "answer short" replies grew from 166–193 to 205–264 words.
+- README before/after now shows per-finding counts across all runs of the shipped version, instead
+  of the best single run.
+
 ## 1.9.0 (2026-10-17)
 
 - **README rewritten for people who have not met EEP.** It now has a one-line pitch, three install

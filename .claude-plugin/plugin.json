@@ -1,7 +1,7 @@
 {
   "name": "eep",
-  "version": "1.9.0",
-  "description": "Easy Engineer Plugin — evidence-first engineering skills: investigate, engineer-mindset, deepsearch, review-pr, present, cards-readme, sentry-cli, layout, toolchain, cleanup.",
+  "version": "1.9.1",
+  "description": "Easy Engineer Plugin — evidence-first engineering skills: investigate, engineer-mindset, deepsearch, grill-me, review-pr, present, cards-readme, sentry-cli, layout, toolchain, cleanup.",
   "author": {
     "name": "Huy Nguyen",
     "email": "nguyenhuy190303@gmail.com"

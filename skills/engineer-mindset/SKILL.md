@@ -7,7 +7,7 @@ description: Use when choosing an architecture, stack, library, schema, API shap
 
 Find the decision that changes the outcome. Scale the investigation to its reversibility and consequences. Follow the user's scope, language and requested answer length; a short verdict stays short.
 
-**When the user asks for a short answer** ("ngắn", "short", "tl;dr"), the whole reply is at most five lines: the verdict, up to three reasons, one next step with its pass/fail line. No drafted messages, no extra sections, no caveat paragraph; offer depth in a follow-up instead. Read a reference only if it changes the verdict.
+**When the user asks for a short answer** ("ngắn", "short", "tl;dr"), the whole reply is at most five lines: the verdict, up to three reasons, one next step with its pass/fail line. No drafted messages, no extra sections, no caveat paragraph; offer depth in a follow-up instead. The cap limits what you write, not what you read: still open the reference and the evidence the verdict rests on.
 
 ## Pick the relevant module
 

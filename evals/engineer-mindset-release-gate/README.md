@@ -40,25 +40,44 @@ references it routes to. Both arms may read only `fixture/`.
 
 ## Results
 
-Scored by one blind Claude grader per pass, with labels shuffled. Each row is one sample.
+Each row is one sample, scored by a blind Claude grader with labels shuffled. The 2026-10-17
+passes used a stricter rubric for items 3, 6 and 8: item 3 needs an explicit desired-vs-deployed
+contrast, item 6 needs "lint only", and item 8 needs "amplification risk" rather than "untested". So
+compare rows within one pass, not across passes.
 
-| Date | Arm | Score | Main miss |
+**Pass A (2026-10-16)**
+
+| Arm | Score |
+|---|---|
+| no skill | 6/9 (missed 3, 6, 9) |
+| skill v1 | 6/9 (missed 3, 6, 9) |
+| skill v1.1 | 9/9 |
+
+**Pass B (2026-10-17, strict rubric, all arms graded together)**
+
+| Arm | Runs | Scores | Mean |
 |---|---|---|---|
-| 2026-10-16 | no skill | 6/9 | "desired vs deployed" (3), "lint only" (6), file citations (9) |
-| 2026-10-16 | skill v1 | 6/9 | same three |
-| 2026-10-16 | skill v1.1 | 9/9 | — |
-| 2026-10-17 | skill v1.1 | 8/9 | "desired vs deployed" (3) |
-| 2026-10-17 | skill v1.2 (EEP 1.9.0 minus the short-answer fix) | 7/9 | retry amplification (8), not compact (9) |
+| no skill | 2 | 4, 5 | 4.5 |
+| skill 1.9.0 (short-answer cap + "read a reference only if it changes the verdict") | 3 | 5, 5, 5 | 5.0 |
+| **skill 1.9.1** (cap limits writing, not reading) | 3 | 6, 5, 7 | **6.0** |
+
+In 1.9.0, 2 of 3 runs never opened `references/evidence-gates.md`, because the prompt's "gọn"
+("brief") plus the new clause meant read less. 1.9.1 fixes this: all 3 runs opened it. Items no
+arm got in pass B: retry amplification (8) and file per finding (9).
+
+A third variant ("…under about 150 words") was worse on both this case and the short-answer case.
+It was rejected and is not shipped.
 
 ## What this does not show
 
-- **One sample per arm.** When the grader re-scored identical answers on another day, the score
-  moved by up to 2 points. A 1-point gap is noise.
+- **Small samples.** Pass A has one sample per arm and pass B has two or three. When the grader
+  re-scored identical answers on another day, the score moved by up to 2 points. Treat a 1-point
+  gap as noise.
 - **The checklist mirrors the skill.** It was written in the same session as
   `references/evidence-gates.md`, so an arm that reads that file is partly being tested on its own
   wording. Only item 8 comes from older principles.
 - **Synthetic, Vietnamese, single scenario.** This is not evidence that the skill beats any other
   tool, and it says nothing about other domains.
-- **The shipped 1.9.0 skill was not re-run on this case.** It adds a five-line cap for answers
-  marked "short"/"ngắn"/"tl;dr". This prompt says "gọn", which is not one of the trigger words, but
-  that effect is UNCHECKED.
+- **1.9.1 trades a little brevity for this.** On the separate "answer short" capacity case
+  (private, from a real incident), 1.9.1 answers ran 205–264 words against a target of about 220.
+  1.9.0 answers ran 166–193 words (both counted the same way). The owner accepted that trade-off.
