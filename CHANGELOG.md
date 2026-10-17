@@ -18,6 +18,17 @@
 - New eval case `evals/grill-me-1/`: one run, with 1.00 vs without 0.00 (judge votes on the with
   arm: FAIL, PASS, PASS).
 
+## 1.10.0 (2026-10-17)
+
+- **New skill `grill-me`** (adapted from mattpocock/skills, MIT). It interviews the user about a
+  plan in rounds over a design tree. Each round asks every question whose prerequisites are
+  settled, gives a recommended answer, and looks up facts itself instead of asking. It stops when
+  nothing is left assumed. Eval case `evals/grill-me-1/`.
+- **Plan-mode hook (Claude Code).** `hooks/hooks.json` runs `hooks/plan-grill.sh` on
+  `UserPromptSubmit` while `permission_mode` is `plan`, and after `EnterPlanMode`. It adds context
+  pointing to `eep:grill-me`, never blocks, and is skipped for subagents. The Codex manifest does
+  not register the hook, so in Codex the skill triggers from its description only.
+
 ## 1.9.1 (2026-10-17)
 
 - **Fix: `engineer-mindset` read less evidence on "brief" requests.** 1.9.0 added "read a reference

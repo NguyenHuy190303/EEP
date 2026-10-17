@@ -12,7 +12,7 @@
 
 </div>
 
-Ten skills that push the agent to check evidence before it answers: deployed state over desired config, the commit CI actually tested, what a test cannot show, and "not ready" when the evidence is missing even if every box on the checklist is ticked. Each claim below links to the eval run behind it.
+Eleven skills that push the agent to check evidence before it answers: deployed state over desired config, the commit CI actually tested, what a test cannot show, and "not ready" when the evidence is missing even if every box on the checklist is ticked. Each claim below links to the eval run behind it.
 
 ## Install
 
@@ -75,10 +75,11 @@ Both arms refuse the release; the skill mostly adds the findings that need readi
 | `layout` | "where should this file / run / branch go, and what do I call it?" |
 | `cleanup` | "port in use", "disk is full", "kill the stray dev servers / Docker junk". It sorts each item into safe / ask / never and deletes nothing unasked. |
 | `sentry-cli` | "look at this Sentry issue / trace / release" from the terminal. |
+| `grill-me` | "grill me on this plan". It interviews you in rounds, one decision tree at a time, until nothing is silently assumed. In Claude Code a hook also starts it whenever plan mode is on. |
 
 ## Evidence
 
-- **Plugin evals** ([`evals/`](evals/), `claude plugin eval` format: `case.yaml` with graders, plus a `scaffold.sh` fixture). On 2026-09-27 (v1.6.0, haiku judge, 2–3 runs per case), 11 of 17 runs passed with the skill and 8 of 17 without it. The gain is modest and the judge is noisy; see [`evals/RESULTS.md`](evals/RESULTS.md). Only `investigate`, `review-pr`, `cards-readme` and `sentry-cli` have cases so far.
+- **Plugin evals** ([`evals/`](evals/), `claude plugin eval` format: `case.yaml` with graders, plus a `scaffold.sh` fixture). On 2026-09-27 (v1.6.0, haiku judge, 2–3 runs per case), 11 of 17 runs passed with the skill and 8 of 17 without it. The gain is modest and the judge is noisy; see [`evals/RESULTS.md`](evals/RESULTS.md). Only `investigate`, `review-pr`, `cards-readme`, `sentry-cli` and `grill-me` have cases so far.
 - **engineer-mindset** release-gate case, as above. It is single-sample, and its limits are written next to the results.
 
 The evals measure whether the skill changes the answer on these cases. They do not show that EEP beats other plugins.
@@ -119,4 +120,4 @@ Issues and PRs are welcome. A new skill needs at least one eval case that shows 
 
 ## License
 
-MIT. `skills/engineer-mindset/modules/module-design` keeps its upstream MIT notice (mattpocock/skills).
+MIT. `skills/grill-me` and `skills/engineer-mindset/modules/module-design` keep their upstream MIT notices (mattpocock/skills).
