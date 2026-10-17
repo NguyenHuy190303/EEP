@@ -24,6 +24,8 @@ THUMBS = {
     "w1-light": ("W1-explorable", "light", "1600x1000"),
     "w1-dark": ("W1-explorable", "dark", "1600x1000"),
     "w2": ("W2-explorable-sheet", "light", "1600x1000"),
+    "w3-light": ("W3-showcase", "light", "1600x1000"),
+    "w3-dark": ("W3-showcase", "dark", "1600x1000"),
     "d1-light": ("D1-sheet", "light", "1920x1200"),
     "d1-dark": ("D1-sheet", "dark", "1920x1200"),
 }
@@ -55,7 +57,7 @@ def refresh_media() -> None:
     for thumb, (job, theme, size) in THUMBS.items():
         png = tmp / f"{thumb}.png"
         page = tmp / f"{job}.html"
-        if JOBS[job][1].endswith("build.py"):
+        if JOBS[job][1].endswith(("build.py", "render.py")):   # both take --shot
             subprocess.run([str(tmp / "x.html") if c == "{out}" else c for c in JOBS[job]]
                            + ["--shot", str(png), "--shot-size", size, "--shot-theme", theme],
                            check=True, capture_output=True)

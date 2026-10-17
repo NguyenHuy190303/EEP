@@ -5,3 +5,6 @@ node_modules/
 
 # local eval run output — not committed; a curated run gets a deliberate commit
 evals/results/
+
+# machine-local team content (internal cases, team IDs); never committed
+skills/*/private/

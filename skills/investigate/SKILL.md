@@ -1,6 +1,6 @@
 ---
 name: investigate
-description: Use when the question is why something behaves as it does, what a change would break, where data or a request actually flows, or where the time goes. Covers root-cause analysis, blast-radius/impact analysis, data and network flow tracing, and performance investigation. Read-first — reports findings rather than fixing as a side effect.
+description: Use to find why something behaves as it does, what a change would break, where data or a request flows, where time goes, or why a deployed service fails (errors, logs, metrics). Read-first; reports findings rather than fixing as a side effect.
 ---
 
 # Investigate
@@ -14,6 +14,7 @@ coverage.
 | `impact` | if I change this, what breaks |
 | `flow` | where does this data / request actually go |
 | `perf` | where does the time go |
+| `deployed service` | why a running dev/prod service fails, seen only through telemetry |
 
 ## Shared discipline
 
@@ -83,6 +84,25 @@ interval and sample size next to the delta. A result that does not clear the tes
 null with its cost (tokens, dollars, wall time) reported is still useful — it rules something out.
 Include at least one negative control: a case that should show no effect, so a wiring bug that
 makes everything look like an improvement gets caught before the real comparison is trusted.
+
+### deployed service
+A root-cause on a running dev/prod service, where you see it only through telemetry. Work down;
+each step is cheaper than the next and most stop at step 2.
+
+1. **Error tracker first** (`eep:sentry-cli` when Sentry is configured): the stack trace, first-seen
+   time, the release it started in, event and user counts. Read the error before forming a theory.
+2. **Logs and metrics around that timestamp.** Read what happened *before* the error line. Before
+   trusting "no logs", check ingestion is alive (event count per few hours over the last day); a
+   cliff to zero is a pipeline outage to escalate, not a quiet service. Metrics answer whether it is
+   one request or the whole system: error rate, latency, restarts, saturation. If a metric moved at
+   a specific minute, find what else changed then.
+3. **Reproduce** in local/dev with the input from the event, or say it was not reproduced.
+4. **Know the wall.** Telemetry cannot show which version is running, why a pod restarts or is
+   OOMKilled, or what config the cluster actually holds. When the evidence points there, stop and
+   hand over the error issue, log window, moved metric and the exact question to someone with
+   cluster access.
+
+Team specifics (datasource IDs, hosts, query recipes): read `private/team-debug.md` when present.
 
 ## Reach for the right tool
 

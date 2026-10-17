@@ -20,12 +20,14 @@ KaTeX). GitHub renders the same subset. Anything not listed here: push to a priv
 **Dataset card**
 1. YAML metadata (incl. `configs` and `dataset_info`)
 2. Hero + tagline + badges
-3. What is in it: one row example, field table
+3. What is in it: one row example, field table in parquet schema order (media first, ids last)
 4. Splits and sizes table
 5. How it was built (source → filter → dedup, counts per stage)
-6. How to load (one block, `datasets` + streaming variant if large)
-7. Known limitations, PII/consent handling, license of the source
-8. Citation
+6. Provenance and reproduction: per label column — produced by, code at a commit + command,
+   reviewed by (names, Label Studio project/export), date, rows. See SKILL.md
+7. How to load (one block, `datasets` + streaming variant if large)
+8. Known limitations, PII/consent handling, license of the source
+9. Citation
 
 **GitHub README**
 1. Hero + tagline + badges (CI, license, PyPI/npm, docs)

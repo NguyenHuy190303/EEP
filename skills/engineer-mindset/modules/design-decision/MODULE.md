@@ -1,8 +1,3 @@
----
-name: design-decision
-description: Use when choosing an architecture, a stack, a library, a schema, an API shape, or a module boundary — any decision where a different reasonable choice would change what gets built. Forces constraints before options, prices at least two real alternatives, and names the horizon and the falsifier.
----
-
 # Design a system or pick a stack
 
 The failure mode this exists to stop: a confident recommendation whose binding constraint was never
@@ -65,8 +60,9 @@ an LLM-judged or human-graded eval is the actual truth signal but costs real mon
 runs rarely. State the cost and cadence of each rather than presenting one number as "the" eval.
 
 Split failure handling by how the component is invoked, not by habit: a background job or hook that
-runs on every turn must fail silently with a kill switch, because a hard failure there breaks
-everything downstream of it; a path invoked directly by the user or another component should raise
+runs on every turn must fail soft — never break the turn, but log at warn with the cause, cap its
+retries, and sit behind a kill switch — because a hard failure there breaks everything downstream
+of it, and a quiet one serves wrong results while every dashboard stays green; a path invoked directly by the user or another component should raise
 a typed, retryable error so the caller can tell a transient failure from a real one. Never do slow
 work (an embedding call, a network request) inside a lock or a database write transaction — move it
 outside the critical section before the constraint becomes a deadlock or timeout nobody can explain.

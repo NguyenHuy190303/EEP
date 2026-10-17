@@ -21,6 +21,7 @@ JOBS = {
                          "--css", str(T / "sheet/sheet.css")],
     "writing-abc": BUILD + [str(T / "writing/kv-cache.abc.body.html"), "{out}", "--title", "Writing Styles"],
     "W2-explorable-sheet": [sys.executable, str(T / "explorable-sheet/assemble.py"), "{out}"],
+    "W3-showcase": [sys.executable, str(T / "showcase/render.py"), str(T / "showcase/example.report.json"), "{out}"],
 }
 
 
@@ -38,7 +39,32 @@ def main() -> int:
             failed.append(name)
             print((r.stdout + r.stderr).strip()[-2000:])
     print(f"\n{len(JOBS) - len(failed)}/{len(JOBS)} built -> {out_dir}")
+    if not evidence_guard_holds(out_dir):
+        failed.append("W3-evidence-guard")
     return 1 if failed else 0
+
+
+def evidence_guard_holds(out_dir: Path) -> bool:
+    """W3 must refuse a report with a gap in its evidence and write nothing. Kept out of JOBS:
+    the gallery builds every job and this one is meant to fail."""
+    import json
+    rep = json.loads((T / "showcase/example.report.json").read_text(encoding="utf8"))
+    del rep["sections"][0]["blocks"][0]["items"][0]["basis"]   # a KPI without its denominator
+    del rep["hero"]["note"]                                    # a headline without "what it is not"
+    rep["method"]["source"]["href"] = "#"                       # no link to the source run
+    bad, out = out_dir / "broken.report.json", out_dir / "broken.html"
+    bad.write_text(json.dumps(rep), encoding="utf8")
+    for f in (T / "showcase/example_audio").iterdir():          # keep audio paths resolvable
+        (out_dir / "example_audio").mkdir(exist_ok=True)
+        (out_dir / "example_audio" / f.name).write_bytes(f.read_bytes())
+    r = subprocess.run([sys.executable, str(T / "showcase/render.py"), str(bad), str(out)],
+                       capture_output=True, text=True)
+    ok = r.returncode == 1 and not out.exists() and all(
+        k in r.stderr for k in ("'basis'", "'note'", "method.source.href"))
+    print(f"{'PASS' if ok else 'FAIL'}  W3-evidence-guard  (refuses 3 gaps, writes nothing)")
+    if not ok:
+        print((r.stdout + r.stderr).strip()[-1500:])
+    return ok
 
 
 if __name__ == "__main__":

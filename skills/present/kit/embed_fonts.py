@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Fetch Inter + Fira Code + Newsreader from Google Fonts and inline them as data: URIs.
+"""Fetch Google Fonts families and inline them as data: URIs.
+
+usage: embed_fonts.py OUT.css [FAMILY ...]   (no FAMILY = the kit set: Inter + Fira Code + Newsreader)
+  kit:      embed_fonts.py fonts.css
+  showcase: embed_fonts.py fonts-showcase.css "Be+Vietnam+Pro:wght@400;600;700;800" "IBM+Plex+Mono:wght@400;600"
+            (templates/showcase/render.py runs this itself when the file is missing)
 
 The Artifact CSP blocks every external host, so a <link> to fonts.googleapis.com
 fails silently and the page falls back to a system face. Embedding keeps the real
@@ -47,7 +52,7 @@ def get(url: str) -> bytes:
 
 def main() -> None:
     out, total, skipped = [], 0, 0
-    for fam in FAMILIES:
+    for fam in sys.argv[2:] or FAMILIES:
         name = fam.split(":")[0].replace("+", " ")
         css = get(f"https://fonts.googleapis.com/css2?family={fam}&display=swap").decode()
         for block in FACE.findall(css):

@@ -219,6 +219,20 @@ def check(doc: str) -> list[str]:
         errs.append(f"{hosts} chỗ đặt nút (hdr/toc-ft) nhưng {toggles} nút đổi theme — "
                     f"trang nào cũng phải đổi được sáng/tối")
 
+    # Showcase (W3) pages present results to people who will not re-derive them, so the evidence
+    # has to travel with the page: every KPI says which way is better and what it was counted on,
+    # and the page ends in a method section that links the source run.
+    if 'class="sc"' in bare:
+        kpis = len(re.findall(r'class="sc-kpi[\s"]', bare))
+        for part in ("sc-dir", "sc-basis"):
+            got = len(re.findall(rf'class="{part}[\s"]', bare))
+            if got < kpis:
+                errs.append(f"{kpis} KPI nhưng chỉ {got} .{part} — KPI nào cũng cần chiều tốt hơn và mẫu số")
+        if 'id="method"' not in bare:
+            errs.append('trang showcase thiếu section id="method" (định nghĩa, giới hạn, run gốc)')
+        if not re.search(r'class="sc-src" href="https?://', bare):
+            errs.append('trang showcase thiếu link run gốc (a.sc-src href=http…)')
+
     if len(doc) > 16 * 1024 * 1024:
         errs.append(f"file {len(doc)/1e6:.1f} MB — trần publish là 16 MB")
 
@@ -252,6 +266,10 @@ def shoot(html: Path, png: Path, size: str, theme: str) -> str | None:
     if not m:
         return f"--shot-size {size!r} phải dạng RỘNGxCAO"
 
+    # 2x on a tall page silently blanks the bottom: a 1440x12000 shot of a 11,960 px page
+    # (2026-10-16) stopped at ~9,950 px, the rest white. Above 8,192 px tall, shoot at 1x.
+    scale = 2 if int(m[2]) <= 8192 else 1
+
     # Ép [data-theme] cho CẢ hai chiều. Trước đây chỉ ép "dark" và để "light"
     # phó mặc prefers-color-scheme — máy chuyển sang dark lúc chiều là ảnh
     # chụp "light" ra tối, sai lặng lẽ.
@@ -263,7 +281,7 @@ def shoot(html: Path, png: Path, size: str, theme: str) -> str | None:
     try:
         subprocess.run(
             [exe, "--headless", "--disable-gpu", "--hide-scrollbars",
-             "--force-device-scale-factor=2", f"--window-size={m[1]},{m[2]}",
+             f"--force-device-scale-factor={scale}", f"--window-size={m[1]},{m[2]}",
              f"--screenshot={png}", f"file://{src.resolve()}?still=1"],
             capture_output=True, timeout=90, check=True,
         )
@@ -274,7 +292,7 @@ def shoot(html: Path, png: Path, size: str, theme: str) -> str | None:
     finally:
         if tmp:
             tmp.unlink(missing_ok=True)
-    print(f"    ảnh: {png} ({size}, theme {theme}) — MỞ RA XEM trước khi giao")
+    print(f"    ảnh: {png} ({size} @{scale}x, theme {theme}) — MỞ RA XEM trước khi giao")
     return None
 
 
@@ -286,6 +304,9 @@ def main() -> int:
     ap.add_argument("--title", required=True, help="tên trang — danh từ ngắn, đặc trưng")
     ap.add_argument("--css", type=Path, action="append", default=[],
                     help="extra stylesheet inlined after the kit (a template's layout); repeatable")
+    ap.add_argument("--fonts", type=Path, default=KIT / "fonts.css",
+                    help="embedded font set; a template with its own faces passes its file "
+                         "(W3: fonts-showcase.css) instead of carrying the kit's 1.3 MB")
     ap.add_argument("--no-fonts", action="store_true",
                     help="bỏ font nhúng (~950 KB) — CHỈ khi build nháp để xem thử; "
                          "bản giao cho người khác luôn nhúng font")
@@ -304,7 +325,7 @@ def main() -> int:
     body, _ = add_buttons(body)
     body, _ = add_theme_toggle(body)
 
-    css = ["" if args.no_fonts else (KIT / "fonts.css").read_text(encoding="utf8")]
+    css = ["" if args.no_fonts else args.fonts.read_text(encoding="utf8")]
     css += [(KIT / f).read_text(encoding="utf8")
             for f in ("tokens.css", "components.css", "diagram.css", "fullscreen.css")]
     css += [f.read_text(encoding="utf8") for f in args.css]   # a template's own layout, after the kit

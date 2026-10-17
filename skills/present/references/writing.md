@@ -30,3 +30,22 @@ read. No checker.
 
 The KV-cache sample of all three sits side by side in the user's style gallery (link in their
 global instructions).
+
+## Presenting results (W3 showcase)
+
+The reader is shown a result and acts on it; they will not re-derive it. Every number has to stand
+on its own:
+
+- **Value, unit, direction, denominator, together.** "WER 7.40% (lower is better), mean over
+  31,204 segments / 48.6 h". Never a bare percentage.
+- **One plain reading per rate:** "about 7 of every 100 words are wrong". Then say what it is
+  **not**: "not a sentence error rate".
+- **Small groups get a warning, not a decimal place:** "2.1 h only; treat as a direction".
+- **Comparisons name what was held equal:** same set, same references, same scoring. Otherwise
+  do not put the numbers side by side.
+- **Real examples, both kinds, with ids:** one that works and one that fails, with the sample id,
+  so the claim can be checked.
+- **Separate the model's error from the measurement's:** label conventions, normalisation, or
+  thresholds that move the number without the model changing.
+- **No adjective without a number.** "Better" says by how much, on what.
+- **Limits are part of the result:** sample size, how references were made, what was not measured.

@@ -1,6 +1,6 @@
 ---
 name: toolchain
-description: Use before installing, adding, upgrading or removing a dependency, creating or repairing a virtualenv or node_modules, writing a Dockerfile or CI install step, or running a project's tooling. Every project is managed by its own lockfile-backed manager — uv for Python, the repo's existing lockfile for JavaScript — never a bare pip install, never the system interpreter, never a hand-edited lockfile.
+description: Use before adding, upgrading or removing a dependency, creating or repairing a venv or node_modules, writing a Dockerfile/CI install step, or running project tooling. Always the lockfile-backed manager (uv for Python, the repo's JS lockfile); never bare pip or the system interpreter.
 ---
 
 # Toolchain — the env is the lockfile, everywhere

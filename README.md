@@ -5,8 +5,8 @@ Third-party skills (archify, the Hugging Face marketplace ones) stay outside —
 
 | Skill | Use when |
 |---|---|
-| `investigate` | why something behaves as it does, blast radius, data/request flow, where the time goes |
-| `design-decision` | choosing architecture/stack/library/schema — constraints first, ≥2 priced options, horizon + falsifier |
+| `investigate` | why something behaves as it does, blast radius, data/request flow, where the time goes, a failing deployed service |
+| `engineer-mindset` | choosing architecture/stack/library/schema/API shape (module `design-decision`: constraints first, ≥2 priced options, horizon + falsifier), engineering judgment, code standards, module design, readiness verdicts. `private/` folders are machine-local and gitignored |
 | `deepsearch` | research needing sourced answers; model memory is never evidence. Mode `before-cook`: before building anything, sweep GitHub / HF Hub / PyPI / Papers with Code / Kaggle for an existing repo, model, dataset, notebook |
 | `review-pr` | evidence-first review of a PR/branch/diff |
 | `present` | any explanation as a page, sheet, diagram or video (report, spec, explorable, explainer); owns the reading-room / drawing-sheet / 3b1b looks |
@@ -39,7 +39,6 @@ Plugin skills are namespaced: `eep:investigate`, `/eep:review-pr`. Descriptions 
 
 ```bash
 claude plugin validate .            # manifest + skill frontmatter
-bash hooks/skill-index.sh           # what the SessionStart hook prints
 claude plugin eval . --runs 1       # behaviour evals (spends tokens; 9 cases, with/without baseline)
 ```
 
@@ -79,8 +78,7 @@ Outside the marketplace system, installed per their own tooling:
 ```
 .claude-plugin/plugin.json      Claude manifest (name = namespace)
 .claude-plugin/marketplace.json local marketplace, source "./"
-.codex-plugin/plugin.json       Codex manifest (same skills/, same hooks/)
+.codex-plugin/plugin.json       Codex manifest (same skills/)
 skills/<name>/SKILL.md          the skills; references/, kit/, scripts/ beside them
-hooks/hooks.json                SessionStart → hooks/skill-index.sh
 evals/                          claude plugin eval cases
 ```

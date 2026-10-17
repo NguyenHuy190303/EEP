@@ -1,115 +1,15 @@
 ---
 name: sky-job
-description: SkyPilot GPU job lifecycle — preflight, launch, tunnel to the served port, harvest artifacts out of /tmp, tear down. Use before launching or debugging any SkyPilot cluster, vLLM serving job, training run, batch GPU job, or when a sky cluster is already up and behaving unexpectedly. Also covers the two other compute targets (on-prem 8xH100, GB200 SLURM) so the right one gets picked.
+description: "Operate SkyPilot GPU jobs on the shared pool: authorized preflight/launch, bounded monitoring, durable harvest and named teardown. Also route resumable jobs and non-Sky compute targets."
 ---
 
-# SkyPilot job lifecycle
+# GPU job lifecycle
 
-Read the whole file before the first `sky` command that changes state. The gotchas below each cost
-real hours to discover; skipping to the launch line is how they get rediscovered.
+Choose the current lifecycle step; read that reference before changing state. A launch does not imply permission to spend more than authorized, cancel someone else's work or use another compute target.
 
-## 1. Preflight — before spending anything
+- New cluster, task YAML or rerun: [launch](references/launch.md). Preserve cost/duration/stop-condition/output-path authorization, capacity and actual GPU memory checks, the queueing trap and diagnosed failures before retry.
+- Existing job, status, logs or served endpoint: [monitor and connect](references/monitor-and-connect.md). Block on streaming logs instead of token-burning polling. A non-zero status is not proof of a specific failure.
+- Completion, failure or stopping: [harvest and teardown](references/harvest-and-teardown.md). Save logs, metrics and exact config durably before named teardown; verify release. Autostop with deletion is safe only with durable export already in the job. Never down all targets.
+- Long, preemptible, quota-limited work or a non-Sky target: [resumability and targets](references/resumable-and-targets.md). Preserve run identity, partial-failure visibility and the login-node prohibition.
 
-State one line and wait for a go-ahead:
-
-> expected cost · expected duration · stop condition · durable output path
-
-Then:
-
-```bash
-sky gpus list          # the pool is shared and usually near-full — check before assuming capacity
-sky status             # is a cluster of yours already up? reuse beats launching
-sky queue <cluster>    # if one is up, what is already running on it
-```
-
-Smoke-test with the smallest viable config first unless explicitly told to skip it.
-
-## 2. Launch — and the queueing trap
-
-```bash
-sky launch -c <name> scripts/serve-<something>.yaml
-```
-
-**`sky launch` on a cluster that is already alive queues the job instead of replacing it.** The new
-job sits behind the old one and nothing appears to happen. Cancel the old job first:
-
-```bash
-sky queue <name>          # find the job id
-sky cancel <name> <job-id>
-```
-
-Never relaunch a job that failed until the failure is diagnosed. Read the real log first
-(section 4), report the diagnosis, then relaunch. A retry is not a diagnosis.
-
-## 3. Reaching the served port — `ports:` is not enough
-
-Declaring `ports:` in the task YAML does **not** expose the port, so `sky status --endpoint` fails
-and looks like a broken cluster. Tunnel instead:
-
-```bash
-ssh -f -N -L 8901:localhost:8000 <cluster>
-export LLM_BASE_URL=http://localhost:8901/v1
-```
-
-Pick a local port that is not already taken; `-f -N` backgrounds the tunnel with no shell. Verify
-with a single request against `$LLM_BASE_URL/models` before running anything long.
-
-## 4. Harvest — before tearing down, not after
-
-The cluster is the only copy of its logs. Once it is down they are gone.
-
-```bash
-sky logs <cluster> <job-id> > <durable-path>/<YYYY-MM-DD>_<slug>_skylog.txt
-```
-
-Everything a future session needs must end up outside `/tmp`:
-job logs (stdout, stderr, scheduler), metrics, the exact config used, artifact metadata.
-
-Destination: the project's results dir if the result is curated, otherwise
-`~/.claude/projects/<project-slug>/memory/artifacts/`. One pointer line per artifact in the
-project's `MEMORY.md`. An artifact without a pointer is saved but lost.
-
-For a failure, quote the real error text from the remote log together with the log's path. If the
-job died from quota, preemption, or OOM, name which one and the evidence line that says so.
-
-## 5. Tear down — a required step
-
-```bash
-sky down <cluster>
-```
-
-Not optional, not "later". An idle GPU cluster bills and blocks the shared pool. Confirm with
-`sky status` that it is gone.
-
-Never `sky down --all` — it kills clusters other people are using. Cancel or down by name only.
-
-## Long or interruptible jobs -- resumable, never silently lossy
-
-A job that can hit a rate limit, preemption, or a multi-hour wall clock needs to survive being
-re-run, not just complete once:
-
-- Tag each run so re-running with the same tag resumes instead of restarting from zero.
-- On a rate limit or transient failure, pause and retry -- do not treat it as a fatal error.
-- Never persist a failed call's output as if it succeeded; a partial result is worse than no result
-  because it looks complete.
-- Fail loudly on a partial ingest/write rather than silently continuing with incomplete data.
-- Commit the raw per-run artifacts (rows, summary, config) alongside the aggregate, not just the
-  aggregate -- the aggregate is not reproducible once the raw rows are gone.
-
-## Hugging Face
-
-`HF_API_TOKEN` is the org-scoped token. `HF_TOKEN` is a different, personal one — using it where the
-org token is needed fails with a permissions error that reads like a missing repo.
-
-## Choosing the right compute target
-
-Three distinct targets exist. They are not interchangeable.
-
-| Target | Reach it via | Notes |
-| --- | --- | --- |
-| SkyPilot k8s pool | `sky launch` (everything above) | Whatever shared cluster `sky gpus list` shows for your org — usually near-full. The default choice. |
-| On-prem GPU node | your org's kubeconfig context for it | Single node, time-shared between training / generation / eval. Not a SkyPilot cluster. |
-| SLURM cluster | SSH via bastion → `sbatch` | Check CPU arch and container runtime (Enroot/SQSH vs Docker) before assuming either. **Never run training or heavy inference on the login node** — admins kill the process. Confirm it is actually in use before starting here. |
-
-Fill in your org's actual endpoint names, kubeconfig context, and bastion host in a local note —
-this skill deliberately ships without them so it stays portable across machines and teams.
+Do not start a long run without an output/harvest plan. Syntax comes from installed command help or official SkyPilot docs; org endpoints, reserved cards and credentials stay in local notes. Do not load every lifecycle chapter for a read-only status question.

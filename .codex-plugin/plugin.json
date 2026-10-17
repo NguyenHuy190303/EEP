@@ -1,7 +1,7 @@
 {
   "name": "eep",
   "version": "1.8.0",
-  "description": "Easy Engineer Plugin — evidence-first engineering skills: investigate, design-decision, deepsearch (+ before-cook), review-pr, present, cards-readme, sentry-cli, sky-job, vietnamese-writing, layout, toolchain, cleanup.",
+  "description": "Easy Engineer Plugin — evidence-first engineering skills: investigate, engineer-mindset (+ design-decision), deepsearch (+ before-cook), review-pr, present, cards-readme, sentry-cli, sky-job, vietnamese-writing, layout, toolchain, cleanup.",
   "author": {
     "name": "Huy Nguyen",
     "email": "nguyenhuy190303@gmail.com"
@@ -18,7 +18,6 @@
     "sentry"
   ],
   "skills": "./skills/",
-  "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "EEP — Easy Engineer Plugin",
     "shortDescription": "Evidence-first engineering skills",
@@ -26,8 +25,7 @@
     "developerName": "Huy Nguyen",
     "category": "Productivity",
     "capabilities": [
-      "Instructions",
-      "Lifecycle hooks"
+      "Instructions"
     ],
     "defaultPrompt": [
       "Investigate why this endpoint is slow.",

@@ -1,12 +1,11 @@
 ---
 name: review-pr
-description: "Use when reviewing a pull request, branch, or local diff for concrete correctness, regression, security, performance, and repository-invariant failures. Run the repository's configured checks first, inspect surrounding code where behavior crosses a boundary, and report only actionable findings with file-and-line evidence. Do not use as a generic lint checklist or architecture essay."
+description: "Review a PR, branch or diff for concrete correctness, regressions and repository invariants. Report actionable evidence; use team extensions only where relevant."
 ---
 
 # Review PR
 
-Find defects a configured checker will not explain by itself. Review the actual change in the
-context of the repository instead of applying a generic checklist.
+Review the actual behavior and connected code. Do not stack other generic review workflows for the same diff.
 
 ## Establish the review boundary
 
@@ -54,26 +53,18 @@ Report a finding only when you can name:
 - the observable consequence; and
 - why existing checks do not already rule it out.
 
-Order findings by severity. Keep summaries after the findings and state what could not be verified.
-Do not edit, comment, approve, or merge unless the user asked for that mutation.
+Order findings by severity; hacks and silent fallbacks are blockers by definition but still need
+this evidence. Keep summaries after the findings and state what could not be verified. Do not edit,
+comment, approve, or merge unless the user asked for that mutation.
 
 ## Project-specific extensions
 
 The closest project-scoped `review-pr` skill may add repository invariants and domain boundaries.
 Apply those extensions after this core; they must not be copied back into the global skill.
 
-## Answering pushback on your own PR
+For hacks, silent fallbacks or comment policy, read [team quality](references/team-quality.md). Preserve deliberate, visible, distinguishable and bounded failure handling; do not weaken these checks when using the shorter entrypoint.
 
-When a reviewer (human or an automated checker) flags something on a PR you wrote, agreeing and
-fixing it is not enough — say why the objection was right with a concrete example (a runnable
-snippet, the exact input that breaks, the exact assertion that would still pass for the wrong
-reason), then fix it in a named follow-up commit. An assertion that only checks "some change
-happened" is not pinning the bug; say so explicitly if that's what the pushback exposed.
-
-Format for an outside contribution: **Problem** (quantified — the exact failure size, not "this is
-slow") → **Fix** (name the upstream convention or existing pattern being followed) → **Testing**
-(the exact command and its output, what stays unchanged). Name any faked, placeholder, or
-not-yet-implemented content in the PR body before anyone can be misled by it.
+Only when responding to findings on a PR you wrote, read [responding to review](references/responding-to-review.md).
 
 ## Close
 

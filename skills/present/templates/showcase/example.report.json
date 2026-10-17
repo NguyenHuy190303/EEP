@@ -1,0 +1,1018 @@
+{
+ "meta": {
+  "lang": "en",
+  "title": "Acme ASR evaluation (sample)",
+  "date": "2026-10-06",
+  "stamp": "Sample · 10.2026",
+  "brand": {
+   "name": "Acme AI",
+   "sub": "Speech report"
+  },
+  "footer": "Sample data for the W3 template. Not a real model, run or dataset."
+ },
+ "hero": {
+  "kicker": "Evaluation results · speech to text",
+  "title": "Acme ASR.",
+  "accent": "Evaluation results",
+  "lede": "Speech-to-text quality on the Acme Clinic test set. Every number is shown with <b>how much data it was measured on, the test conditions and where it stops applying</b>.",
+  "card": {
+   "title": "Headline result · speech to text",
+   "tag": "acme-asr-v3 · 06.10.2026"
+  },
+  "stats": [
+   {
+    "label": "Word error rate (WER) · mean per segment",
+    "value": "7.40",
+    "unit": "%",
+    "better": "lower",
+    "reading": "On average, <b>about 7 of every 100 words</b> are wrong, missing or extra. Not a sentence error rate."
+   },
+   {
+    "label": "Audio tested",
+    "value": "48.6",
+    "unit": "h",
+    "better": "none",
+    "reading": "<b>31,204 segments</b> and <b>612,880 reference words</b> from three groups."
+   }
+  ],
+  "join": "on",
+  "facts": [
+   "<b>61.2%</b> of segments fully correct",
+   "<b>19,097 / 31,204</b> segments with no word error",
+   "<b>6.9%</b> WER after spelling-only differences"
+  ],
+  "note": "WER is computed per segment (wrong words / words in the segment) and then averaged over all segments. It is not the share of wrong sentences. The result holds for this test set only."
+ },
+ "sections": [
+  {
+   "id": "overview",
+   "nav": "Overview",
+   "kicker": "Overview",
+   "title": "The headline numbers",
+   "lede": "Each rate states its unit, which direction is better and how much data it was measured on.",
+   "blocks": [
+    {
+     "type": "kpis",
+     "items": [
+      {
+       "label": "Fully correct segments",
+       "value": "61.2%",
+       "better": "higher",
+       "tone": "brand",
+       "reading": "61.2% of segments have no word error",
+       "basis": "<b>19,097 of 31,204 segments</b> match the reference word for word. One wrong word removes a segment from this group."
+      },
+      {
+       "label": "Real recognition errors · all",
+       "value": "6.9%",
+       "better": "lower",
+       "tone": "good",
+       "reading": "About 6.9 of every 100 words are misheard",
+       "basis": "Of the 7.40% WER, 0.5 points are spelling or number-format differences, not mishearing."
+      },
+      {
+       "label": "WER · phone calls",
+       "value": "18.3%",
+       "better": "lower",
+       "tone": "warn",
+       "reading": "About 18 of every 100 words wrong on 8 kHz calls",
+       "basis": "Measured on <b>2.1 h, 1,640 segments</b> of narrowband call audio."
+      },
+      {
+       "label": "WER · clinic dictation",
+       "value": "5.1%",
+       "better": "lower",
+       "tone": "brand",
+       "reading": "About 5 of every 100 words wrong",
+       "basis": "Measured on <b>30.2 h, 18,050 segments</b>, the largest group."
+      }
+     ]
+    },
+    {
+     "type": "quote",
+     "text": "The result reflects this test set. Quality changes with the room, the microphone, segment length and the speaker.",
+     "link": {
+      "href": "#method",
+      "label": "How it was measured ↗"
+     }
+    }
+   ]
+  },
+  {
+   "id": "data",
+   "nav": "Test set",
+   "kicker": "Test set",
+   "title": "What was tested",
+   "lede": "Where the audio comes from, who is speaking and what each group can and cannot tell you.",
+   "blocks": [
+    {
+     "type": "composition",
+     "total": {
+      "label": "Total audio",
+      "value": "48.6",
+      "unit": "h",
+      "caption": "31,204 segments from three groups, 612,880 reference words. References are human-checked in all three groups."
+     },
+     "callout": "<b>Read this first:</b> clinic dictation is 62% of the audio, so it dominates the overall WER. Phone calls are 4% of the audio.",
+     "bar_label": "Share of audio hours, not of segments",
+     "parts": [
+      {
+       "label": "Clinic dictation",
+       "sub": "Doctors dictating notes · 18,050 segments · 62.1%",
+       "value": 30.2,
+       "text": "30.2 h",
+       "side": "WER 5.1%",
+       "series": "s1"
+      },
+      {
+       "label": "Broadcast health",
+       "sub": "Health talk shows · 11,514 segments · 33.6%",
+       "value": 16.3,
+       "text": "16.3 h",
+       "side": "WER 8.9%",
+       "series": "s6"
+      },
+      {
+       "label": "Phone calls",
+       "sub": "8 kHz call centre · 1,640 segments · 4.3%",
+       "value": 2.1,
+       "text": "2.1 h",
+       "side": "WER 18.3%",
+       "series": "s4"
+      }
+     ],
+     "caption": "Hours rounded to one decimal."
+    },
+    {
+     "type": "tabs",
+     "title": "Inside the test set",
+     "desc": "Speakers and recording level per group.",
+     "tabs": [
+      {
+       "label": "Speakers",
+       "blocks": [
+        {
+         "type": "cols",
+         "cols": [
+          [
+           {
+            "type": "bars",
+            "title": "Accent",
+            "desc": "Self-reported at recording time.",
+            "better": "none",
+            "unit": "%",
+            "digits": 1,
+            "basis": "Share of 31,204 segments.",
+            "rows": [
+             {
+              "label": "North",
+              "value": 44.0,
+              "series": "s1"
+             },
+             {
+              "label": "South",
+              "value": 39.5,
+              "series": "s1"
+             },
+             {
+              "label": "Central",
+              "value": 16.5,
+              "series": "s1"
+             }
+            ]
+           }
+          ],
+          [
+           {
+            "type": "table",
+            "title": "Accent × gender",
+            "desc": "Segments per cell.",
+            "head": [
+             "Accent",
+             "Female",
+             "Male",
+             "Total"
+            ],
+            "num": [
+             1,
+             2,
+             3
+            ],
+            "total_last": true,
+            "rows": [
+             [
+              "North",
+              {
+               "text": "7,210",
+               "heat": 1.0
+              },
+              {
+               "text": "6,520",
+               "heat": 0.9
+              },
+              "13,730"
+             ],
+             [
+              "South",
+              {
+               "text": "6,480",
+               "heat": 0.9
+              },
+              {
+               "text": "5,846",
+               "heat": 0.81
+              },
+              "12,326"
+             ],
+             [
+              "Central",
+              {
+               "text": "2,600",
+               "heat": 0.36
+              },
+              {
+               "text": "2,548",
+               "heat": 0.35
+              },
+              "5,148"
+             ],
+             [
+              "Total",
+              "16,290",
+              "14,914",
+              "31,204"
+             ]
+            ]
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "label": "Recording level",
+       "blocks": [
+        {
+         "type": "table",
+         "title": "Recording level by group",
+         "desc": "Loudness in LUFS, measured on the audio files. Closer to 0 is louder.",
+         "head": [
+          "Group",
+          "Files",
+          "Median",
+          "Quietest 10%",
+          "Loudest 10%"
+         ],
+         "num": [
+          1,
+          2,
+          3,
+          4
+         ],
+         "rows": [
+          [
+           "Clinic dictation",
+           "18,050",
+           "−23.4",
+           "−31.0",
+           "−18.2"
+          ],
+          [
+           "Broadcast health",
+           "11,514",
+           "−18.9",
+           "−24.5",
+           "−15.1"
+          ],
+          [
+           "Phone calls",
+           "1,640",
+           "−31.2",
+           "−38.7",
+           "−25.9"
+          ]
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "details",
+     "summary": "Which data this report counts",
+     "blocks": [
+      {
+       "type": "html",
+       "html": "<p>The source release has <b>32,010 segments / 49.3 h</b>. This report leaves out <b>806 synthetic segments</b> (text-to-speech), 0.7 h, because they do not measure real speakers.</p>"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "compare",
+   "nav": "Compare",
+   "kicker": "Compare",
+   "title": "Against other models",
+   "lede": "All three models ran on the same 31,204 segments, the same references and the same scoring.",
+   "blocks": [
+    {
+     "type": "bars",
+     "title": "WER on the same test set",
+     "desc": "Same platform, same references, same scoring. Shorter bar, fewer errors.",
+     "better": "lower",
+     "unit": "%",
+     "basis": "31,204 segments · 48.6 h, every model.",
+     "legend": [
+      {
+       "label": "acme-asr-v3",
+       "series": "s1"
+      },
+      {
+       "label": "Vendor A",
+       "series": "s2"
+      },
+      {
+       "label": "Vendor B",
+       "series": "s3"
+      }
+     ],
+     "groups": [
+      {
+       "title": "Whole test set",
+       "sub": "31,204 segments · 48.6 h",
+       "rows": [
+        {
+         "label": "acme-asr-v3",
+         "value": 7.4,
+         "series": "s1",
+         "hl": true
+        },
+        {
+         "label": "Vendor A",
+         "value": 9.12,
+         "series": "s2"
+        },
+        {
+         "label": "Vendor B",
+         "value": 6.85,
+         "series": "s3"
+        }
+       ]
+      },
+      {
+       "title": "Phone calls",
+       "sub": "1,640 segments · 2.1 h",
+       "rows": [
+        {
+         "label": "acme-asr-v3",
+         "value": 18.3,
+         "series": "s1",
+         "hl": true
+        },
+        {
+         "label": "Vendor A",
+         "value": 21.7,
+         "series": "s2"
+        },
+        {
+         "label": "Vendor B",
+         "value": 15.05,
+         "series": "s3"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "examples",
+     "title": "Where the models disagree",
+     "desc": "Real segments from the test set. Red words differ from the reference.",
+     "items": [
+      {
+       "title": "Drug name",
+       "sub": "Clinic dictation",
+       "id": "clinic_0412_017",
+       "ref": "start metformin five hundred milligrams twice daily",
+       "hyps": [
+        {
+         "label": "acme-asr-v3",
+         "text": "start metformin five hundred milligrams twice daily"
+        },
+        {
+         "label": "Vendor A",
+         "text": "start met for men five hundred milligrams twice daily"
+        },
+        {
+         "label": "Vendor B",
+         "text": "start metformin 500 milligrams twice daily"
+        }
+       ]
+      },
+      {
+       "title": "Short answer",
+       "sub": "Phone calls",
+       "id": "call_0093_004",
+       "ref": "yes since last tuesday",
+       "hyps": [
+        {
+         "label": "acme-asr-v3",
+         "text": "yes since tuesday"
+        },
+        {
+         "label": "Vendor A",
+         "text": ""
+        },
+        {
+         "label": "Vendor B",
+         "text": "yes since last tuesday"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "groups",
+   "nav": "By group",
+   "kicker": "By group",
+   "title": "Quality per data group",
+   "lede": "WER next to the hours and segments of each group.",
+   "blocks": [
+    {
+     "type": "bars",
+     "title": "Mean WER per segment, by group",
+     "desc": "Counts wrong, missing and extra words; not a sentence error rate.",
+     "better": "lower",
+     "unit": "%",
+     "ref": {
+      "value": 7.4,
+      "label": "WER of the whole test set, 7.40%"
+     },
+     "rows": [
+      {
+       "label": "Clinic dictation",
+       "sub": "30.2 h · 18,050 segments",
+       "value": 5.1,
+       "series": "s1"
+      },
+      {
+       "label": "Broadcast health",
+       "sub": "16.3 h · 11,514 segments",
+       "value": 8.9,
+       "series": "s6"
+      },
+      {
+       "label": "Phone calls",
+       "sub": "2.1 h · 1,640 segments",
+       "value": 18.3,
+       "series": "s4",
+       "faint": true,
+       "note": "small sample"
+      }
+     ]
+    },
+    {
+     "type": "insights",
+     "items": [
+      {
+       "kicker": "Strength",
+       "tone": "good",
+       "title": "Clinic dictation at 5.1% WER over 30.2 h.",
+       "text": "The largest group and the closest to the target use."
+      },
+      {
+       "kicker": "Gap to close",
+       "tone": "bad",
+       "title": "Phone calls at 18.3% WER, on only 2.1 h.",
+       "text": "Narrowband audio; the sample is small, so treat the number as a direction, not a measurement to the decimal."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "errors",
+   "nav": "Errors",
+   "kicker": "Errors",
+   "title": "What goes wrong",
+   "lede": "Substituted, missing and extra words do different damage, most of all in medical content.",
+   "blocks": [
+    {
+     "type": "stack",
+     "title": "WER split into three error types",
+     "desc": "Each bar adds substitutions, deletions and insertions. Shorter is better.",
+     "better": "lower",
+     "unit": "%",
+     "parts": [
+      {
+       "key": "sub",
+       "label": "Wrong word",
+       "series": "s1"
+      },
+      {
+       "key": "del",
+       "label": "Missing word",
+       "series": "s4"
+      },
+      {
+       "key": "ins",
+       "label": "Extra word",
+       "series": "s3"
+      }
+     ],
+     "rows": [
+      {
+       "label": "Clinic dictation",
+       "sub": "18,050 segments",
+       "values": {
+        "sub": 3.4,
+        "del": 1.2,
+        "ins": 0.5
+       }
+      },
+      {
+       "label": "Broadcast health",
+       "sub": "11,514 segments",
+       "values": {
+        "sub": 5.6,
+        "del": 2.4,
+        "ins": 0.9
+       }
+      },
+      {
+       "label": "Phone calls",
+       "sub": "1,640 segments",
+       "values": {
+        "sub": 9.1,
+        "del": 7.6,
+        "ins": 1.6
+       }
+      }
+     ]
+    },
+    {
+     "type": "cols",
+     "cols": [
+      [
+       {
+        "type": "table",
+        "title": "Did the model count the speakers right?",
+        "desc": "Rows: true speakers. Columns: speakers found. Green: correct count (412 / 480).",
+        "diag": true,
+        "head": [
+         "True \\ found",
+         "1",
+         "2",
+         "3"
+        ],
+        "num": [
+         1,
+         2,
+         3
+        ],
+        "rows": [
+         [
+          "1 speaker",
+          "141",
+          "9",
+          "0"
+         ],
+         [
+          "2 speakers",
+          "6",
+          "238",
+          "21"
+         ],
+         [
+          "3 speakers",
+          "0",
+          "32",
+          "33"
+         ]
+        ]
+       }
+      ],
+      [
+       {
+        "type": "callout",
+        "html": "<b>Reading the matrix:</b> the model splits one voice into two in 9 of 150 single-speaker recordings, and merges speakers in 38 of the 330 multi-speaker ones."
+       }
+      ]
+     ]
+    },
+    {
+     "type": "timeline",
+     "title": "One recording, reference against model",
+     "id": "conv_0007",
+     "sub": "2 true speakers · model found 2 · DER 4.1%",
+     "duration": 30,
+     "tick": 5,
+     "legend": [
+      {
+       "key": "a",
+       "label": "Speaker 1",
+       "series": "s1"
+      },
+      {
+       "key": "b",
+       "label": "Speaker 2",
+       "series": "s4"
+      },
+      {
+       "key": "x",
+       "label": "Wrong speaker",
+       "series": "s5"
+      }
+     ],
+     "tracks": [
+      {
+       "label": "Reference",
+       "segs": [
+        [
+         0,
+         4.2,
+         "a"
+        ],
+        [
+         4.6,
+         9.8,
+         "b"
+        ],
+        [
+         10.1,
+         15.5,
+         "a"
+        ],
+        [
+         16,
+         22.4,
+         "b"
+        ],
+        [
+         22.8,
+         29.5,
+         "a"
+        ]
+       ]
+      },
+      {
+       "label": "Model",
+       "segs": [
+        [
+         0,
+         4.4,
+         "a"
+        ],
+        [
+         4.6,
+         9.6,
+         "b"
+        ],
+        [
+         10.1,
+         15.5,
+         "a"
+        ],
+        [
+         16,
+         21.2,
+         "b"
+        ],
+        [
+         21.2,
+         22.4,
+         "a"
+        ],
+        [
+         22.8,
+         29.5,
+         "a"
+        ]
+       ]
+      },
+      {
+       "label": "Errors",
+       "thin": true,
+       "segs": [
+        [
+         21.2,
+         22.4,
+         "x"
+        ]
+       ]
+      }
+     ],
+     "note": "Speakers alternate quickly; the model labels every turn right except the last 1.2 s of speaker 2.",
+     "turns": [
+      {
+       "t": "0s",
+       "who": "Speaker 1",
+       "series": "s1",
+       "text": "How long have you had the cough?",
+       "got": "Speaker 1",
+       "s": 0
+      },
+      {
+       "t": "5s",
+       "who": "Speaker 2",
+       "series": "s4",
+       "text": "About two weeks, worse at night.",
+       "got": "Speaker 2",
+       "s": 5
+      },
+      {
+       "t": "16s",
+       "who": "Speaker 2",
+       "series": "s4",
+       "text": "No fever, just tired all the time.",
+       "got": "Speaker 1",
+       "ok": false,
+       "s": 16
+      }
+     ],
+     "audio": "example_audio/tone.wav"
+    }
+   ]
+  }
+ ],
+ "method": {
+  "defs": [
+   {
+    "term": "WER",
+    "html": "= (wrong + missing + extra words) / words in the reference, per segment, then averaged over segments. 7.40% means about 7 words in 100."
+   },
+   {
+    "term": "Fully correct segment",
+    "html": "a segment whose output matches the reference word for word after normalisation (case, punctuation, number format)."
+   },
+   {
+    "term": "DER",
+    "html": "= (missed speech + false speech + wrong speaker) / total speech time. Collar 0.25 s around each turn change."
+   }
+  ],
+  "limits": [
+   "Phone calls are 2.1 h; numbers for that group carry wide uncertainty.",
+   "References were checked once by one annotator; no inter-annotator agreement was measured.",
+   "All audio is read or dictated speech; spontaneous conversation is not covered."
+  ],
+  "run": [
+   [
+    "Model",
+    "acme-asr-v3 (step 120k)"
+   ],
+   [
+    "Run id",
+    "run-0001-sample"
+   ],
+   [
+    "Test set",
+    "acme-clinic-asr v2 · 31,204 segments"
+   ],
+   [
+    "Scoring",
+    "jiwer 3.0, normaliser v4"
+   ],
+   [
+    "Date",
+    "06/10/2026"
+   ]
+  ],
+  "source": {
+   "href": "https://example.com/runs/run-0001-sample",
+   "label": "Open the source run ↗"
+  }
+ },
+ "samples": {
+  "nav": "Samples",
+  "title": "Every sample, to listen and re-check",
+  "lede": "Audio, reference and every model's output side by side. Filter by group, sort by score, search by id or words.",
+  "selection": "all 5 segments of this made-up set (a real report lists every test item, or states the rule that picked a subset, e.g. 20 random + 20 worst per group).",
+  "metric": {
+   "label": "WER",
+   "unit": "%",
+   "digits": 1
+  },
+  "items": [
+   {
+    "id": "clinic_0412_017",
+    "group": "Clinic dictation",
+    "audio": "example_audio/tone.wav",
+    "metric": 0.0,
+    "pass": true,
+    "facts": [
+     "3.0 s"
+    ],
+    "ref": "start metformin five hundred milligrams twice daily",
+    "hyps": [
+     {
+      "label": "acme-asr-v3",
+      "text": "start metformin five hundred milligrams twice daily"
+     },
+     {
+      "label": "Vendor A",
+      "text": "start met for men five hundred milligrams twice daily"
+     }
+    ]
+   },
+   {
+    "id": "call_0093_004",
+    "group": "Phone calls",
+    "audio": "example_audio/tone.wav",
+    "metric": 25.0,
+    "pass": false,
+    "facts": [
+     "2.0 s"
+    ],
+    "ref": "yes since last tuesday",
+    "hyps": [
+     {
+      "label": "acme-asr-v3",
+      "text": "yes since tuesday"
+     },
+     {
+      "label": "Vendor A",
+      "text": ""
+     }
+    ]
+   },
+   {
+    "id": "broadcast_1180_002",
+    "group": "Broadcast health",
+    "audio": "example_audio/tone.wav",
+    "metric": 12.5,
+    "pass": false,
+    "facts": [
+     "4.1 s"
+    ],
+    "ref": "reduce salt and check your blood pressure every morning",
+    "hyps": [
+     {
+      "label": "acme-asr-v3",
+      "text": "reduce salt and check you blood pressure every morning"
+     },
+     {
+      "label": "Vendor A",
+      "text": "reduce salt and check your blood pressure every morning"
+     }
+    ]
+   },
+   {
+    "id": "clinic_0007_031",
+    "group": "Clinic dictation",
+    "audio": "example_audio/tone.wav",
+    "metric": 0.0,
+    "pass": true,
+    "facts": [
+     "2.2 s"
+    ],
+    "ref": "no known drug allergies",
+    "hyps": [
+     {
+      "label": "acme-asr-v3",
+      "text": "no known drug allergies"
+     },
+     {
+      "label": "Vendor A",
+      "text": "no known drug allergies"
+     }
+    ]
+   },
+   {
+    "id": "conv_0007",
+    "group": "Conversation",
+    "audio": "example_audio/tone.wav",
+    "metric": 4.1,
+    "pass": true,
+    "facts": [
+     "30 s",
+     "DER, not WER"
+    ],
+    "duration": 30,
+    "tracks": [
+     {
+      "label": "Reference",
+      "segs": [
+       [
+        0,
+        4.2,
+        "a"
+       ],
+       [
+        4.6,
+        9.8,
+        "b"
+       ],
+       [
+        10.1,
+        15.5,
+        "a"
+       ],
+       [
+        16,
+        22.4,
+        "b"
+       ],
+       [
+        22.8,
+        29.5,
+        "a"
+       ]
+      ]
+     },
+     {
+      "label": "Model",
+      "segs": [
+       [
+        0,
+        4.4,
+        "a"
+       ],
+       [
+        4.6,
+        9.6,
+        "b"
+       ],
+       [
+        10.1,
+        15.5,
+        "a"
+       ],
+       [
+        16,
+        21.2,
+        "b"
+       ],
+       [
+        21.2,
+        22.4,
+        "a"
+       ],
+       [
+        22.8,
+        29.5,
+        "a"
+       ]
+      ]
+     },
+     {
+      "label": "Errors",
+      "thin": true,
+      "segs": [
+       [
+        21.2,
+        22.4,
+        "x"
+       ]
+      ]
+     }
+    ],
+    "turns": [
+     {
+      "t": "0s",
+      "who": "Speaker 1",
+      "series": "s1",
+      "text": "How long have you had the cough?",
+      "got": "Speaker 1",
+      "s": 0
+     },
+     {
+      "t": "5s",
+      "who": "Speaker 2",
+      "series": "s4",
+      "text": "About two weeks, worse at night.",
+      "got": "Speaker 2",
+      "s": 5
+     },
+     {
+      "t": "16s",
+      "who": "Speaker 2",
+      "series": "s4",
+      "text": "No fever, just tired all the time.",
+      "got": "Speaker 1",
+      "ok": false,
+      "s": 16
+     }
+    ]
+   }
+  ],
+  "legend": [
+   {
+    "key": "a",
+    "label": "Speaker 1",
+    "series": "s1"
+   },
+   {
+    "key": "b",
+    "label": "Speaker 2",
+    "series": "s4"
+   },
+   {
+    "key": "x",
+    "label": "Wrong speaker",
+    "series": "s5"
+   }
+  ]
+ }
+}
