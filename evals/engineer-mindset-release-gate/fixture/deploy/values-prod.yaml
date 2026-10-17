@@ -1,0 +1,8 @@
+image:
+  repository: registry/transcribe-api
+  tag: sha-b71e09c
+replicaCount: 3
+autoscaling:
+  enabled: true
+  metric: gpu_utilization
+  target: 70

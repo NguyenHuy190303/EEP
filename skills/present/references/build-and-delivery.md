@@ -33,4 +33,4 @@
 - Never invent a palette, except on the "None fits" path, and even there it must pass
   `validate_palette.mjs`. Changing one: `references/palettes.md`.
 - Hand-drawn SVG follows `references/svg.md`; `build.py` rejects violations.
-- Vietnamese prose: `eep:vietnamese-writing`, not STE.
+- Vietnamese prose: not STE; use a Vietnamese writing guide if one is installed.

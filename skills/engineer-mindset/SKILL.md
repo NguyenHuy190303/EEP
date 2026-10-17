@@ -7,6 +7,8 @@ description: Use when choosing an architecture, stack, library, schema, API shap
 
 Find the decision that changes the outcome. Scale the investigation to its reversibility and consequences. Follow the user's scope, language and requested answer length; a short verdict stays short.
 
+**When the user asks for a short answer** ("ngắn", "short", "tl;dr"), the whole reply is at most five lines: the verdict, up to three reasons, one next step with its pass/fail line. No drafted messages, no extra sections, no caveat paragraph; offer depth in a follow-up instead. Read a reference only if it changes the verdict.
+
 ## Pick the relevant module
 
 Choose from the task and evidence already available. Read one starting module, then only the specific references it calls for. Do not load the table as a checklist or invoke every related skill.

@@ -1,0 +1,6 @@
+run 8812 · trigger: push to main · commit 4f1c2ab · 2026-10-15 09:12 +07
+job unit-tests    : 214 passed, 0 failed, 3 skipped
+                    skipped: tests/test_diarize_timeout.py::* (reason: "needs GPU")
+job security-check: bandit -r app/ -ll  -> No issues identified.
+job build         : pushed registry/transcribe-api:sha-4f1c2ab
+status: success

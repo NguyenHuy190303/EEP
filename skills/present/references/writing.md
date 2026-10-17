@@ -2,7 +2,7 @@
 
 Read when writing prose inside a present artifact. Chat replies are out of scope. The user picks
 A, B or C up front; B is the default. Vietnamese prose: STE is an English spec, so use
-`eep:vietnamese-writing` instead.
+a Vietnamese writing guide instead.
 
 ## B, 80% of the way to ASD-STE100 (default)
 

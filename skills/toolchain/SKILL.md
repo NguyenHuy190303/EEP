@@ -62,7 +62,7 @@ silently drift apart.
 - Inside the image: copy `pyproject.toml` + `uv.lock`, then `uv sync --locked`. No loose
   `pip install X` lines in a Dockerfile — that is a dependency nobody can reproduce.
 - SkyPilot / SLURM tasks install the same way in `setup:`; a task that `pip install`s a list of
-  packages inline is how "runs on the cluster, broken locally" happens. See skill `sky-job`.
+  packages inline is how "runs on the cluster, broken locally" happens. See the cluster-job skill, if installed.
 - The image tag that ran a job goes in that run's `README.md` (skill `layout`), so the run can be
   rebuilt.
 

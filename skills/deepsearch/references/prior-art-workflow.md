@@ -65,7 +65,7 @@ produces a worse version you also have to maintain. Pick among the options; do n
 | Traces / instrumentation format | OpenTelemetry | a bespoke span format |
 | Log aggregation | the platform's stack (k8s → Loki / ELK) | a log server of your own |
 | Background jobs, queues | Celery / RQ / Arq, or Redis Streams | a polling loop over a DB table |
-| GPU job lifecycle | SkyPilot (skill `sky-job`) | ssh + nohup + a tmux you forget |
+| GPU job lifecycle | SkyPilot | ssh + nohup + a tmux you forget |
 | DB schema change | Alembic | hand-written ALTER scripts |
 | Deploy / rollout | Helm + ArgoCD | kubectl apply from a laptop |
 | Auth, sessions, tokens, hashing, crypto | an IdP or a reviewed library | anything hand-rolled — this is a security boundary |

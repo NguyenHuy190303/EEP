@@ -11,7 +11,7 @@ database with it, and `kill $(lsof -ti:8777)` kills a LaunchAgent that restarts 
 so the port looks cleaned and is not.
 
 Remote resources are **out of scope**: SkyPilot clusters, k8s pods and anything that costs money
-belong to skill `sky-job`, which has its own gates. Never `sky down --all`, never
+belong to the cluster-job workflow (e.g. a `sky-job` skill), which has its own gates. Never `sky down --all`, never
 `kubectl delete` from here.
 
 ## Always: report first

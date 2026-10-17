@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "eep",
-  "description": "Easy Engineer Plugin — a personal engineering-discipline skill set, one copy for Claude Code and Codex.",
+  "description": "Easy Engineer Plugin — evidence-first engineering skills for Claude Code and Codex.",
   "owner": {
     "name": "Huy Nguyen",
     "email": "nguyenhuy190303@gmail.com"
@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "eep",
-      "description": "Investigate, decide, research, review, present, document, ship GPU jobs — evidence-first.",
+      "description": "Investigate, decide, research, review, present and document on evidence, not vibes.",
       "source": "./",
       "category": "productivity"
     }

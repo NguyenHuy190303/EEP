@@ -554,7 +554,7 @@ def main() -> int:
                 shutil.copy2(p, dst)
         print(f"    audio: {len(set(copies))} file → {a.out.parent / adir}/ (giao cả thư mục này cùng trang)")
     fonts = KIT / "fonts-showcase.css"
-    if not fonts.exists() and not a.no_fonts:   # a copy may ship without it (Koruvai's 2 MB skill limit)
+    if not fonts.exists() and not a.no_fonts:   # a copy may ship without it (some skill hosts cap size)
         print(f"    {fonts.name} chưa có: tải {', '.join(SHOWCASE_FONTS)} từ Google Fonts, một lần")
         subprocess.run([sys.executable, str(KIT / "embed_fonts.py"), str(fonts), *SHOWCASE_FONTS], check=True)
     with tempfile.NamedTemporaryFile("w", suffix=".body.html", delete=False, encoding="utf8") as f:

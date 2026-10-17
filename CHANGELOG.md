@@ -1,6 +1,22 @@
 # Changelog
 
-## Unreleased
+## 1.9.0 (2026-10-17)
+
+- **README rewritten for people who have not met EEP.** It now has a one-line pitch, three install
+  paths tested from a clean config (Claude Code marketplace, Codex marketplace, `npx skills`), a
+  with/without table from a real eval run, and a plain-language skill table. Companions moved
+  into a collapsed section.
+- **New public eval case `evals/engineer-mindset-release-gate/`.** It has a synthetic fixture, a
+  9-point checklist and every scored run, with limits written next to the numbers.
+- **`engineer-mindset` restores the five-line cap for "short answer" requests in `SKILL.md`.** The
+  2026-10-16 restructure had moved the cap into `references/judgment.md`, which capacity questions
+  never open. In blind-graded re-runs the short answers dropped from 270–420 words to 170–190 and
+  scored a mean of 4.0/6 (v1.1 anchors: 4.33).
+- **`sky-job` and `vietnamese-writing` leave the public plugin.** They depend on one team's GPU
+  pool and on Vietnamese prose; references in other skills now point to "the cluster-job skill, if
+  installed".
+- Manifests: version 1.9.0, keywords for discovery, descriptions without the removed skills.
+
 
 - **SessionStart skill-index hook removed.** Claude Code and Codex already list every skill with its
   description, so the hook only repeated that list (about 1k tokens at every start and compact).

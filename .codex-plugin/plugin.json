@@ -1,7 +1,7 @@
 {
   "name": "eep",
-  "version": "1.8.0",
-  "description": "Easy Engineer Plugin — evidence-first engineering skills: investigate, engineer-mindset (+ design-decision), deepsearch (+ before-cook), review-pr, present, cards-readme, sentry-cli, sky-job, vietnamese-writing, layout, toolchain, cleanup.",
+  "version": "1.9.0",
+  "description": "Easy Engineer Plugin — evidence-first engineering skills: investigate, engineer-mindset, deepsearch, review-pr, present, cards-readme, sentry-cli, layout, toolchain, cleanup.",
   "author": {
     "name": "Huy Nguyen",
     "email": "nguyenhuy190303@gmail.com"
@@ -10,18 +10,21 @@
   "license": "MIT",
   "keywords": [
     "skills",
+    "agent-skills",
+    "claude-code",
+    "codex",
+    "engineering",
     "investigate",
-    "review",
-    "html",
-    "huggingface",
-    "skypilot",
+    "code-review",
+    "release-readiness",
+    "evals",
     "sentry"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "EEP — Easy Engineer Plugin",
     "shortDescription": "Evidence-first engineering skills",
-    "longDescription": "Investigate root causes, price design decisions, research with sources, review PRs on evidence, build HTML reports, write model/dataset cards, drive Sentry CLI and SkyPilot GPU jobs.",
+    "longDescription": "Investigate root causes, price design decisions, judge release readiness from real artifacts, research with sources, review PRs on evidence, build HTML reports, write model/dataset cards and READMEs, drive the Sentry CLI.",
     "developerName": "Huy Nguyen",
     "category": "Productivity",
     "capabilities": [

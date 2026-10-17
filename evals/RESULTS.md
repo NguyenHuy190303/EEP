@@ -1,3 +1,8 @@
+> **Update 2026-10-17 (v1.9.0):** `sky-job` and `vietnamese-writing` left the plugin, so the
+> plugin now has 10 skills. `engineer-mindset` has a manual case in
+> [`engineer-mindset-release-gate/`](engineer-mindset-release-gate/). The table below is still the
+> 2026-09-27 run and was not re-run for 1.9.0.
+
 # Eval results — 2026-09-27 (v1.6.0)
 
 Ran with `--scaffold` so each case gets a real fixture repo instead of the empty sandbox that made

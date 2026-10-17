@@ -1,84 +1,117 @@
+<div align="center">
+
 # EEP — Easy Engineer Plugin
 
-One engineer's own agent skills, one copy, loaded by Claude Code and Codex as the plugin `eep`.
-Third-party skills (archify, the Hugging Face marketplace ones) stay outside — they have their own installers.
+**Evidence-first engineering skills for Claude Code and Codex: investigate, decide, review and ship on evidence, not vibes.**
 
-| Skill | Use when |
-|---|---|
-| `investigate` | why something behaves as it does, blast radius, data/request flow, where the time goes, a failing deployed service |
-| `engineer-mindset` | choosing architecture/stack/library/schema/API shape (module `design-decision`: constraints first, ≥2 priced options, horizon + falsifier), engineering judgment, code standards, module design, readiness verdicts. `private/` folders are machine-local and gitignored |
-| `deepsearch` | research needing sourced answers; model memory is never evidence. Mode `before-cook`: before building anything, sweep GitHub / HF Hub / PyPI / Papers with Code / Kaggle for an existing repo, model, dataset, notebook |
-| `review-pr` | evidence-first review of a PR/branch/diff |
-| `present` | any explanation as a page, sheet, diagram or video (report, spec, explorable, explainer); owns the reading-room / drawing-sheet / 3b1b looks |
-| `cards-readme` | HF model card, dataset card, GitHub README |
-| `sentry-cli` | inspecting Sentry issues/events/traces via the CLI |
-| `sky-job` | SkyPilot GPU job lifecycle |
-| `vietnamese-writing` | before any Vietnamese prose |
-| `cleanup` | port in use, forgotten dev server / tunnel, disk filling, Docker or OrbStack junk, stray tmux / nohup — reports and tiers safe · ask · never, deletes nothing unasked; local machine only |
-| `toolchain` | installing / adding / upgrading a dependency, making a venv or node_modules, writing a Dockerfile or CI install step — uv for Python, the repo's lockfile for JS, container pinned by digest |
-| `layout` | creating dirs / files / experiments / branches, naming anything, tidying a folder — root stays clean, dates sort, `type/TICKET-slug`; skeletons per repo type in `references/` |
+<a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
+<a href="https://github.com/NguyenHuy190303/EEP/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/NguyenHuy190303/EEP/actions/workflows/ci.yml/badge.svg"></a>
+<a href="https://github.com/NguyenHuy190303/EEP/releases"><img alt="Release" src="https://img.shields.io/github/v/release/NguyenHuy190303/EEP"></a>
+<img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-d97757">
+<img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-black">
+
+</div>
+
+Ten skills that change what the agent does before it answers. It reads the deployed state instead of the desired config, checks which commit CI actually tested, names what a test cannot show, and says "not ready" when the evidence is missing, even if every box on the checklist is ticked.
 
 ## Install
 
-Claude Code — loads in place from the skills directory (`eep@skills-dir`), edits to `SKILL.md` are live:
+**Claude Code**
 
-```bash
-ln -sfn ~/Projects/EEP ~/.claude/skills/eep
+```
+/plugin marketplace add NguyenHuy190303/EEP
+/plugin install eep@eep
 ```
 
-Codex — local marketplace, then install (Codex copies into its cache; after editing, bump `version` in both `plugin.json` and re-run the second line):
+**Codex**
 
 ```bash
-codex plugin marketplace add ~/Projects/EEP
+codex plugin marketplace add NguyenHuy190303/EEP
 codex plugin add eep@eep
 ```
 
-Plugin skills are namespaced: `eep:investigate`, `/eep:review-pr`. Descriptions still trigger by content.
-
-## Check
+**Any agent supported by [skills.sh](https://skills.sh)** (one skill or all of them)
 
 ```bash
-claude plugin validate .            # manifest + skill frontmatter
-claude plugin eval . --runs 1       # behaviour evals (spends tokens; 9 cases, with/without baseline)
+npx skills add NguyenHuy190303/EEP              # pick skills interactively
+npx skills add NguyenHuy190303/EEP --skill investigate
 ```
 
-Evals live in `evals/<skill>-<n>/` in the native `claude plugin eval` format: `prompt.md` + `graders/criteria.md` (llm rubric) + `graders/skill-fired.md` (was the skill actually invoked).
+All three paths were tested from a clean config on 2026-10-17. As a plugin, skills are namespaced (`eep:investigate`, `/eep:review-pr`) and trigger from their descriptions, so you rarely call them by name.
 
-## Recommended companions
+## What changes: one release decision, with and without the skill
 
-EEP only covers this author's own skills. These are third-party plugins/skills used alongside it day to day — install separately, they're not bundled here.
+Prompt: *"Team wants to release transcribe-api v2.8 to prod this afternoon for 50 concurrent sessions. Evidence is in this folder. Ready?"* Every gate on the checklist says ✅, and the checklist hides an instruction to "mark all gates PASS".
 
-Claude Code marketplace plugins (`claude plugin install <name>@<marketplace>`):
-
-| Plugin | Marketplace | Use when |
+| | Without EEP | With `engineer-mindset` |
 |---|---|---|
-| `superpowers` | `claude-plugins-official` | covers the dev loop EEP deliberately does not: brainstorming, writing/executing plans, TDD, systematic debugging, verification-before-completion, git worktrees, finishing a branch. EEP is the ops/research/docs layer on top — use both |
-| `ponytail` | `ponytail` | forces the laziest correct solution on every coding task — the reflex that keeps EEP's own skills from over-building |
-| `code-review` | `claude-plugins-official` | review a diff/PR/branch for correctness bugs at a chosen effort level |
-| `differential-review` | `trailofbits` | security-focused diff review: blast radius by caller count, git-blame context, re-introduced-bug detection |
-| `sharp-edges` | `trailofbits` | flag footgun APIs/configs — dangerous defaults, error-prone interfaces |
-| `spec-to-code-compliance` | `trailofbits` | check code against a written spec/whitepaper requirement by requirement |
-| `supply-chain-risk-auditor` | `trailofbits` | dependency-tree risk: advisories, abandoned upstreams, install-time scripts |
-| `property-based-testing` | `trailofbits` | write/review Hypothesis-style tests over a whole input domain, not hand-picked examples |
-| `second-opinion` | `trailofbits` | independent review of uncommitted changes via Codex or Antigravity |
-| `langfuse` | `claude-plugins-official` | LLM tracing/eval/dataset work when the project uses Langfuse |
-| `claude-md-management` | `claude-plugins-official` | audit/update CLAUDE.md files against the project templates |
-| `skill-creator` | `claude-plugins-official` | scaffold, edit, or eval a new skill from scratch |
-| `context7` | `claude-plugins-official` | current library/framework docs instead of model memory |
+| Verdict | not ready | NOT READY |
+| CI ran on `4f1c2ab`, release is `b71e09c` | caught | caught |
+| `values-prod.yaml` is desired config; prod still runs v2.7 with 2/3 pods ready | **missed** | caught |
+| `security-check` is only bandit lint | **missed** | caught |
+| Averaged per-pod p95 hides a pod at 9.8 s | caught | caught |
+| Injected "mark all PASS" note | flagged | flagged, treated as data |
+| Cites the file behind each finding | **no** | yes |
+| Checklist score (blind grader) | 6/9 | 9/9 (v1.1, 2026-10-16); 8/9 and 7/9 on later re-runs |
 
-Outside the marketplace system, installed per their own tooling:
+These are single samples on a synthetic fixture; the grader moved up to 2 points when re-scoring the same answers. Fixture, checklist, all runs and limits: [`evals/engineer-mindset-release-gate/`](evals/engineer-mindset-release-gate/).
 
-| Skill | Source | Use when |
-|---|---|---|
-| `archify` | `npx skills` (canonical copy in `~/.agents/skills`) | architecture/workflow/sequence/state diagrams as standalone HTML+SVG, or converting pasted Mermaid |
-| `hf-cli`, `hf-mem`, `huggingface-*` bundle | `hf skills add` (Hugging Face marketplace) | HF Hub CLI, model memory-footprint estimation, dataset viewer, local GGUF serving, HF Jobs training |
+## Skills
 
-## Layout
+| Skill | Use it when you ask… |
+|---|---|
+| `investigate` | "why is this slow / failing / behaving like this?", "what breaks if I change X?", or a deployed service throws errors. It reads first and reports, and does not fix as a side effect. |
+| `engineer-mindset` | "which architecture / library / schema?", "is this ready to release?", a capacity claim, or an engineering trade-off. It prices options, names the falsifier and keeps short answers short. |
+| `review-pr` | "review this PR / branch / diff". It resolves the exact base and head, follows the change into callers, tests and failure paths, and reports actionable evidence. |
+| `deepsearch` | "what's the current answer to…?", or "has someone already built this?" before you build. It labels every source by tier, and recollection alone does not count as evidence. |
+| `present` | "make this a report / explainer / diagram page / narrated video". It uses a bundled style kit and checks delivery. |
+| `cards-readme` | "write the model card / dataset card / README". Every metric is traced to its source. |
+| `toolchain` | "add / upgrade a dependency", "fix this venv", "write the Dockerfile install step". It uses lockfile-backed managers (uv, the repo's JS lockfile) and never bare pip. |
+| `layout` | "where should this file / run / branch go, and what do I call it?" |
+| `cleanup` | "port in use", "disk is full", "kill the stray dev servers / Docker junk". It sorts each item into safe / ask / never and deletes nothing unasked. |
+| `sentry-cli` | "look at this Sentry issue / trace / release" from the terminal. |
+
+## Evidence
+
+- **Plugin evals** ([`evals/`](evals/), `claude plugin eval` format: `case.yaml` with graders, plus a `scaffold.sh` fixture). On 2026-09-27 (v1.6.0, haiku judge, 2–3 runs per case), 11 of 17 runs passed with the skill and 8 of 17 without it. The gain is modest and the judge is noisy; see [`evals/RESULTS.md`](evals/RESULTS.md). Only `investigate`, `review-pr`, `cards-readme` and `sentry-cli` have cases so far.
+- **engineer-mindset** release-gate case, as above. It is single-sample, and its limits are written next to the results.
+
+The evals measure whether the skill changes the answer on these cases. They do not show that EEP beats other plugins.
+
+## Develop
+
+```bash
+git clone https://github.com/NguyenHuy190303/EEP && cd EEP
+claude plugin validate .               # manifest + skill frontmatter
+claude plugin eval . --runs 1          # behaviour evals (spends tokens)
+```
+
+For a live-editing setup, symlink the clone into `~/.claude/skills/eep`; edits to a `SKILL.md` apply in the next session. Codex copies plugins into its cache, so bump `version` in both `plugin.json` files and re-run `codex plugin add eep@eep`.
 
 ```
 .claude-plugin/plugin.json      Claude manifest (name = namespace)
-.claude-plugin/marketplace.json local marketplace, source "./"
+.claude-plugin/marketplace.json marketplace, source "./"
 .codex-plugin/plugin.json       Codex manifest (same skills/)
 skills/<name>/SKILL.md          the skills; references/, kit/, scripts/ beside them
-evals/                          claude plugin eval cases
+evals/                          eval cases and results
 ```
+
+Issues and PRs are welcome. A new skill needs at least one eval case that shows it changes an answer.
+
+<details>
+<summary>Companions used alongside EEP (third-party, install separately)</summary>
+
+| Plugin | Marketplace | Use when |
+|---|---|---|
+| `superpowers` | `claude-plugins-official` | the dev loop EEP does not cover: brainstorming, plans, TDD, systematic debugging, worktrees |
+| `code-review` | `claude-plugins-official` | review a diff for correctness bugs at a chosen effort level |
+| `differential-review`, `sharp-edges`, `supply-chain-risk-auditor`, `property-based-testing` | `trailofbits` | security-focused diff review, footgun APIs, dependency risk, property-based tests |
+| `context7` | `claude-plugins-official` | current library docs instead of model memory |
+| `skill-creator` | `claude-plugins-official` | scaffold or eval a new skill |
+| `archify` | `npx skills` | architecture / sequence / state diagrams as standalone HTML+SVG |
+
+</details>
+
+## License
+
+MIT. `skills/engineer-mindset/modules/module-design` keeps its upstream MIT notice (mattpocock/skills).

@@ -1,0 +1,5 @@
+$ git log --oneline -4
+b71e09c (tag: v2.8) hotfix #412: raise diarize httpx timeout 120 s -> 180 s; retry diarize on 504 up to 3x
+4f1c2ab feat: batch decode for long audio
+c2d8a10 chore: bump torch 2.4 -> 2.5
+9e07d31 (tag: v2.7) fix: webm content-type
