@@ -14,7 +14,7 @@ Load only the sections present in the repository. Existing project configuration
 - Use the repository's formatter/linter and the strictest TypeScript options it already supports. Validate data crossing runtime boundaries; static types do not validate JSON.
 - Prefer discriminated unions for state, `unknown` before validation, immutable transformations where clear, and explicit ownership of shared state.
 - Propagate `AbortSignal`/deadlines, avoid blocking the event loop, handle rejected promises once, and bound concurrent promises.
-- In frontend code, preserve semantic HTML, keyboard access, focus, accessible names, server/client boundaries, and one owner for state.
+- In frontend code, preserve semantic HTML, keyboard access, focus, accessible names, server/client boundaries, and one owner for state. Component, state and layer structure: [frontend.md](frontend.md).
 
 Reference: [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html).
 
@@ -73,4 +73,6 @@ References: [Google Java Style](https://google.github.io/styleguide/javaguide.ht
 
 - Mobile work must respect lifecycle, offline state, permissions, battery/network constraints, cancellation, background limits, accessibility, and store-release compatibility.
 - Data pipelines need schema/data quality checks, lineage, replay/backfill, partition strategy, late-data policy, idempotency, and cost per run.
+- Store measurements that grow over time in long form (`run_id, item_id, metric, errors, total` or `metric, value`), so a new metric adds rows instead of a column that older shards lack; loaders such as Hugging Face `datasets` reject data files with different columns in one split.
+- Read Hub or object-store datasets in place: DuckDB/Polars on `hf://datasets/<repo>@<revision>/...` with column pruning, or `datasets` with `streaming=True`. Plain `load_dataset` downloads and caches the whole dataset, audio included.
 - ML code needs reproducible data/model versions, leakage checks, representative evaluation, deterministic seeds where possible, hardware/runtime budgets, monitoring for drift and failure, and a non-model fallback where the product requires it.

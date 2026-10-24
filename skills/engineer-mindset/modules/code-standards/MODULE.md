@@ -23,6 +23,12 @@ Use [references/stacks.md](references/stacks.md) for stack-specific idioms and p
 
 Read [references/core.md](references/core.md) for functions, modules, logic, algorithms, loops, concurrency, and tests.
 
+## Objects and components
+
+When code adds or reshapes a class, entity, service, inheritance/polymorphism choice or a growing set of variants (metrics, score types, columns), read [references/object-design.md](references/object-design.md). When it adds or reshapes frontend components, hooks, stores, client state or a view whose columns come from data, read [references/frontend.md](references/frontend.md). Both aim at one outcome: the next change lands in one owner.
+
+When code reads the same data or recomputes the same result more than once, copies a dataset, or adds a cache layer, read [references/caching-and-resources.md](references/caching-and-resources.md).
+
 ## Distributed and operational behavior
 
 For network, queue, async, background, or production-facing code, inspect the whole call budget and failure path. A local `try/catch` is not a reliability design.

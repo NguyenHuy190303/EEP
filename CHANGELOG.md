@@ -2,6 +2,42 @@
 
 ## Unreleased
 
+## 1.12.0 (2026-10-24)
+
+- **`engineer-mindset` defaults to the durable shape.** The common decision contract now treats work
+  as not urgent unless the user says so ("gấp", "urgent", "hotfix", "làm đại", "quick and dirty").
+  Not urgent: build the long-term shape of what the task touches (single source of truth,
+  registries, read in place, caches keyed by revision, incremental compute), propose out-of-scope
+  improvements with effort and payoff. Urgent: fastest working result labelled `tactical` with its
+  exit condition and the durable follow-up. Throwaway probes stay throwaway until reused. Co-work:
+  do reversible work, stop only at consequential forks, end with at most three next improvements.
+- **New `references/caching-and-resources.md`**: name the owner first, read in place at a pinned
+  revision; cache immutable-by-revision data by default and mutable data only on a measured hot
+  path; a layer table (in-process, local disk, shared, HTTP/CDN) with key, invalidation, bound and
+  hit-rate per layer; single-flight on misses; retries at one layer; incremental compute per
+  item × metric × revision; done-when and smell tables. Routed from a new `SKILL.md` row, the
+  description ("caching") and the code-standards module.
+- **`engineer-mindset` code standards gain object and frontend design.** New
+  `references/object-design.md`: a class owns an invariant and its state, otherwise functions over
+  plain data; value objects, tell-don't-ask, cheap constructors with factories for I/O, composition
+  by default, inheritance only for substitutable is-a, polymorphism and abstract interfaces only with
+  two real variants (consistent with `module-design`'s two-adapters rule), Python idioms, and a
+  smell → smallest-fix table. New `references/frontend.md` applies the same rules in framework idiom:
+  view / state owner / domain logic / API-client layers, one owner per state, derive instead of sync,
+  server state in the data layer, composition and union `variant` props over boolean props, feature
+  colocation, effect cleanup, behaviour-level tests. Routed from the code-standards row, the module's
+  new "Objects and components" section, the TypeScript stack bullet and the description ("class or UI
+  component structure").
+- **Open sets as one registry, views driven by data.** `object-design.md` gains "Open sets: one
+  registry": each metric/score type/column is one value object carrying label, unit, direction,
+  aggregation and compute; every layer iterates it; ratio metrics store numerator and denominator
+  and aggregate sum/sum. `frontend.md` gains "Views driven by data": descriptors travel in the API
+  response, columns and formatters map over them, credentials stay server-side. `core.md`: read data
+  where it is owned, pinned to a revision, a copy is a cache. `stacks.md` data/ML: long-form
+  measurements (wide columns break `datasets` loading across shards) and reading Hub datasets in
+  place via `hf://` or streaming. New manual eval cases `evals/engineer-mindset-metric-registry` (1.11.0 4.5/8 → 8/8) and
+  `evals/engineer-mindset-durable-default` (not urgent 3.5/6 → 5.5/6; urgent 4/4).
+
 ## 1.11.0 (2026-10-24)
 
 - **`investigate` root-cause starts with a red loop** (adapted from mattpocock/skills

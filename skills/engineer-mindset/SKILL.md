@@ -1,6 +1,6 @@
 ---
 name: engineer-mindset
-description: Use when choosing an architecture, stack, library, schema, API shape or module boundary; making a consequential engineering judgment, standards or readiness call; designing an LLM agent; or writing a skill, CLAUDE.md or agent brief. Ordinary local edits follow repository rules.
+description: Use when choosing an architecture, stack, library, schema, API shape, module boundary, class or UI component structure, caching; making a consequential engineering judgment, standards or readiness call; designing an LLM agent; or writing a skill, CLAUDE.md or agent brief. Ordinary local edits follow repository rules.
 ---
 
 # Engineer mindset
@@ -18,7 +18,8 @@ Choose from the task and evidence already available. Read one starting module, t
 | Choosing a stack, library, schema, API shape or module boundary | [design decision](modules/design-decision/MODULE.md) | [architecture](modules/architecture/MODULE.md) when the choice is system-level |
 | Judgment, trade-off, go/no-go, principal critique | [judgment](references/judgment.md) | Existing domain playbooks below |
 | System/service architecture, migration, build vs buy | [architecture](modules/architecture/MODULE.md) | Its economics, stack or system-design reference for that specific decision |
-| Code standards, errors, retries, APIs, observability, algorithms or concurrency | [code standards](modules/code-standards/MODULE.md) | Its core, reliability, API or language reference for the affected boundary |
+| Code standards, class/object design, metric/column registries, frontend component structure, errors, retries, APIs, observability, algorithms or concurrency | [code standards](modules/code-standards/MODULE.md) | Its core, object-design, frontend, reliability, API or language reference for the affected boundary |
+| Caching, repeated reads or compute, duplicated data copies | [caching and resources](modules/code-standards/references/caching-and-resources.md) | [object design](modules/code-standards/references/object-design.md) when the duplicate is a definition |
 | Python setup, dependencies, scripts or requested tooling migration | `private/python/SKILL.md` when present, otherwise `eep:toolchain` | PEP 723 or project configuration only for the chosen task |
 | Module interfaces, deep/shallow modules, testability | [module design](modules/module-design/MODULE.md) | The vocabulary or testability reference selected there |
 | LLM tool/skill/harness boundaries, prompt patches or multi-agent design | `private/agent-design/SKILL.md` when present | `private/agent-systems.md` for worked cases |
@@ -31,6 +32,12 @@ Choose from the task and evidence already available. Read one starting module, t
 Resolve links inside a module relative to the module file. `private/` is machine-local team material (gitignored); skip any row whose private file is absent.
 
 ## Common decision contract
+
+**Default horizon: durable.** Work is not urgent unless the user says so ("gấp", "urgent", "hotfix", "làm đại", "cần kết quả trước", "quick and dirty").
+- Not urgent: build the long-term shape of what the task touches, so the next change is one entry or one owner: single source of truth, registries for open sets, read in place, caches keyed by revision, incremental compute. Improvements outside the scope go into the report with effort and payoff, not into the diff; extension points still need a current caller.
+- Urgent: the fastest working result, marked in the code and the reply as `tactical: <why>; remove when <condition>`, plus the durable follow-up in one line.
+- Horizon is separate from urgency: a one-off probe stays `throwaway`; its second reuse makes it durable.
+- Co-work: do the reversible work, stop only at a consequential fork with a recommended answer, and end with at most three next durable improvements, each with effort and payoff.
 
 - Name the decision, owner, constraints and observable success condition. Ask only about a missing fact that changes the result.
 - Trace the mechanism and relevant failure boundaries. A passing component test is evidence for that component, not production readiness.

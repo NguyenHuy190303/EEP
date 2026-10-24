@@ -6,8 +6,9 @@ Apply these with the language's own idioms and the repository's established conv
 
 - Organize by domain/capability when behavior changes together; organize technical adapters around a clear boundary.
 - Keep dependency direction visible. Domain logic should not import transport, UI, or persistence details unless the existing architecture deliberately combines them.
-- Avoid one-implementation interfaces, pass-through layers, generic managers, and extension points without a current caller.
+- Avoid one-implementation interfaces, pass-through layers, generic managers, and extension points without a current caller. Class and inheritance choices: [object-design.md](object-design.md).
 - Keep configuration in its owning source. Do not duplicate mutable values in code, docs, tests, and deployment files.
+- Read data where it is owned, pinned to a revision or snapshot. A local copy is a cache keyed by that revision, made only when latency, cost or offline use requires it.
 - Make generated code recognizable and regenerate it through the repository-owned command.
 
 ## Functions and logic
