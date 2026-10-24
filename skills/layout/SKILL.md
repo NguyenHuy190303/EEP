@@ -1,6 +1,6 @@
 ---
 name: layout
-description: "Place and name project files, artifacts and runs consistently. For reorganizing existing folders, preserve user work and propose named reversible moves."
+description: "Decide where a file, artifact, run or branch goes and what to name it, or reorganize a messy folder with named, reversible moves."
 ---
 
 # Layout
@@ -12,6 +12,6 @@ Place project code/config/tests/docs in the repo. Put expensive non-project-cura
 - Creating a normal file: follow its neighbors and the closest instructions; no additional reference needed.
 - Naming a branch, experiment/run or durable artifact: read [naming and storage](references/naming-and-storage.md) for the relevant convention.
 - Designing docs/spec/report or experiment directory structure: read [directory conventions](references/directory-conventions.md), only the relevant section.
-- Starting a new repo or organizing a messy folder: read [organizing](references/organizing.md) and the matching skeleton if useful. Never impose a new skeleton on an established project.
+- Starting a new repo or organizing a messy folder: read [organizing](references/organizing.md) and the matching skeleton if useful. An established project keeps its own skeleton.
 
-For reorganization, inspect status and boundaries, show from/to/reason, and respect authorization already given. Never delete unrelated work; archive named targets when appropriate. Do not ask again to perform moves explicitly requested by the user.
+For reorganization, inspect status and boundaries and show from/to/reason for each move. Unrelated work stays where it is; archive named targets when appropriate. Moves the user explicitly requested go ahead without a second confirmation.

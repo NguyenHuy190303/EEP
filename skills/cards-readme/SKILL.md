@@ -1,6 +1,6 @@
 ---
 name: cards-readme
-description: "Create or overhaul HF model/dataset cards and GitHub READMEs with a first-screen quickstart and traceable claims. Load only the matching artifact specs and optional evidence guidance."
+description: "Create or overhaul a Hugging Face model card, dataset card or GitHub README, with a first-screen quickstart and every claim traced to its source."
 ---
 
 # Cards and READMEs
@@ -16,4 +16,4 @@ Collect the actual artifact facts before writing. Omit unsupported claims and em
 - Only when a chart answers the reader's question: [charts](references/charts.md), with values from the source table and real rendering/palette checks.
 - For benchmark claims: [benchmark evidence](references/benchmark-evidence.md), including what the result does not prove.
 
-Use [workflow and gates](references/workflow-and-gates.md) for collection, validation and final delivery. Preserve check_card.py success, source-backed metrics, rendered inspection and the dataset viewer/schema checks when applicable. Use only checks relevant to the artifact. Skill invocation does not authorize an upload or external write; those need authorization covering the action. Keep script paths anchored at this skill's root.
+Use [workflow and gates](references/workflow-and-gates.md) for collection, validation and final delivery, running only the checks relevant to the artifact. Done when `check_card.py` passes, every metric names its dataset, definition and source, and the rendered page (plus the dataset viewer and schema, for a dataset) was inspected. An upload or other external write needs the user's authorization for that action. Anchor script paths at this skill's root.

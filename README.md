@@ -62,20 +62,19 @@ Both arms refuse the release; the skill mostly adds the findings that need readi
 
 ## Skills
 
-| Skill | Use it when you ask… |
-|---|---|
-| `investigate` | "why is this slow / failing / behaving like this?", "what breaks if I change X?", or a deployed service throws errors. It reads first and reports, and does not fix as a side effect. |
-| `engineer-mindset` | "which architecture / library / schema?", "is this ready to release?", a capacity claim, or an engineering trade-off. It prices options, names the falsifier and keeps short answers short. |
-| `grill-me` | "grill me on this plan", or any time plan mode is on (Claude Code). It asks numbered rounds of decisions with a recommended answer each, looks up facts itself, and plans only once nothing is left assumed. |
-| `review-pr` | "review this PR / branch / diff". It resolves the exact base and head, follows the change into callers, tests and failure paths, and reports actionable evidence. |
-| `deepsearch` | "what's the current answer to…?", or "has someone already built this?" before you build. It labels every source by tier, and recollection alone does not count as evidence. |
-| `present` | "make this a report / explainer / diagram page / narrated video". It uses a bundled style kit and checks delivery. |
-| `cards-readme` | "write the model card / dataset card / README". Every metric is traced to its source. |
-| `toolchain` | "add / upgrade a dependency", "fix this venv", "write the Dockerfile install step". It uses lockfile-backed managers (uv, the repo's JS lockfile) and never bare pip. |
-| `layout` | "where should this file / run / branch go, and what do I call it?" |
-| `cleanup` | "port in use", "disk is full", "kill the stray dev servers / Docker junk". It sorts each item into safe / ask / never and deletes nothing unasked. |
-| `sentry-cli` | "look at this Sentry issue / trace / release" from the terminal. |
-| `grill-me` | "grill me on this plan". It interviews you in rounds, one decision tree at a time, until nothing is silently assumed. In Claude Code a hook also starts it whenever plan mode is on. |
+| Skill | Use it when you ask… | It's working if |
+|---|---|---|
+| `investigate` | "why is this slow / failing / behaving like this?", "what breaks if I change X?", or a deployed service throws errors. It reads first and reports, and does not fix as a side effect. | For a bug, the reply shows one command that reproduces it, with real output, before naming a cause. |
+| `engineer-mindset` | "which architecture / library / schema?", "is this ready to release?", a capacity claim, an engineering trade-off, or writing a skill. It prices options, names the falsifier and keeps short answers short. | The verdict ends with "wrong if …", an observable you could check. |
+| `grill-me` | "grill me on this plan". It interviews you in rounds, one decision tree at a time, until nothing is silently assumed. In Claude Code a hook also starts it whenever plan mode is on. | Questions arrive numbered with a recommended answer each, and none asks for a fact it could look up. |
+| `review-pr` | "review this PR / branch / diff". It resolves the exact base and head, follows the change into callers, tests and failure paths, and checks the diff against its ticket. | Findings come under separate Standards and Spec headings, each with file:lines or a quoted spec line. |
+| `deepsearch` | "what's the current answer to…?", or "has someone already built this?" before you build. It labels every source by tier, and recollection alone does not count as evidence. | Every claim carries a T0–T3 tier, and the reply says what was not searched. |
+| `present` | "make this a report / explainer / diagram page / narrated video". It uses a bundled style kit and checks delivery. | You get a served preview and screenshots in both themes. |
+| `cards-readme` | "write the model card / dataset card / README". Every metric is traced to its source. | The quickstart is on the first screen and every number names its source. |
+| `toolchain` | "add / upgrade a dependency", "fix this venv", "write the Dockerfile install step". It uses lockfile-backed managers (uv, the repo's JS lockfile) and never bare pip. | The lockfile changes through the manager (`uv add`, `pnpm add`), never by hand. |
+| `layout` | "where should this file / run / branch go, and what do I call it?" | A reorganization shows from → to → reason for every move before it runs. |
+| `cleanup` | "port in use", "disk is full", "kill the stray dev servers / Docker junk". It sorts each item into safe / ask / never and deletes nothing unasked. | You see the safe / ask / never table before anything is removed. |
+| `sentry-cli` | "look at this Sentry issue / trace / release" from the terminal. | The reply quotes the stack trace and first-seen release from the CLI, not a guess. |
 
 ## Evidence
 
@@ -102,7 +101,7 @@ skills/<name>/SKILL.md          the skills; references/, kit/, scripts/ beside t
 evals/                          eval cases and results
 ```
 
-Issues and PRs are welcome. A new skill needs at least one eval case that shows it changes an answer.
+Issues and PRs are welcome; [SCOPE.md](SCOPE.md) is the bar each one is judged against. A new skill needs at least one eval case that shows it changes an answer.
 
 <details>
 <summary>Companions used alongside EEP (third-party, install separately)</summary>

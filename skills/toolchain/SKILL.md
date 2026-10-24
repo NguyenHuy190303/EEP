@@ -80,6 +80,3 @@ this convention. **Do not convert them as a side effect of an unrelated change.*
 | Added / removed a dependency | `uv lock --check` (or the JS frozen install) + the repo's own test entry point |
 | Dockerfile or CI install step | the build runs, and the installed version matches the lock |
 | Anything touching a GPU repo's env | say which environment you verified on — local venv is not the cluster |
-
-Secrets and `.env` files are out of scope here: they are governed by the permission rules in
-`~/.claude/settings.json` and the Codex permission profile, not by this skill.

@@ -15,6 +15,9 @@ with concrete options. Then proceed on the stated assumption rather than blockin
 
 "No constraint binds here" is a valid and useful finding. Say it, and pick the boring option.
 
+When the repo has a `GLOSSARY.md` or ADRs (`docs/adr/`) in the area, read them first: an existing ADR
+may already bind the choice, and options and the decision use the glossary's names.
+
 ## 2. At least two real options
 
 A rejected option must be one an experienced engineer would genuinely consider. If the alternative
@@ -39,6 +42,17 @@ to the full form: binding constraint · options priced · choice and why · fals
 what is deliberately out of scope.
 
 ## 4. Persist it only if it will be re-litigated
+
+Record a decision only when all three hold:
+
+1. **Hard to reverse:** changing your mind later has a real cost.
+2. **Surprising without context:** a future reader will ask "why on earth this way?"
+3. **A real trade-off:** genuine alternatives existed and one was picked for stated reasons.
+
+Easy to reverse, unsurprising, or no real alternative: skip it. The record can be one paragraph
+(context, decision, why); add considered options or consequences only when they would stop someone
+re-proposing a rejected path. In a repo that keeps ADRs, that is `docs/adr/NNNN-slug.md`, numbered
+after the highest existing one.
 
 In a repo with a decision ledger (this workspace: `./ops`), a `durable` choice ends with a ready-to-run
 line, not a written file:

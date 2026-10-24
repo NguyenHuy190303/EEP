@@ -6,7 +6,6 @@ a drawing sheet instead (`templates/sheet/`). `$K` is this skill's base director
 
 ## Infographic layer — khi trang cần "đọc như một tấm poster"
 
-> Since 2026-10-03: a concept explained at a glance goes on a **drawing sheet**, not a poster.
 > This layer is for small inline node flows inside a page.
 
 Thêm 2026-09-03 after comparing against ByteByteGo / các infographic trên LinkedIn. Toàn bộ

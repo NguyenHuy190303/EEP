@@ -2,21 +2,37 @@
 
 ## Unreleased
 
-- **New skill `grill-me`**, from mattpocock/skills `grill-me` + `grilling` (MIT, licence kept in
-  `skills/grill-me/LICENSE`). One model-invocable skill instead of his user-only `grill-me` that
-  calls `grilling`, so a hook can route to it. It works a design tree in rounds: the whole frontier
-  per round, numbered, a recommended answer each, facts looked up rather than asked.
-- **Plan mode starts with `grill-me` (Claude Code only).** `hooks/plan-grill.sh` adds a short
-  context note on `UserPromptSubmit` while `permission_mode` is `plan` (plan mode toggled by the
-  user) and on `PostToolUse` of `EnterPlanMode` (the model entered it); subagents are skipped.
-  Codex and `npx skills` installs get the skill but no plan-mode trigger. Checked live with
-  `claude -p --permission-mode plan` (the toggled path only): the first wording ("a plan starts
-  with…") was delivered but ignored; the current one ("the first planning step is the Skill tool
-  call eep:grill-me") made the model invoke the skill and ask a round, and on `--continue` it asked
-  the next round instead of restarting. The `EnterPlanMode` path is UNCHECKED live: `-p` sessions
-  do not offer that tool.
-- New eval case `evals/grill-me-1/`: one run, with 1.00 vs without 0.00 (judge votes on the with
-  arm: FAIL, PASS, PASS).
+## 1.11.0 (2026-10-24)
+
+- **`investigate` root-cause starts with a red loop** (adapted from mattpocock/skills
+  `diagnosing-bugs`, MIT, `skills/investigate/LICENSE`). No hypothesis until one command has been run
+  and shown going red on this bug: red-capable, deterministic, tight, agent-runnable. Then tighten it,
+  raise the reproduction rate for a flaky bug, and minimise one cut at a time. Temporary probes carry
+  a `[DEBUG-xxxx]` tag and are grepped away before the report. New
+  `scripts/hitl-loop.template.sh` scripts the steps a person must do. Deployed-service step 3 now
+  builds the loop from the event's input or hands over.
+- **`review-pr` adds a Spec axis** (adapted from mattpocock/skills `code-review`, MIT,
+  `skills/review-pr/LICENSE`). The ticket found from the branch name or commits (any tracker the
+  session can read) is checked by its own subagent, or a separate pass where the harness has none:
+  missing or partial, not asked for, implemented wrong, each with the spec line and diff hunk.
+  Standards and Spec are reported under separate headings and never ranked against each other. The
+  base ref and a non-empty diff are checked first.
+- **New `engineer-mindset` module `writing-for-agents`** (adapted from mattpocock/skills
+  `writing-for-agents` + `SKILL-MECHANICS`, MIT): pointers, one trigger per branch, the information
+  ladder, completion criteria, leading words, positive steering, pruning. Routed by a new table row
+  and a "writing a skill" trigger in the description.
+- **Writing pass over all SKILL.md files** with that module: descriptions drop body-only sentences
+  (total 2691 → 2441 characters), prohibitions become positive targets where a positive form exists,
+  `cards-readme`, `deepsearch` and `present` gain an explicit "done when", and duplicated tool lines
+  in `investigate` are merged. `sentry-cli` is vendored and unchanged; hard guardrails in `cleanup`
+  and `toolchain` stay.
+- **`design-decision` ADR rule** (adapted from mattpocock/skills `domain-modeling`, MIT): record a
+  decision only when it is hard to reverse, surprising without context and a real trade-off; one
+  paragraph is enough. Read `GLOSSARY.md` and ADRs in the area before naming options.
+- **Repo hygiene for contributors:** `SCOPE.md` (a change cites an observed failure), `.out-of-scope/`
+  with five decided rejections, a bug issue form that asks for harness, model, effort and context
+  fill, and an "It's working if" column in the README skills table (the duplicate `grill-me` row is
+  gone).
 
 ## 1.10.0 (2026-10-17)
 

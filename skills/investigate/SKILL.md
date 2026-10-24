@@ -26,8 +26,7 @@ only reported second-hand, say so and find the observable before theorising.
 scope. An investigation without a shrinking boundary is a tour.
 
 **Every claim carries its evidence inline** — `path/to/file.py:214`, or the command and its real
-output. Anything you concluded rather than observed is labelled as inference. Never paraphrase an
-error; paste it.
+output. Anything you concluded rather than observed is labelled as inference. Paste errors verbatim.
 
 **Separate root cause from contributing condition from symptom.** Naming a contributing condition as
 the root cause is the most common way an investigation ends early and the bug comes back.
@@ -37,18 +36,49 @@ observation would close each open item. A green local test suite proves the code
 contradict itself; it does not prove a claim about the running system in production — that needs
 an observation from that system.
 
-**Do not fix while investigating** unless the fix is one line and obviously correct, or you were
-asked to. Report first. A fix mid-investigation destroys the evidence for whether it was the cause.
+**Report before fixing.** Fix during an investigation only when the fix is one line and obviously
+correct, or you were asked to; a mid-investigation fix destroys the evidence for whether it was the
+cause.
 
 ## Mode specifics
 
 ### root-cause
-Reproduce when the failure is observable and reproducing costs less than the fix. When it is not
-reproducible — flaky, production-only, unsafe — say so and name the strongest proxy you used instead.
-Do not build a reproduction harness larger than the bug.
+**Build a red loop before forming any theory.** The loop is one command (a failing test, a curl
+against a dev server, a CLI call diffed against a fixture, a replayed captured payload, a
+`git bisect run` script) that goes red on *this* bug. The step is done when you have run it, shown
+the invocation and its real output, and it is:
+
+- **red-capable:** it drives the real code path and asserts the user's exact symptom, so it turns
+  green only when this bug is gone;
+- **deterministic:** the same verdict every run;
+- **tight:** seconds per run, with only the setup the bug needs;
+- **agent-runnable:** it runs unattended. Where a person must act, script their part with
+  [`scripts/hitl-loop.template.sh`](scripts/hitl-loop.template.sh) so the loop stays structured.
+
+No red-capable command, no hypothesis. Then tighten it: cache setup and narrow the scope for speed,
+assert the specific symptom rather than "did not crash", pin time, seed randomness and isolate
+filesystem and network. For a flaky bug, raise the reproduction rate instead of chasing a clean
+repro: loop the trigger 100×, parallelise, add load, narrow the timing window. A 50% bug is
+debuggable; a 1% bug is not yet.
+
+Once red, minimise: cut inputs, config, data and steps one at a time, re-running after each cut.
+Done when removing any remaining element turns the loop green.
+
+When no loop is possible (production-only, unsafe, no access, no way to run commands), say so, list
+what you tried, and ask for access to an environment that reproduces it, a redacted captured
+artifact (HAR, log dump, core dump), or permission for temporary instrumentation. Name the strongest
+proxy you used instead (logs, a stack trace read against the code) and state that the cause was not
+reproduced.
 
 Work backwards from the observable to the first point where the invariant was already violated. That
 point, not the crash site, is where the root cause lives.
+
+Tag every temporary probe with one prefix per investigation, e.g. `[DEBUG-a4f2]`, and remove them
+before reporting; `rg '\[DEBUG-a4f2\]'` returning nothing is the proof. Loop scripts and harnesses
+live in a scratch location outside the repo's tracked files; the report lists any that remain, and a
+failing test worth keeping is offered as the regression test rather than left behind. Show commands and output
+with secrets replaced by `<REDACTED>`, and build the loop on environment variables so credentials
+stay out of it.
 
 ### impact
 Text search finds strings; it does not find call sites. Use `ast-grep` for structural matches, and
@@ -96,7 +126,8 @@ each step is cheaper than the next and most stop at step 2.
    cliff to zero is a pipeline outage to escalate, not a quiet service. Metrics answer whether it is
    one request or the whole system: error rate, latency, restarts, saturation. If a metric moved at
    a specific minute, find what else changed then.
-3. **Reproduce** in local/dev with the input from the event, or say it was not reproduced.
+3. **Build the loop** by replaying the event's input in local/dev, held to the root-cause gate above.
+   When no loop can be built, say so and hand over as in step 4.
 4. **Know the wall.** Telemetry cannot show which version is running, why a pod restarts or is
    OOMKilled, or what config the cluster actually holds. When the evidence points there, stop and
    hand over the error issue, log window, moved metric and the exact question to someone with
@@ -106,11 +137,7 @@ Team specifics (datasource IDs, hosts, query recipes): read `private/team-debug.
 
 ## Reach for the right tool
 
-Text search finds strings, not call sites — `ast-grep` for structural matches. `gron` makes JSON
-greppable. `websocat` tests a WebSocket without writing a script. `hyperfine` for command-level
-timing. Whatever observability stack the project actually uses (metrics, error tracking, issue
-tracker) beats re-deriving the same facts from logs by hand — check what's configured before
-falling back to raw log-diving.
-
-Reach for the CLI before writing a script. `gron` makes JSON greppable; `ast-grep` makes code
-structurally searchable; `websocat` tests a WebSocket without a Python harness.
+Reach for a CLI before writing a script: `gron` makes JSON greppable, `websocat` tests a WebSocket
+(`ast-grep` and `hyperfine` are under impact and perf). Whatever
+observability stack the project already runs (metrics, error tracking, issue tracker) answers faster
+than re-deriving the same facts from raw logs; check what is configured first.

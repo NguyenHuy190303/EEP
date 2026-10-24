@@ -22,7 +22,7 @@ python3 $K/kit/build.py body.html out.html --title "Tên Trang" \
 
 ## Color tokens: two themes, same variable names
 
-Default page palette since 2026-10-03 (style W1). Paper is `:root`. Deep green is
+Default page palette (style W1). Paper is `:root`. Deep green is
 `:root[data-theme="dark"]`, or automatic under `prefers-color-scheme:dark` until the user forces
 light. Every text colour clears 4.5:1 on its paper (`validate_palette.mjs`); change none without
 re-running it.
@@ -117,4 +117,4 @@ Components, categories, icons and GIF export: `../references/infographic.md`.
 
 ## Delivering to the user
 
-Do not hand over `file://` if the user connects remotely — see `../SKILL.md`, "Delivery gate", item 4.
+Do not hand over `file://` if the user connects remotely — see `../references/build-and-delivery.md`, "Delivery gate", item 4.

@@ -1,6 +1,6 @@
 ---
 name: cleanup
-description: Use when a port is taken, a dev server/tunnel/tmux/nohup process outlived its work, disk is filling, Docker/OrbStack has piled up containers, images, cache or volumes, or the user asks to tidy the machine. Reports holders, tiers safe/ask/never, deletes nothing without approval.
+description: Use when a port is taken, a dev server/tunnel/tmux/nohup process outlived its work, disk is filling, Docker/OrbStack has piled up containers, images, cache or volumes, or the user asks to tidy the machine.
 ---
 
 # Cleanup — local machine only

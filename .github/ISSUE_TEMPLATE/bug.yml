@@ -1,0 +1,43 @@
+name: Bug
+description: A skill did the wrong thing in a real session.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read [SCOPE.md](https://github.com/NguyenHuy190303/EEP/blob/main/SCOPE.md) first. An issue needs an observed failure from a real session.
+  - type: input
+    id: skill
+    attributes:
+      label: Skill
+      description: Which skill, e.g. `investigate`, `review-pr`.
+    validations:
+      required: true
+  - type: input
+    id: harness
+    attributes:
+      label: Harness and version
+      description: e.g. Claude Code 2.3.1, Codex CLI 0.40. Say how you installed (plugin marketplace, Codex, npx skills) and which EEP version.
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Model, effort and context
+      description: e.g. Opus, high effort. Roughly how full was the context when it happened?
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you ran, and what the skill did. Paste the relevant part of the session, with secrets removed.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: What the skill should have done instead, and which line of the SKILL.md (if any) says so.
+    validations:
+      required: true

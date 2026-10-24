@@ -92,4 +92,4 @@ Prose rules for this style: `../../references/writing.md`, "Presenting results".
 ## Verify
 
 Build exit 0; screenshot both themes at full page height; check the hero, one chart, one example,
-the method section, and `#samples`; open a tab and a `details`, play one sample and click a track. Then the delivery gate in `SKILL.md`.
+the method section, and `#samples`; open a tab and a `details`, play one sample and click a track. Then the delivery gate in `../../references/build-and-delivery.md`.
